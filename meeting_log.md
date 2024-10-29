@@ -27,11 +27,40 @@
 * x said y
 
 ---
+# Biweekly 29.10.2024
+
+| Name            | About                       | Title         | Labels | Assignees |
+|-----------------|-----------------------------|---------------|--------|-----------|
+| Biweekly | prepare meeting with Martin and discuss current progress | Biweekly 2 | - | @cdfhalle |
+
+## Attendees
+
+- [ ] @juliuspor
+- [ ] @sm1lla
+- [ ] @joh-dah
+- [ ] @elenagensch
+- [ ] @cdfhalle
+
+## Topics
+
+* New feature
+* Painful bug
+* Any other business
+
+## Actions
+
+- [ ] 
+
+## Meeting notes
+
+* 
+
+---
 # Biweekly 24.10.2024
 
 | Name            | About                       | Title         | Labels | Assignees |
 |-----------------|-----------------------------|---------------|--------|-----------|
-| Biweekly | understanding the problem | Biweekly 1 |        |           |
+| Biweekly | understanding the problem | Biweekly 1 | - | @cdfhalle |
 
 ## Attendees
 
