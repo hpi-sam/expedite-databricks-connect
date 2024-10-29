@@ -130,7 +130,7 @@
 - [x] @cdfhalle meeting template anpassen (agenda: @juliusspor, timekeeping: @sm1lla, notes: @joh-dah)
 - [ ] @joh-dah macht when to meet für paint in style in Schöneberg
 - [ ] @juliusspor erstellt slide deck und schickt es an Martin
-- [ ] @smilla schreibt nachricht in den Slack und fragt nach Treffen mit dem Product Manager
+- [ ] @sm1lla schreibt nachricht in den Slack und fragt nach Treffen mit dem Product Manager
 - [ ] @all nach weiteren papern suchen
 - [ ] @all weiter in spark connect einsteigen, Fragen überlegen
 - [ ] @all über synopsis table nachdenken
