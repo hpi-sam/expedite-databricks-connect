@@ -1,8 +1,8 @@
 # Biweekly 01.01.0001
 
-| Name            | About                       | Title         | Labels | Assignees |
-|-----------------|-----------------------------|---------------|--------|-----------|
-| Meeting template| Meeting template for keylime| Meeting dd/mm/yy |        |           |
+| Name            | About                       | Title         | Agenda | Timekeeping | Notes |
+|-----------------|-----------------------------|---------------|-----------|-----------|-----------|
+| Meeting template| Meeting template for keylime| Meeting dd/mm/yy | @xyz | @xyz | @xyz |
 
 ## Attendees
 
@@ -14,17 +14,99 @@
 
 ## Topics
 
-* New feature
-* Painful bug
-* Any other business
+* 
 
 ## Actions
 
-- [ ] @github_name to try and replicate painful bug, and update @jetwhiz
+- [ ] 
 
 ## Meeting notes
 
-* x said y
+*
+
+---
+# Weekly with Chris 31.10.2024
+
+| Name            | About                       | Title         | Agenda | Timekeeping | Notes |
+|-----------------|-----------------------------|---------------|-----------|-----------|-----------|
+| Weekly with Chris | tbd | Weekly with Chris 1 | @juliusspor | @sm1lla | @joh-dah |
+
+## Attendees
+
+- [ ] @juliuspor
+- [ ] @sm1lla
+- [ ] @joh-dah
+- [ ] @elenagensch
+- [ ] @cdfhalle
+- [ ] Chris
+
+## Topics
+
+* 
+
+## Actions
+
+- [ ] 
+
+## Meeting notes
+
+*
+
+---
+# Weekly with Martin 31.10.2024
+
+| Name            | About                       | Title         | Agenda | Timekeeping | Notes |
+|-----------------|-----------------------------|---------------|-----------|-----------|-----------|
+| Weekly with Martin | tbd | Weekly with Martin 1 | @juliusspor | @sm1lla | @joh-dah |
+
+## Attendees
+
+- [ ] @juliuspor
+- [ ] @sm1lla
+- [ ] @joh-dah
+- [ ] @elenagensch
+- [ ] @cdfhalle
+- [ ] Martin
+- [ ] Chris
+
+## Topics
+
+* 
+
+## Actions
+
+- [ ] 
+
+## Meeting notes
+
+*
+
+---
+# Biweekly 31.10.2024
+
+| Name            | About                       | Title         | Agenda | Timekeeping | Notes |
+|-----------------|-----------------------------|---------------|-----------|-----------|-----------|
+| Biweekly | tbd | Biweekly 3 | (@juliusspor) | (@sm1lla) | @joh-dah |
+
+## Attendees
+
+- [ ] @juliuspor
+- [ ] @sm1lla
+- [ ] @joh-dah
+- [ ] @elenagensch
+- [ ] @cdfhalle
+
+## Topics
+
+* 
+
+## Actions
+
+- [ ] 
+
+## Meeting notes
+
+* 
 
 ---
 # Biweekly 29.10.2024
@@ -35,21 +117,17 @@
 
 ## Attendees
 
-- [ ] @juliuspor
-- [ ] @sm1lla
-- [ ] @joh-dah
-- [ ] @elenagensch
-- [ ] @cdfhalle
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
+- [x] @cdfhalle
 
 ## Topics
 
-* New feature
-* Painful bug
-* Any other business
-
 ## Actions
 
-- [ ] @cdfhalle meeting template anpassen (agenda: @juliusspor, timekeeping: @sm1lla, notes: @joh-dah)
+- [x] @cdfhalle meeting template anpassen (agenda: @juliusspor, timekeeping: @sm1lla, notes: @joh-dah)
 - [ ] @joh-dah macht when to meet für paint in style in Schöneberg
 - [ ] @juliusspor erstellt slide deck und schickt es an Martin
 - [ ] @smilla schreibt nachricht in den Slack und fragt nach Treffen mit dem Product Manager
