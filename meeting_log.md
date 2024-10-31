@@ -23,6 +23,13 @@
 ## Meeting notes
 
 *
+---
+# Next Steps 31.10.2024
+* Open Source Projekte von Martin anschauen um besseres verständniss vom probleminstanzen zu bekommen
+* Fragen für den PM ausdenken
+* Meeting mit PM am Donnerstag festlegen
+* weitere paper herraussuchen, verstehen und vor/nachteile herausarbeiten
+* Lösungsansätze herausarbeiten (probleme detecten, probleme fixen)
 
 ---
 # Weekly with Chris 31.10.2024
