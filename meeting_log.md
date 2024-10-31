@@ -61,25 +61,55 @@
 
 ## Attendees
 
-- [ ] @juliuspor
-- [ ] @sm1lla
-- [ ] @joh-dah
-- [ ] @elenagensch
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
 - [ ] @cdfhalle
-- [ ] Martin
+- [x] Martin
 - [ ] Chris
 
 ## Topics
 
-* 
+* See slides
 
 ## Actions
 
-- [ ] 
+- [ ] Martin schickt hat ne liste mit beliebten open source projekten - was sind die gaps darinn, damit die mit SC funktionieren?
 
 ## Meeting notes
 
-*
+* es gibt sachen, die man besser mit rdds lösen kann, sind aber sehr spezielle use cases
+* wollen es für 90% der leute besser machen. die leute die dann doch die alte api verwenden wollen müssen halt spark connect abschalten und die nachteile in kauf nehmen
+* man halt alternative varianten für die dinge gebaut, die nicht mehr funktionieren (nicht bei allem, aber bei den meist genutzen sachen)
+* möglichst wenig breaking changes, nur kompatible änderungen. müssen wir nicht beachten
+* Großteil der user bei Python, also fokus auch auf pyspark
+* es soll kein tool bei rauskommen. Wir sollen verschiedene wege herausarbeiten, die die transition einfacher machen
+* --> Problemverständniss im Kern korrekt!
+
+* Wer hat das größte Problem mit diesem Api Change? -> Plan ist mit spark 4 spark connect als default zu etablieren. Getting started ist gar nicht mal das hauptproblem. Der case mit bestehenden Kunden, die ihren code vor ein paar jahren geschrieben haben ist wichtiger
+* Ziel ist es für bestehende Kunden die Migration einfacher zu machen
+* wenn man eine migration macht, soll man in code refactoring investieren oder in einer ebene, die diese übersetzung macht
+
+Was wäre der gewünschte outcome für das projekt?
+Verstehen, kann ich was besseres für diese api kompatibilität finden, als alles umzuschreiben?
+Software bauen, die deinen code parsed und den übersetzt? Wie macht man das at scale? Ein Tool für alle kunden -> wie hilft man bei der migration?
+* Teilweise bloße Übersetzung nicht möglich, code muss umstrukturiert werden
+* Problem ggf. weniger regelbasiert lösen
+
+Step 1: Kunden müssen verstehen: Sind sie überhaupt betroffen? Müssen sie was machen? Oder können sie direkt umstellen?
+Step 2: Tatsächlich bei der Migration helfen, falls der Code nicht komplett kompatibel ist
+
+Letztendlich liegt es bei uns wo der fokus liegt
+Nächste woche Forschungsansätze anreißen, martin in entscheidungsfindungsprozess miteinbeziehen
+
+Was macht Jakob? (Der PM)
+* Mit Kunden zu arbeiten und requirements herauszuarbeiten um sachen von single cluster auf shared cluster rüber zu bringen
+* Was sind die gaps zwischen diesen arhcitekturen?
+* Wie können wir möglichst einfach Kunden dazu kriegen andere Clusterarchitetur anzunehmen um die benefits nutzen zu können
+* https://www.databricks.com/dataaisummit/session/unity-catalog-lakeguard-data-governance-multi-user-apachetm-spark
+
+
 
 ---
 # Biweekly 31.10.2024
