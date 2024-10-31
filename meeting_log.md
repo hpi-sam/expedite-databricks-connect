@@ -90,23 +90,28 @@
 
 ## Attendees
 
-- [ ] @juliuspor
-- [ ] @sm1lla
-- [ ] @joh-dah
-- [ ] @elenagensch
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
 - [ ] @cdfhalle
 
 ## Topics
 
-* 
+* Paper findings discussion
+* Preperation für Meeting mit Chris 
+* Slides für meeting Martin (paar sachen müssen ergänzt werden)
 
 ## Actions
 
-- [ ] 
+- [ ] Look for in production examples for issues with the transition to spark connect e.g "PySparkNotImplementedError: [NOT_IMPLEMENTED] sparkContext() is not implemented."
+- [ ] Add questions for meeting with martin
 
 ## Meeting notes
 
-* 
+* Zur Literatur: Hauptsächlich 2 Ansätze
+* a) LLMs nutzen um Code umzuschreiben
+* b) Mapping erstellen (mit llms oder ohne) 
 
 ---
 # Biweekly 29.10.2024
