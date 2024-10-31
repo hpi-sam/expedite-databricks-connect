@@ -33,12 +33,12 @@
 
 ## Attendees
 
-- [ ] @juliuspor
-- [ ] @sm1lla
-- [ ] @joh-dah
-- [ ] @elenagensch
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
 - [ ] @cdfhalle
-- [ ] Chris
+- [x] Chris
 
 ## Topics
 
@@ -46,11 +46,15 @@
 
 ## Actions
 
-- [ ] 
+- [ ] Next meeting everyone 2 mins expectations for the project. what do we want from it?
 
 ## Meeting notes
 
-*
+* For meeting with PM SWOT analysis
+* Get inspirations for questions from paper
+* Look into testing APIs
+* Outcome is veeery open
+* would be great to have some reasearch and development experience not only engineering stuff
 
 ---
 # Weekly with Martin 31.10.2024
