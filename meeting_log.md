@@ -1,3 +1,38 @@
+# Biweekly 04.11.2024
+## Attendees
+
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
+- [x] @cdfhalle
+
+## Paper Findings
+- LLMs: Prompt Engineering
+- Microsoft Paper: Code Plan
+- RAG approach 
+
+wir brauchen daten (evaluierung, und für approaches), überlegen was brauchen wir
+- static approach, LLM , hybrid, begruenden warum nicht static/hybrid notwendig
+- legen wir uns schon fest wie lösung einbinden? erstmal fokus was laufen würde
+- metriken überlegen auch notwendig um abzuwenden (code generation paper nochmal anschauen)
+- Synopsis Table Kategorien sollten wir uns darauf einigen
+
+## PM Meeting Vorbereitung
+- Fragen sammeln in Google docs
+- Fragen, ob es Daten gibt
+
+## Actions
+- [ ] @elena notes, @smilla agenda
+- [ ] @elena erinnerung an martin repository fuer spark connect projeke (elena)
+- [ ] @all Synopsis Table, Kategorien überlegen
+- [ ] @all: Slides für Vorstellung von Ansätzen: beste jew zusammenfassen
+  	Ziel: Vorstellung Approach, Wertung der Methode im Paper (Limitations + Strengths), Wie passt auf unser Problem (Synopsis Table)
+   @elena Hybrid API Migration, 
+  	@julius CodePlan: Repository-Level Coding using LLMs and Planning
+  	@smilla @conrad RAG approach und ältere Ansätze (static wie congruity)
+  	@johanna LLM und schlaue Prompts
+
 # Biweekly 01.01.0001
 
 | Name            | About                       | Title         | Agenda | Timekeeping | Notes |
