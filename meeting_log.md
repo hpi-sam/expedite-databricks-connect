@@ -24,7 +24,7 @@ wir brauchen daten (evaluierung, und für approaches), überlegen was brauchen w
 
 ## Actions
 - [ ] @elena notes, @smilla agenda
-- [ ] @elena erinnerung an martin repository fuer spark connect projeke (elena)
+- [x] @elena erinnerung an martin repository fuer spark connect projeke (elena)
 - [ ] @all Synopsis Table, Kategorien überlegen
 - [ ] @all: Slides für Vorstellung von Ansätzen: beste jew zusammenfassen
   	Ziel: Vorstellung Approach, Wertung der Methode im Paper (Limitations + Strengths), Wie passt auf unser Problem (Synopsis Table)
