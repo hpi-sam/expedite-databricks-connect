@@ -1,3 +1,31 @@
+# Biweekly 07.11.2024
+## Attendees
+
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
+- [x] @cdfhalle 
+
+## Aproaches
+check presentation slides 
+- older approaches: Tools: Adapter/Wrapper (sehr statisch), statistische Methoden (overfitting) oder haendisches Mapping
+- LLMs kritische Stellen markieren oder Code refactoring
+- Amazon: will ich Tool was alles schreibt oder in den Prozess integriert werden, Beispiel von Agent Java8 zu Java17
+
+- Problem bzw Frage COd Stueck fuer Stueck migrieren oder CodePlan
+
+Synopsis Table: bewertet man in einem Loesungsansatz verschiedene Modelle oder grober: recent reearch fokus auf LLM
+
+Entscheidung Wrapper oder CLients selbst migrieren, 
+was gebe ich als kontext rein, wie interagieren mit dem Tool(z.B linter-based approach, scan des repos, PR vorschlag, oder pair programming AI assistant), wie kann man weiteres knowledge reinbringen, 
+
+Prototyping auf kleines stueck code
+Folie: Type of Tool hinzufuegen
+
+## Next steps
+- [ ] Tisch fragen
+
 # Biweekly 04.11.2024
 ## Attendees
 
