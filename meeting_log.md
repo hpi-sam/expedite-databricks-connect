@@ -1,3 +1,52 @@
+# Weekly mit Martin und Jakob 07.11
+## Attendees
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
+- [x] @cdfhalle
+- [x] Martin
+- [ ] Chris
+- [x] Jakob
+
+## Data
+Martin **Liste open source projekte:**
+quinn	Yes, updated	38822
+sparkaid		31788
+findspark		19164
+sparknlp		10996
+sparkmeasure		10044
+sparkdl		7784
+geospark		5961
+joblibspark		2643
+pysparkling		2127
+spark_tensorflow_distributor		941
+sparknlp_jsl		834
+spark_df_profiling		800
+pyspark_test		605
+sparkxgb		213
+handyspark		205
+geomesa_pyspark		150
+labelspark		71
+sparkocr		43
+spark_sklearn		9
+pyspark2pmml		4
+
+- zu den Repos:
+  -  ML algorithmen gehen noch gar nciht mit spark connect,
+  -  xjboost resourece editor und pytorch spark distributor (wie viele nodes muss ich), benutzt classic apis ohne dass es sinn ergibt
+- Jakob 3 Jahre Product Manager, Applikationen umbauen, wenn APIs nicht mehr verfuegbar fuer KUnden, 
+
+## Presentation: 
+
+Approaches Ansaetze: Code Wrapper, Individual Migration: fuer uns Richtung LLM interessant, siehe genaue aproaches in Presentation
+
+Martins Kommentare:
+- UCX hat Linter fuer Migration gebaut, teilweise opensource (UCX, unity catalog migration tool): https://github.com/databrickslabs/ucx/blob/main/src/databricks/labs/ucx/source_code/linters/spark_connect.py 
+- Open source LLMs probieren? Martin: LLAMA & friends sind sehr gut: also auf jeden Fall mal ausprobieren
+- keine AWS credits, deswegen ist es schwierig Zugang zu Databricks
+- pydequ: Zugriff auf JVM (geht nicht in spark connect), es gibt kein replacement, Blog-Artikel: was ist mein client code in python und was ist mein backend code in scala
+
 # Biweekly 07.11.2024
 ## Attendees
 
