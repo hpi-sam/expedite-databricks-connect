@@ -1,3 +1,49 @@
+# Meeting mit Jakob 07.11.2024
+## Attendees
+
+- [ ] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [ ] @elenagensch
+- [x] @cdfhalle
+- [x] Jakob
+
+      
+  
+
+### 2 Probleme
+- neuer Code wird geschrieben, nicht alles aus dem Internet funktioniert
+  - Vorteil: sind oft in Databricks Editor, der Vorschläge machen kann und lernen gerade erst
+- Legacy Code 
+  - schwieriger zu migrieren
+  - eher in IDE, nicht Notebook in Databricks Editor
+  - geht oft an Platform Team, dass nicht selbst den Code geschrieben hat, die Leute sind nicht mehr da
+  - diese Leute sind wichtiger für Databricks (da ist das money)
+
+### Was gibt es schon?
+- Linter, der sagt, wenn etwas nicht kompatibel ist (gibt es aber nur in Python)
+- in Notebook kann dann Databricks Assistant mache Probleme schon fixen
+  - Jakob hat bei allen API call ausprobiert ob das Databricks LLM die Probleme fixen kann, ca 50% ging sofort, manchmal noch mehrmals nachfragen
+  - er gibt uns ein Dokument, in dem er das festgehalten hat
+  - promt für LLM ist hier ist die Zelle und die Fehlermeldung
+  - Databricks Assistant ist einfaches LLM (GPT oder Llama)
+    
+### Welche Verbesserung würde Databricks bzw. den Kunden helfen?
+- bessere Integration
+  - Migration geht einfach in kleinem Notebook aber nicht so einfach in größerem Projekt
+  - wär also cool, etwas zu haben, was man auch in der IDE nutzen kann
+  - die meisten Projekte sind ein Workflow (Liste von Jobs), da wäre es gut, wenn man da gleich wüsste, ob der kompatibel ist oder nicht ohne ihn auszuprobieren und bestenfalls dann auch gleich Veränderungsvorschläge
+- statt generischem LLM, dass nicht so viel Wissen über den spezifischen Migration Prozess hat, wäre spezifischere Lösung super (der Databricks Assistant kann zB nicht alle Probleme fixen
+- am besten auch noch Confidence einschätzen
+  - wie confident ist das LLM mit den Änderungsvorschlägen
+  - manchmal gibt es Sachen, die man gar nicht migrieren kann, da sollte man dann auch confident sagen können, dass es nicht funktioniert
+
+### Fazit 
+- fertiges Produkt etc nicht das Ziel, aber ein Konzept davon haben, wie das am Ende in den Workflow integriert (User Story im Kopf haben)
+
+### Weiteres
+- Jakob hat uns auch ein pdf geschickt, in dem typische Probleme bei der Migration und potenzielle Fixes aufgelistet werden
+  
 # Weekly mit Martin und Jakob 07.11
 ## Attendees
 - [x] @juliuspor
