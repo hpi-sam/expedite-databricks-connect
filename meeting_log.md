@@ -18,6 +18,7 @@
 ## Next steps
 - [ ] Julius Linter anschauen
 - [ ] Johanna Tabelle für experimente erstellen
+- [ ] Chris zu unseren meetings einladen
 - [ ] Alle: Promt engineering und Rag approach
 
 # Meeting mit Jakob 07.11.2024
