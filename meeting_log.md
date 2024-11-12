@@ -1,11 +1,11 @@
-# Biweekly 07.11.2024
+# Biweekly 12.11.2024
 ## Attendees
 
 - [x] @juliuspor
 - [x] @sm1lla
 - [x] @joh-dah
 - [x] @elenagensch
-- [x] @cdfhalle 
+- [x] @cdfhalle (zu späääät)
 
 ## Notes
 
