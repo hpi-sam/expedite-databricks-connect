@@ -7,3 +7,6 @@ Master Project "Quickly Adapting to Changes" in collaboration with Databricks.
 [Google Presentation](https://docs.google.com/presentation/d/1weDPT_PqyhPAbvWtT8X4rUJAG2AY0wSjm0xntYPNEXk/edit?usp=sharing)
 
 [Promt Comparison Table](https://docs.google.com/spreadsheets/d/1i-gbJA5AMgQzv4gk7S6qcKBAfWoZdDpxRPmaWZf9cp4/edit?gid=0#gid=0)
+
+## Migration Examples
+- [semyonsinchenko blog post](https://semyonsinchenko.github.io/ssinchenko/post/porting_deequ_to_sparkconnect/)
