@@ -1,3 +1,35 @@
+# Biweekly 14.11.2024
+## Notes
+* Meeting mit Martin absagen
+* Für Meeting mit Chris:
+  1. Update was wir machen
+  2. Wie Evaluieren wir am Ende
+  3. 1o1 Meetings abmachen
+  4. Tisch, Bildschirme Mikrofone
+  5. Server zugang
+  
+### Linter
+* Nur verwendbar mit Databricks access
+* Versuchen lokal zu installieren
+
+### LLM/RAG zum laufen bringen
+* mit google colab hosten
+* groq https://groq.com/
+* auf alten cluster zugängen ausprobieren
+
+### Wie evaluieren
+* einfache Beispiele erstellen
+* mit Sourcegraph beispiele finden
+
+### Welche Daten in RAG?
+
+## Next steps
+- [ ] Meeting mit Martin absagen
+- [ ] Julius Linter anschauen, ggf lokal zum laufen bringen
+- [ ] Alle die Lust haben: LLM zum laufen bringen
+- [ ] Johanna, Conrad: Daten für RAG
+- [ ] Elena, Smilla und allen den langweilig ist: Daten, Daten, Daten
+
 # Biweekly 12.11.2024
 ## Attendees
 
