@@ -1,3 +1,27 @@
+# Weekly with Chris 14.11.2024
+
+## Agenda
+1. Update was wir machen
+2. Wie Evaluieren wir am Ende
+3. 1o1 Meetings abmachen
+4. Tisch, Bildschirme Mikrofone
+5. Server zugang
+
+## Meeting note
+* Professor giese can pay for chat GPT (chris says)
+* For Data: Doc von Jakob, pyspark documentation
+* What should we focus on? Where do we set the boundry? What is to complex to solve with LLM?
+* Vorschlag von Chris: Erst ein model machen, dass einschätzt wie komplex die ändeung wäre. Aber unklar wie das umgesetzt wird
+* Confidence feststellen indem mehrere solutions vorgeschlagen werden und die Varianz berechnet wird. Hohe varianz in den antworten = geringe confidence
+
+## Actions
+- [ ] Felix Boether schreiben, dass zugang zum delab auch nice wäre
+- [ ] Open ticket for FM team or write chris
+- [ ] Chris einladen zum porzellan malen
+- [ ] ggf. nochmal meeting mit Jakob machen, falls wir da fragen etc haben
+- [ ] 
+
+
 # Biweekly 14.11.2024
 ## Notes
 * Meeting mit Martin absagen
