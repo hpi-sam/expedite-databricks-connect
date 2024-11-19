@@ -1,3 +1,34 @@
+# Biweekly 01.01.0001
+
+| Name            | About                       | Title         | Agenda | Timekeeping | Notes |
+|-----------------|-----------------------------|---------------|-----------|-----------|-----------|
+| Meeting template| Meeting template for keylime| Meeting dd/mm/yy | @xyz | @xyz | @xyz |
+
+## Agenda
+
+
+## Attendees
+
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
+- [x] @cdfhalle
+
+## Topics
+
+* 
+
+## Actions
+
+- [ ] 
+
+## Meeting notes
+
+*
+
+---
+
 # Weekly with Chris 14.11.2024
 
 ## Agenda
