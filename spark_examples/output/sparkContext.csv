@@ -1,3 +1,2 @@
-,0,1
-0,spark.app.name,SparkByExamples.com
-1,spark.master,local[*]
+spark.app.name,Example
+spark.master,local[*]
