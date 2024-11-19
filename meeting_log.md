@@ -5,7 +5,10 @@
 | Meeting template| Meeting template for keylime| Meeting dd/mm/yy | @xyz | @xyz | @xyz |
 
 ## Agenda
-
+- Sollen wir noch konkretere TODOs festlegen
+- Meeting mit Marting
+- Todos bis Donnerstag
+- 
 
 ## Attendees
 
