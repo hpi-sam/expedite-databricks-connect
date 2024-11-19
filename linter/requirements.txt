@@ -1,0 +1,10 @@
+astroid==3.3.5
+dill==0.3.9
+isort==5.13.2
+mccabe==0.7.0
+platformdirs==4.3.6cd pyth  
+py4j==0.10.9.7
+pylint==3.3.1
+pyspark==3.5.3
+setuptools==75.5.0
+tomlkit==0.13.2
