@@ -1,7 +1,7 @@
 # Using Conda Environments
 
 ## Installing Conda
-1. **Download the latest Miniconda installation script**, Create first a dictionary for stroing the bash script:
+1. **Download the latest Miniconda installation script**, Create first a directory for stroing the bash script:
    ```bash
    mkdir miniconda3
    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
@@ -9,7 +9,11 @@
 2. **Run the installation script**:
    ```bash
    bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
-
+   ```
+   Remove the directory
+   ```bash
+   rm ~/miniconda3/miniconda.sh
+   ```
 
 Now, Conda is installed.
 
@@ -27,7 +31,7 @@ Now, Conda is installed.
 To create an environment from an existing YAML file:
 
 ```bash
-conda env create -n <name> -f environment.yaml
+conda env create-f environment.yaml
 ```
 
 To create a new Conda environment:
