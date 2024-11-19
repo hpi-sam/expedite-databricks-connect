@@ -1,3 +1,5 @@
+#platformdirs==4.3.6cd 
+
 import sys
 import json
 from python_linter.linter import PythonLinter
