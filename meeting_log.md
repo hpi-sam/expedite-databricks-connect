@@ -1,3 +1,59 @@
+# Biweekly 01.01.0001
+
+| Name            | About                       | Title         | Agenda | Timekeeping | Notes |
+|-----------------|-----------------------------|---------------|-----------|-----------|-----------|
+| Meeting template| Meeting template for keylime| Meeting dd/mm/yy | @xyz | @xyz | @xyz |
+
+## Agenda
+- Sollen wir noch konkretere TODOs festlegen
+- Meeting mit Marting
+- Todos bis Donnerstag
+- 
+
+## Attendees
+
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
+- [x] @cdfhalle
+
+## Topics
+
+* 
+
+## Actions
+
+- [ ] 
+
+## Meeting notes
+
+*
+
+---
+# Biweekly 19.11.2024
+## Agenda
+1. Zugang KIZ cluster
+2. Fortschritt Linter
+3. Fortschritt Daten - Evaluierung und RAG
+4. Fortschritt RAG bauen (inkl LLAMA)
+5. Teambuilding
+
+## Notes
+- Gute Beispiele zum Übersetzen: Spark by example
+- Smilla: Mit Llama Code generieren und vergleichen mit richtigem Code (0/6 momentan)
+- Elena: Suche: Sourcegraph nicht hilfreich
+- Conrad: Tutorial zum Thema RAG (Langchain), Llama 2b nicht optimal, RAG Input nicht optimal
+- Fragen: Welche Daten sollten in RAG rein geladen werden? (Docu, Code vorher nachher, Websiteinhalte)
+
+## Next steps
+- [ ] Julius: Linter verbessern und hochladen + readme 
+- [ ] Elena: Fügt Readme für Conda Sachen hinzu, Suche nach Code Beispielen
+- [ ] Smilla: Fragen für API Credits, Dokumentationen in RAG einbauen: researchen
+- [ ] Conrad: Research: Best practices für code generation RAG
+- [ ] Johanna: - TBD 
+
+
 # Weekly with Chris 14.11.2024
 
 ## Agenda
