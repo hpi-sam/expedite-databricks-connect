@@ -40,6 +40,28 @@
 - Stick to smaller examples first
 - How well does the LLM know if its hallucinating or doesn't know?
 - uncertainty, complexity, accuracy (3x3) grid
+
+## Actions
+Alle:
+- Ein Test Case für die Evaluierung
+
+Julius:
+- Linter
+
+Smilla:
+- Dokumentationen in RAG
+- Ausprobieren RAG mit Evaluierung verbinden
+
+Elena:
+- Code in RAG
+- GGf. Tags im rag um zwischen alten/neuen code zu unterscheinden
+
+Johanna:
+- iterativer aufruf vom Rag, ergebniss wieder als input nehmen
+
+Conrad:
+- probieren, LLM als server zu hosten?
+- sonst wo gerade hilfe gebraucht wird
   
 
 # Meeting with Martin 21.11.2024
