@@ -36,7 +36,7 @@ conda env create -f environment.yaml
 
 To update an environment
 ```bash
-conda env update --file environment.yaml -n <name>
+conda env update --file environment.yaml -n <name> --prune
 ```
 
 To create a new Conda environment:
