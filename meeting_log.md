@@ -31,6 +31,17 @@
 *
 
 ---
+
+# Weekly 21.11.2024 with Chris
+## Notes
+- Maybe make our examples a bit more complicated
+- Use LLM to generate new test case code snippets
+- Call LLM multiple times to evaluate the difference
+- Stick to smaller examples first
+- How well does the LLM know if its hallucinating or doesn't know?
+- uncertainty, complexity, accuracy (3x3) grid
+  
+
 # Meeting with Martin 21.11.2024
 ## Agenda
 - Google Presentation
