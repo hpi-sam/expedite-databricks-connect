@@ -31,6 +31,37 @@
 *
 
 ---
+# Biweekly 21.11.2024
+## Agenda
+- Linter Fortschritt
+- Conda-README & Code-Beispiele
+- API-Credits & RAG-Doku
+- Best Practices für Code-Gen in RAG
+- Meeting mit Martin
+
+## Notes
+- RAG code funktioniert mit neuem Model
+- Research best practices zu code-gen für RAG fehlt noch
+- Langchain community: crawler für github repos (pull reqs, code)
+- Iterative LLM calls untersuchen
+- Martin fragen nach Repositories
+- Martin fragen nach Kunden Repos
+
+## Next steps
+- RAG approach improven und erweitern
+- Code in RAG einbauen
+- Mehr Dokumentationsseiten im RAG einbauen
+- Linter im RAG benutzen
+- Iterativer LLM call testen
+- Evaluation Gedanken machen
+  
+- [ ] Julius: Linter Matcher erweitern
+- [ ] Elena: 
+- [ ] Smilla: Chrisitan fragen wegen API credits
+- [ ] Conrad: 
+- [ ] Johanna: 
+
+
 # Biweekly 19.11.2024
 ## Agenda
 1. Zugang KIZ cluster
