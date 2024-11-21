@@ -28,10 +28,15 @@ Now, Conda is installed.
 
 ## Creating a New Environment
 
-To create an environment from an existing YAML file:
+To create an environment from an existing YAML file, optinally add -n parameter for the name of the environment:
 
 ```bash
-conda env create-f environment.yaml
+conda env create -f environment.yaml 
+```
+
+To update an environment
+```bash
+conda env update --file environment.yaml -n <name>
 ```
 
 To create a new Conda environment:
