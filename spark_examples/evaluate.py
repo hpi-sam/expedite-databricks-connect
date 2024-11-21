@@ -1,10 +1,10 @@
-from map import mapExample
-from flatMap import flatMapExample
-from mapPartitions import mapPartitionsExample
-from mapReduce import mapReduceExample
-from readJson import readJsonExample
-from sparkContext import sparkContextExample
-from run_with_spark_connect import run_example_sc
+from .map import mapExample
+from .flatMap import flatMapExample
+from .mapPartitions import mapPartitionsExample
+from .mapReduce import mapReduceExample
+from .readJson import readJsonExample
+from .sparkContext import sparkContextExample
+from .run_with_spark_connect import run_example_sc
 import pandas as pd
 from typing import Callable
 
@@ -22,13 +22,15 @@ examples = [
 def postprocess(result: str):
     if "```" in result:
         result = result.split("```")[1]
+        if result.startswith("python"):
+            result = result[6:]
     return result
 
 
 def compare(file_name: str, result) -> bool:
     result_df = result_to_df(file_name, result)
 
-    output_file = f"output/{file_name}.csv"
+    output_file = f"spark_examples/output/{file_name}.csv"
     true_df = pd.read_csv(output_file, header=None, index_col=None)
     if result_df.equals(true_df):
         print("Correct result.")
@@ -63,14 +65,14 @@ def generate(
     model_generate: Callable,
     metrics: dict[str, int],
 ):
-    with open(f"{file_name}.py", "r") as file:
+    with open(f"spark_examples/{file_name}.py", "r") as file:
         code = file.read()
 
     print(f"Old code: \n{code}")
 
     output = model_generate(code, example_function)
 
-    print(f"New code:\n{output}")
+    print(f"New code:\n{postprocess(output)}")
 
     # Execute updated function
     scope = {}

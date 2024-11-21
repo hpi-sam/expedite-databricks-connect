@@ -61,6 +61,27 @@ CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7;python3 simpleRAGLlama.py
 
 Provide Spark code that needs to be migrated to Spark Connect, and the script will return the updated code.
 
+## Usage Evaluation
+The script with included evaluation is `rag.py`. Before you run it make sure you updated your environment with the `environment2.yml` file. This is a temporary solution because the new enviroment might not work with the other scripts yet due to package version mismatches. 
+
+The script uses the served model version which you can run with the script `serve_Llama405B.sh`.
+
+You also need a Spark Connect Server running. You can download Spark with this command 
+```bash
+wget https://dlcdn.apache.org/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz
+```
+
+and unpack the folder with 
+```bash
+tar xvf spark-3.5.3-bin-hadoop3.tgz 
+```
+In the `sbin` folder you will find the script to start a Spark Connect server. Run it with 
+```bash
+bash start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.3
+```
+
+Now you can run `python rag.py`
+
 ## 📋 Notes
 - The script uses neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16 as the LLM.
 - It is recommended to use quantized models for efficient inference.
