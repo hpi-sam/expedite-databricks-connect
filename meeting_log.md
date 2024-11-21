@@ -31,6 +31,16 @@
 *
 
 ---
+# Meeting with Martin 21.11.2024
+## Agenda
+- Google Presentation
+
+## Notes
+- 
+
+## Next steps
+- 
+
 # Biweekly 21.11.2024
 ## Agenda
 - Linter Fortschritt
