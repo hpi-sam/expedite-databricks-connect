@@ -34,6 +34,12 @@ class PythonLinter:
         return diagnostics
 
 
+
+"""
+EXPERIMENTAL CODE PLEASE IGNORE CODE BELOW
+
+
+"""
 def register(linter: PyLinter):
     """SPOLER DOES NOT WORK YET IN PRACTICE, Register the custom linter matchers with pylint."""
     custom_linter = PythonLinter()
