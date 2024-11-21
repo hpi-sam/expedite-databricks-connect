@@ -36,10 +36,23 @@
 - Google Presentation
 
 ## Notes
-- 
+- Get code snippets from StackOverflow and rewrite them ourselves in SparkConnect
+- Investigate StackOverflow API to get rdd code --> Parse them with the Linter
+  - Dataframes are supported fully
+  - Search for everything sparkcontext/spark ml gets weird
+---> Can you somehow use StackOverflow as a source?
+- Interesting part: Most likely not gonna need to refactor whole codebase
+    - Main thing you pass in lambda functions in rdd
+- dont think you have to refactor 1000 lines vs 100 lines (Martin doesn't know though)
+    - is it enough if we identify the smaller pieces?
+        - Question: is the context even relevant? if not, then we don't need to take the context into account and have smaller input for LLM
+    - Idea: make code more complex to test whether that is relevant!
+    - Also: rewriting might depend on intent of the engineer
 
-## Next steps
-- 
+Martin sees two kinds of ways to look at the problem  
+1. Just look at the problem (Linter approach)
+2. Also look at the context and take it into account
+
 
 # Biweekly 21.11.2024
 ## Agenda
