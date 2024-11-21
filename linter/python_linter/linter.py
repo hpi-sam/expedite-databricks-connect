@@ -3,8 +3,16 @@ from typing import List, Dict
 from pylint.checkers import BaseChecker
 from pylint.lint.pylinter import PyLinter
 from pylint.interfaces import HIGH
-from python_linter.matcher import Matcher, RDDMatcher, MapPartitionsMatcher
-
+from python_linter.matcher import (
+    Matcher,
+    RDDApiMatcher,
+    MapPartitionsMatcher,
+    JvmAccessMatcher,
+    SparkSqlContextMatcher,
+    SetLogLevelMatcher,
+    Log4JMatcher,
+    CommandContextMatcher,
+)
 
 class PythonLinter:
     def __init__(self):
@@ -27,7 +35,7 @@ class PythonLinter:
 
 
 def register(linter: PyLinter):
-    """Register the custom linter matchers with pylint."""
+    """SPOLER DOES NOT WORK YET IN PRACTICE, Register the custom linter matchers with pylint."""
     custom_linter = PythonLinter()
 
     # Add custom matchers
