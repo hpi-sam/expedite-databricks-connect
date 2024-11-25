@@ -11,19 +11,29 @@ from python_linter.matcher import (
     CommandContextMatcher,
 )
 
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python-linter <file>")
-        sys.exit(1)
+'''
+IMPORTANT
 
-    file_path = sys.argv[1]
+How to call this file from another file:
 
+from python_linter.__main__ import lint_file
+
+# Example usage
+file_path = "file_to_lint.py"
+results = lint_file(file_path)
+print(results)
+'''
+
+
+def lint_file(file_path):
+    """
+    Lints the specified file and returns the diagnostics as a JSON object.
+    """
     try:
         with open(file_path, 'r') as f:
             code = f.read()
     except Exception as e:
-        print(f"Error reading file: {e}")
-        sys.exit(1)
+        raise FileNotFoundError(f"Error reading file: {e}")
 
     # Instantiate the linter
     linter = PythonLinter()
@@ -39,7 +49,7 @@ def main():
 
     diagnostics = linter.lint(code)
 
-    # Output diagnostics (for VSCode compatibility)
+    # Create a structured JSON response
     output = []
     for diag in diagnostics:
         output.append({
@@ -49,7 +59,33 @@ def main():
             "severity": "Error",  # Can also use "Error" or "Info"
         })
 
-    print(json.dumps(output, indent=2))
+    return output
+
+
+def main():
+    """
+    Main function to handle CLI execution.
+    """
+    if len(sys.argv) < 2:
+        print("Usage: python-linter <file>")
+        sys.exit(1)
+
+    file_path = sys.argv[1]
+
+    try:
+        diagnostics = lint_file(file_path)
+        # Print the diagnostics as a JSON string
+        print(json.dumps(diagnostics, indent=2))
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
+    # Optionally, save the JSON to a file
+    #with open("lint_results.json", "w") as f:
+    #    json.dump(diagnostics, f, indent=2)
+
+    return diagnostics
+
 
 if __name__ == "__main__":
     main()
