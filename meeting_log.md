@@ -31,6 +31,51 @@
 *
 
 ---
+# Biweekly 26.11.2024
+
+## Agenda
+- Fortschritt letzte Woche
+- Pläne diese Woche 
+- Generelle timeline
+
+## Attendees
+
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
+- [x] @cdfhalle
+
+
+## Actions
+- [ ] Julius: Überlegen wie man complexity, uncertainty und accuracy messen?
+- [ ] Johanna: Linter einbauen und versuchen Ergebnisse zu verbessern, über Evaluierung philosophieren
+- [ ] Elena: Rag mit Code und Linter nutzen um zu überprüfen ob der Code aus dem RAG noch Fehlermeldungen enthält
+- [ ] Smilla: Beispiele schreiben, Rag optimieren, andere Modelle ausprobieren (CodeLlama, GPT, größeres Llama)
+- [ ] Conrad: Rag mit Code verbessern
+
+## Meeting notes
+- Wann möchten wir fertig werden? Ende Februar anpeilen (notfalls Report noch später fertig)
+- Smilla: mit docs tainiert
+- Elena:
+  - Vectorstore mit verschiedenen Kategorien von Daten (source in den Metadaten setzen)
+  - 2 Beispiele erstellt
+- Conrad:
+  - Paper angeschaut zu Code Migration und Code Generation
+  - interessantes Paper mit ähnlichem Anwendungsfall, zur Evaluierung wurde sich Code Migration ausgedacht
+  - Llama 405B kann jetzt gehostet und über API genutzt werden
+- Julius:
+  - mehr Matcher zum Linter hinzugefügt, jetzt sind alle Funktionen drin
+  - Beispiel erstellt
+- Johanna:
+  - ausprobiert Output von LLM wird nochmal reingeben mit neuen Fehlermeldungen
+  - erstmal nicht besser geworden
+- Frage: sollen wir das LLM-generierte Beispiel auch nochmal auf syntaktische Fehler checken?
+  - können wir mal ausprobieren
+- Complexity, Uncertainty und Accuracy
+  - Wie kann man diese Sachen messen?
+
+---
 
 # Weekly 21.11.2024 with Chris
 ## Notes
@@ -38,7 +83,7 @@
 - Use LLM to generate new test case code snippets
 - Call LLM multiple times to evaluate the difference
 - Stick to smaller examples first
-- How well does the LLM know if its hallucinating or doesn't know?
+- How well does the LLM know if it's hallucinating or doesn't know?
 - uncertainty, complexity, accuracy (3x3) grid
 
 ## Actions
