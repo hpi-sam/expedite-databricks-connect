@@ -26,7 +26,7 @@ def frequentWordsExample(spark: SparkSession):
     # Sort the word counts in descending order
     sorted_word_counts = word_counts.sortBy(lambda pair: pair[1], ascending=False)
 
-    # Take the top N words (e.g., top 5)
+    # Take the top N words (e.g., top 3)
     top_n_words = sorted_word_counts.take(3)
 
     return top_n_words
