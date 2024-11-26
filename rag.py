@@ -1,10 +1,7 @@
-from langchain_chroma import Chroma
-from langchain_community.document_loaders import WebBaseLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from huggingface_hub import login
 from spark_examples.evaluate import evaluate
 from openai import OpenAI
+from rag_approach.doc_loader import DOCS, vector_store_from_docs
 from spark_examples.evaluate import run_example_sc
 
 client = OpenAI(base_url="http://localhost:8000/v1", api_key="token-abc123")
@@ -44,7 +41,7 @@ def generate_answer(vectorstore, code, example_function):
     completion = client.chat.completions.create(
     model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
     messages=messages,
-    temperature=0.2
+    temperature=0.1
     )
 
     return completion.choices[0].message.content
@@ -55,27 +52,7 @@ def generate_answer(vectorstore, code, example_function):
 def generate_example(code: str, example_function):
     login(token="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")
 
-    # load documents from different sources:
-
-    loader = WebBaseLoader(
-        [
-            "https://docs.databricks.com/en/dev-tools/databricks-connect/python/limitations.html",
-            "https://docs.databricks.com/en/dev-tools/databricks-connect/index.html#pyspark-dataframe-api-limitations",
-            "https://spark.apache.org/docs/latest/spark-connect-overview.html",
-        ]
-    )
-
-    data = loader.load()
-
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
-    all_splits = text_splitter.split_documents(data)
-
-    model_name = "mixedbread-ai/mxbai-embed-large-v1"
-    hf_embeddings = HuggingFaceEmbeddings(
-        model_name=model_name,
-    )
-
-    vectorstore = Chroma.from_documents(all_splits, embedding=hf_embeddings)
+    vectorstore = vector_store_from_docs(DOCS)
 
     return generate_answer(vectorstore, code, example_function)
 
