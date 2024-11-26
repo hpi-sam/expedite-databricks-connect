@@ -7,6 +7,7 @@ from .sparkContext import sparkContextExample
 from .run_with_spark_connect import run_example_sc
 from .sparkJvmOrigin import setJVMOrigin
 from .quinnRddSparkContext import quinn_rdd_spark_Context
+from .frequentWords import frequentWordsExample
 import pandas as pd
 from typing import Callable
 
@@ -19,14 +20,15 @@ examples = [
     ("readJson", readJsonExample),
     ("sparkContext", sparkContextExample),
     ("sparkJvmOrigin", setJVMOrigin),
-    ("quinnRddSparkContext", quinn_rdd_spark_Context)
+    ("quinnRddSparkContext", quinn_rdd_spark_Context),
+    ("frequentWords", frequentWordsExample),
 ]
 
 
 def postprocess(result: str):
     if "```" in result:
         result = result.split("```")[1]
-        if result.startswith("python"):
+        if result and result.startswith("python"):
             result = result[6:]
     return result
 
@@ -49,17 +51,16 @@ def compare(file_name: str, result) -> bool:
 def result_to_df(file_name: str, result: pd.DataFrame):
     # This is necessary because the outputs of the example functions needed to be formatted differently before saving them to a csv
     reformatted_result = result
-    try:
-        if file_name in ["map", "flatMap"]:
-            reformatted_result = pd.DataFrame(result)
-        elif file_name == "mapReduce.csv":
-            reformatted_result = pd.DataFrame([result])
-        elif file_name in ["mapPartitions", "readJson"]:
-            reformatted_result = result.toPandas()
-        elif file_name == "sparkContext":
-            reformatted_result = pd.DataFrame(result.items())
-    except:
+
+    if file_name in ["map", "flatMap", "frequentWords"]:
+        reformatted_result = pd.DataFrame(result)
+    elif file_name == "mapReduce":
         reformatted_result = pd.DataFrame([result])
+    elif file_name in ["mapPartitions", "readJson"]:
+        reformatted_result = result.toPandas()
+    elif file_name == "sparkContext":
+        reformatted_result = pd.DataFrame(result.items())
+
     return reformatted_result
 
 
@@ -108,7 +109,7 @@ def evaluate(model_generation_function: Callable):
             file_name, example_function, model_generation_function, metrics
         )
 
-    print("\nSucces Rate:", metrics["score"], "/6")
-    print("Model output cannot be executed:", metrics["invalid_output"], "/6")
-    print("Generated function throws error: ", metrics["code_error"], "/6")
-    print("Different output: ", metrics["different_output"], "/6")
+    print("\nSucces Rate:", metrics["score"], "/9")
+    print("Model output cannot be executed:", metrics["invalid_output"], "/9")
+    print("Generated function throws error: ", metrics["code_error"], "/9")
+    print("Different output: ", metrics["different_output"], "/9")

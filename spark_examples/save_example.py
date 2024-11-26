@@ -6,6 +6,7 @@ from sparkContext import sparkContextExample
 from map import mapExample
 from sparkJvmOrigin import setJVMOrigin
 from quinnRddSparkContext import quinn_rdd_spark_Context
+from frequentWords import frequentWordsExample
 from pyspark.sql import SparkSession
 import pandas as pd
 
@@ -24,4 +25,10 @@ pd.DataFrame(sparkContextExample(spark).items()).to_csv(
 )
 pd.DataFrame(mapExample(spark)).to_csv("output/map.csv", index=False, header=False)
 
-pd.DataFrame(quinn_rdd_spark_Context(spark)).to_csv("output/quinnRddSparkContext.csv", index=False, header=False)
+pd.DataFrame(quinn_rdd_spark_Context(spark)).to_csv(
+    "output/quinnRddSparkContext.csv", index=False, header=False
+)
+
+pd.DataFrame(frequentWordsExample(spark)).to_csv(
+    "output/frequentWords.csv", index=False, header=False
+)
