@@ -113,3 +113,5 @@ def evaluate(model_generation_function: Callable):
     print("Model output cannot be executed:", metrics["invalid_output"], "/9")
     print("Generated function throws error: ", metrics["code_error"], "/9")
     print("Different output: ", metrics["different_output"], "/9")
+
+    return metrics
