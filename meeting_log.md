@@ -5,10 +5,7 @@
 | Meeting template| Meeting template for keylime| Meeting dd/mm/yy | @xyz | @xyz | @xyz |
 
 ## Agenda
-- Sollen wir noch konkretere TODOs festlegen
-- Meeting mit Marting
-- Todos bis Donnerstag
-- 
+
 
 ## Attendees
 
@@ -29,6 +26,64 @@
 ## Meeting notes
 
 *
+
+# Biweekly 28.11.2024
+
+## Agenda
+Agenda:
+- meeting mit martin absagen
+- was haben wir gemacht?
+- was ist der plan bis dienstag
+- teambuilding
+
+## Attendees
+
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
+- [x] @cdfhalle
+
+
+## Actions
+
+- [ ] 
+
+## Meeting notes
+-	Internet ging gestern nicht, deshalb alle bisschen geblocked
+  
+Smilla:
+-	W&B eingebaut, noch nicht fertig
+-	CodeLlama weigert sich Code zu produzieren (aus ethischen Gründen: könnte gegen Spark Connect terms verstoßen oder security Risiken erzeugen)
+  
+Johanna:
+-	Linter eingebaut
+  
+Elena:
+-	Mehr Github Repos mit Dataframe API rausgesucht 
+-	Code mit Linter in 2 Gruppen teilen (Spark Connect kompatibel und nicht)
+-	Code aus jsons gespeichert
+-	Nicht viel Veränderung
+-	Machmal scheint der Vergleich nicht zu stimmen
+  
+Julius:
+-	Research über 3 Dimensionen 
+-	Uncertainty: 
+    - Blackbox:
+        - Modell nach confidence fragen (Modelle überschätzen sich)
+        - Sampling Strategien
+            - Z.B. temperature variieren und Output vergleichen
+            - Prompts variieren
+        - Was damit machen? Vielleicht Korrelation zwischen Accuracy und Uncertainty oder Uncertainty dem User zurückmelden
+    - Whitebox: weights anschauen --> da nochmal Research, wie das geht
+-	Complexity:
+      - Simpler Ansatz: kann man zB ausrechnen mit Anzahl von Operanden und Operatoren usw
+      -  Für uns nicht so sinnvoll
+      -  Vielleicht selbst Komplexität einschätzen?
+          - Für verschiedene Matcher verschiedene Komplexität
+
+Thema Repository aufräumen:
+  - Johanna würde das am Wochenende machen
 
 ---
 # Biweekly 26.11.2024
