@@ -3,7 +3,7 @@ from typing import List, Dict
 from pylint.checkers import BaseChecker
 from pylint.lint.pylinter import PyLinter
 from pylint.interfaces import HIGH
-from python_linter.matcher import (
+from linter.python_linter.matcher import (
     Matcher,
     RDDApiMatcher,
     MapPartitionsMatcher,
