@@ -4,7 +4,10 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from huggingface_hub import login
 from spark_examples.evaluate import evaluate, postprocess, run_example_sc
+from linter.python_linter.linter import PythonLinter
 from openai import OpenAI
+
+linter = PythonLinter()
 
 EXAMPLE_CODE = """from pyspark.sql import SparkSession
 
@@ -142,33 +145,23 @@ def generate_example(code: str, example_function):
     model_output = ""
     vectorstore = Chroma.from_documents(all_splits, embedding=hf_embeddings)
 
-    _, error = run_example_sc(example_function)
-    print(f"The error is: {error}")
+    linter_feedback = linter.lint(code)
 
-    iterations = 5
+    iterations = 10
     for i in range(iterations):
         print(f"Iteration {i+1}")
-        model_output = postprocess(generate_answer(vectorstore, code, model_output, error, i))
+        model_output = postprocess(generate_answer(vectorstore, code, model_output, linter_feedback, i))
 
-        # Execute updated function
-        scope = {}
-        try:
-            exec(model_output, scope)
+        linter_feedback = linter.lint(model_output)
+        # check whether linter returns empty json
+        if not linter_feedback:
+            print("Code is linted successfully")
+            break
 
-            # Try if code is now compatible with Spark Connect and compare results
-            successful, example_result = run_example_sc(scope[example_function.__name__])
-            if successful:
-                error = "No Error"
-                print("No error")
-            else:
-                error = example_result
-                print("Current code:", model_output)
-                print("Current error:", error)
-        except Exception as e:
-            error = e
-            print("Current code:", model_output)
-            print("Current error:", error)
-
+        print("Code is not linted successfully")
+        print("Current code:", model_output)
+        print("Current feedback:", linter_feedback)
+        print("\n")
 
     return model_output
 
