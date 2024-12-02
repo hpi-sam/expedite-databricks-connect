@@ -20,10 +20,3 @@ def vector_store_from_docs(docs: list[str]) -> Chroma | None:
     vectorstore = Chroma.from_documents(all_splits, embedding=hf_embeddings)
 
     return vectorstore
-
-
-DOCS = [
-    "https://docs.databricks.com/en/dev-tools/databricks-connect/python/limitations.html",
-    "https://docs.databricks.com/en/dev-tools/databricks-connect/index.html#pyspark-dataframe-api-limitations",
-    "https://spark.apache.org/docs/latest/spark-connect-overview.html",
-]

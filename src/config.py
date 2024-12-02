@@ -1,3 +1,26 @@
+VECTORSTORE_TYPE = "docs"  # Mögliche Werte: 'docs', 'code', 'api_ref'
+
+VECTORSTORE_SETTINGS = {
+    "docs": {
+        "docs": [
+            "https://docs.databricks.com/en/dev-tools/databricks-connect/python/limitations.html",
+            "https://docs.databricks.com/en/dev-tools/databricks-connect/index.html#pyspark-dataframe-api-limitations",
+            "https://spark.apache.org/docs/latest/spark-connect-overview.html",
+        ],
+    },
+    "code": {
+        "repo_branch_list": [
+            {"repo": "mrpowers-io/quinn", "branch": "main"},
+            {"repo": "debugger24/pyspark-test", "branch": "main"},
+            {"repo": "julioasotodv/spark-df-profiling", "branch": "master"},
+            {"repo": "Labelbox/labelspark", "branch": "master"},
+            {"repo": "lvhuyen/SparkAid", "branch": "master"},
+        ],
+    },
+    "api_ref": {},
+}
+
+
 ITERATE = False
 ITERATION_LIMIT = 5
 

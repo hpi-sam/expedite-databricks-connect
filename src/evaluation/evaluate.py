@@ -111,7 +111,7 @@ def evaluate(model_generation_function: Callable):
             file_name, example_function, model_generation_function, metrics
         )
 
-    print("\nSucces Rate:", metrics["score"], "/9")
-    print("Model output cannot be executed:", metrics["invalid_output"], "/9")
-    print("Generated function throws error: ", metrics["code_error"], "/9")
-    print("Different output: ", metrics["different_output"], "/9")
+    print("\nSucces Rate:", metrics["score"], len(examples))
+    print("Model output cannot be executed:", metrics["invalid_output"], len(examples))
+    print("Generated function throws error: ", metrics["code_error"], len(examples))
+    print("Different output: ", metrics["different_output"], len(examples))

@@ -56,6 +56,3 @@ def vector_store_from_api_ref():
     )
 
     return vectorstore
-
-
-vector_store_from_api_ref()

@@ -1,8 +1,8 @@
 from huggingface_hub import login
+from openai import OpenAI
 from evaluation.evaluate import evaluate, postprocess
 from linter.python_linter.linter import PythonLinter
-from openai import OpenAI
-from vector_store.doc_loader import DOCS, vector_store_from_docs
+from vector_store.vector_store_factory import VectorStoreFactory
 import config
 
 
@@ -47,7 +47,10 @@ def migrate_code(code: str):
     login(token="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")
     client = OpenAI(base_url="http://localhost:8000/v1", api_key="token-abc123")
     linter = PythonLinter()
-    vectorstore = vector_store_from_docs(DOCS)
+    vectorstore_settings = config.VECTORSTORE_SETTINGS.get(config.VECTORSTORE_TYPE, {})
+    vectorstore = VectorStoreFactory.initialize(
+        config.VECTORSTORE_TYPE, **vectorstore_settings
+    )
 
     # Lint the code and retrieve relevant context for the migration prompt
     linter_feedback = linter.lint(code)

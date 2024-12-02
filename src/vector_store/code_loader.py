@@ -75,12 +75,3 @@ def vector_store_from_repos(repo_branch_list: list[dict]) -> Chroma | None:
     vectorstore = Chroma.from_documents(splits, embedding=hf_embeddings)
 
     return vectorstore
-
-
-CONNECT_REPOS_BRANCHS = [
-    {"repo": "mrpowers-io/quinn", "branch": "main"},
-    {"repo": "debugger24/pyspark-test", "branch": "main"},
-    {"repo": "julioasotodv/spark-df-profiling", "branch": "master"},
-    {"repo": "Labelbox/labelspark", "branch": "master"},
-    {"repo": "lvhuyen/SparkAid", "branch": "master"},
-]
