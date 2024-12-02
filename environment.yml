@@ -1,7 +1,7 @@
 name: mp
 channels:
-  - defaults
   - conda-forge
+  - defaults
   - https://repo.anaconda.com/pkgs/main
   - https://repo.anaconda.com/pkgs/r
 dependencies:
@@ -22,12 +22,14 @@ dependencies:
   - aws-checksums=0.1.13=h5eee18b_0
   - aws-crt-cpp=0.18.16=h6a678d5_0
   - aws-sdk-cpp=1.10.55=h721c034_0
+  - black=24.8.0=py312h06a4308_0
   - blas=1.0=openblas
   - boost-cpp=1.82.0=hdb19cb5_2
   - bottleneck=1.4.2=py312ha883a20_0
   - bzip2=1.0.8=h5eee18b_6
   - c-ares=1.19.1=h5eee18b_0
   - ca-certificates=2024.11.26=h06a4308_0
+  - click=8.1.7=py312h06a4308_0
   - dill=0.3.8=py312h06a4308_0
   - expat=2.6.3=h6a678d5_0
   - gflags=2.2.2=h6a678d5_1
@@ -63,6 +65,7 @@ dependencies:
   - libuuid=1.41.5=h5eee18b_0
   - lz4-c=1.9.4=h6a678d5_1
   - mccabe=0.7.0=pyhd3eb1b0_0
+  - mypy_extensions=1.0.0=py312h06a4308_0
   - ncurses=6.4=h6a678d5_0
   - numexpr=2.10.1=py312hd28fd6d_0
   - numpy=1.26.4=py312h2809609_0
@@ -71,6 +74,7 @@ dependencies:
   - openssl=3.0.15=h5eee18b_0
   - orc=2.0.1=h2d29ad5_0
   - pandas=2.2.3=py312h6a678d5_0
+  - pathspec=0.10.3=py312h06a4308_0
   - pip=24.2=py312h06a4308_0
   - platformdirs=3.10.0=py312h06a4308_0
   - py4j=0.10.9.7=py312h06a4308_0
@@ -112,7 +116,6 @@ dependencies:
       - charset-normalizer==3.4.0
       - chroma-hnswlib==0.7.6
       - chromadb==0.5.20
-      - click==8.1.7
       - cloudpickle==3.1.0
       - coloredlogs==15.0.1
       - compressed-tensors==0.8.0
@@ -173,7 +176,6 @@ dependencies:
       - msgspec==0.18.6
       - multidict==6.1.0
       - multiprocess==0.70.16
-      - mypy-extensions==1.0.0
       - nest-asyncio==1.6.0
       - networkx==3.4.2
       - numba==0.60.0

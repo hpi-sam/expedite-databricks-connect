@@ -52,8 +52,10 @@ def migrate_code(code: str):
     # Lint the code and retrieve relevant context for the migration prompt
     linter_feedback = linter.lint(code)
     context = vectorstore.similarity_search(code, k=4)
-    prompt = config.INITIAL_PROMPT.format(code=code, error=linter_feedback, context=context)
-    
+    prompt = config.INITIAL_PROMPT.format(
+        code=code, error=linter_feedback, context=context
+    )
+
     # Generate initial migration suggestion
     code = postprocess(generate_answer(client, prompt))
 
@@ -64,9 +66,11 @@ def migrate_code(code: str):
             if not linter_feedback:
                 print("Code is linted successfully")
                 break
-            prompt = config.ITERATED_PROMPT.format(code=code, error=linter_feedback, context=context)
+            prompt = config.ITERATED_PROMPT.format(
+                code=code, error=linter_feedback, context=context
+            )
             code = postprocess(generate_answer(client, prompt))
-    
+
     return code
 
 
