@@ -3,30 +3,11 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from huggingface_hub import login
-from spark_examples.evaluate import evaluate, postprocess, run_example_sc
+from evaluation.evaluate import evaluate, postprocess, run_example_sc
 from linter.python_linter.linter import PythonLinter
 from openai import OpenAI
 
 linter = PythonLinter()
-
-EXAMPLE_CODE = """from pyspark.sql import SparkSession
-
-    def flatMapExample(spark):
-        data = ["Project Gutenberg’s",
-                "Alice’s Adventures in Wonderland",
-                "Project Gutenberg’s",
-                "Adventures in Wonderland",
-                "Project Gutenberg’s"]
-        rdd=spark.sparkContext.parallelize(data)
-        
-
-        #Flatmap    
-        rdd2=rdd.flatMap(lambda x: x.split(" "))
-        result = []
-        for element in rdd2.collect():
-            result.append(element)
-
-        return result"""
 
 client = OpenAI(base_url="http://localhost:8000/v1", api_key="token-abc123")
 
@@ -151,6 +132,8 @@ def generate_example(code: str, example_function):
     for i in range(iterations):
         print(f"Iteration {i+1}")
         model_output = postprocess(generate_answer(vectorstore, code, model_output, linter_feedback, i))
+        # ONLY FOR TESTING
+        # model_output = postprocess(code)
 
         linter_feedback = linter.lint(model_output)
         # check whether linter returns empty json

@@ -36,7 +36,7 @@ def postprocess(result: str):
 def compare(file_name: str, result) -> bool:
     result_df = result_to_df(file_name, result)
 
-    output_file = f"spark_examples/output/{file_name}.csv"
+    output_file = f"evaluation/output/{file_name}.csv"
     true_df = pd.read_csv(output_file, header=None, index_col=None)
     if result_df.equals(true_df):
         print("Correct result.")
@@ -70,7 +70,7 @@ def generate(
     model_generate: Callable,
     metrics: dict[str, int],
 ):
-    with open(f"spark_examples/{file_name}.py", "r") as file:
+    with open(f"evaluation/{file_name}.py", "r") as file:
         code = file.read()
 
     print(f"Old code: \n{code}")
