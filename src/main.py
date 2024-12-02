@@ -6,7 +6,7 @@ from huggingface_hub import login
 from evaluation.evaluate import evaluate, postprocess, run_example_sc
 from linter.python_linter.linter import PythonLinter
 from openai import OpenAI
-from document_store import DOCS, vector_store_from_docs
+from document_store.doc_loader import DOCS, vector_store_from_docs
 
 
 ITERATED_PROMPT = f"""

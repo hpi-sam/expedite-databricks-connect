@@ -75,7 +75,7 @@ def generate(
 
     print(f"Old code: \n{code}")
 
-    output = model_generate(code, example_function)
+    output = model_generate(code)
 
     print(f"New code:\n{postprocess(output)}")
 
