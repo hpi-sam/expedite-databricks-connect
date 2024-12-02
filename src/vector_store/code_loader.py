@@ -10,14 +10,15 @@ from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
 
-
-GITHUB_ACCESS_KEY = os.environ["GITHUB_ACCESS_TOKEN"] # go to github developer settings and create token
+GITHUB_ACCESS_KEY = os.environ[
+    "GITHUB_ACCESS_TOKEN"
+]  # go to github developer settings and create token
 
 
 def vector_store_from_repos(repo_branch_list: list[dict]) -> Chroma | None:
     """
     Create a Chroma vector store from a list of GitHub repositories and branches.
-    
+
     Args:
         repo_branch_list (list[dict]): A list of dictionaries, each with "repo" and "branch" keys.
     """
@@ -34,8 +35,10 @@ def vector_store_from_repos(repo_branch_list: list[dict]) -> Chroma | None:
 
         def file_filter(file_path):
             # Filter files based on the current `docstring`
-            return re.match(f".*{re.escape(doc_relative_path)}.*\\.py$", file_path) is not None
-
+            return (
+                re.match(f".*{re.escape(doc_relative_path)}.*\\.py$", file_path)
+                is not None
+            )
 
         loader = GithubFileLoader(
             repo=repo,
@@ -59,16 +62,13 @@ def vector_store_from_repos(repo_branch_list: list[dict]) -> Chroma | None:
         doc.metadata["source"] = str(doc.metadata["source"])
 
     text_splitter = RecursiveCharacterTextSplitter.from_language(
-        language = Language.PYTHON,
-        chunk_size=1000,
-        chunk_overlap =50
+        language=Language.PYTHON, chunk_size=1000, chunk_overlap=50
     )
 
     model_name = "mixedbread-ai/mxbai-embed-large-v1"
     hf_embeddings = HuggingFaceEmbeddings(
         model_name=model_name,
     )
-
 
     splits = text_splitter.split_documents(docs)
 
@@ -78,9 +78,9 @@ def vector_store_from_repos(repo_branch_list: list[dict]) -> Chroma | None:
 
 
 CONNECT_REPOS_BRANCHS = [
-        {"repo": "mrpowers-io/quinn", "branch": "main"},
-        {"repo": "debugger24/pyspark-test", "branch": "main"},
-        {"repo": "julioasotodv/spark-df-profiling", "branch": "master"},
-        {"repo": "Labelbox/labelspark", "branch": "master"},
-        {"repo": "lvhuyen/SparkAid", "branch": "master"},
-    ]
+    {"repo": "mrpowers-io/quinn", "branch": "main"},
+    {"repo": "debugger24/pyspark-test", "branch": "main"},
+    {"repo": "julioasotodv/spark-df-profiling", "branch": "master"},
+    {"repo": "Labelbox/labelspark", "branch": "master"},
+    {"repo": "lvhuyen/SparkAid", "branch": "master"},
+]

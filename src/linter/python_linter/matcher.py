@@ -9,7 +9,8 @@ class Matcher:
         Subclasses must override this method.
         """
         raise NotImplementedError("Subclasses must implement 'lint'")
-    
+
+
 class JvmAccessMatcher(Matcher):
     _FIELDS = [
         "_jvm",
@@ -27,7 +28,8 @@ class JvmAccessMatcher(Matcher):
                 "line": node.lineno,
                 "col": node.col_offset,
             }
-    
+
+
 class RDDApiMatcher(Matcher):
     _SC_METHODS = [
         # RDD creation
@@ -54,10 +56,11 @@ class RDDApiMatcher(Matcher):
                 yield {
                     "message_id": "E9008",
                     "message": f"Usage of SparkContext method '{node.func.attr}' is not allowed. "
-                               f"Use DataFrame APIs instead.",
+                    f"Use DataFrame APIs instead.",
                     "line": node.lineno,
                     "col": node.col_offset,
                 }
+
 
 class SparkSqlContextMatcher(Matcher):
     _ATTRIBUTES = ["sc", "sqlContext", "sparkContext"]
@@ -74,7 +77,10 @@ class SparkSqlContextMatcher(Matcher):
                 yield self._get_advice(node, node.value.id, node.attr)
 
             # Case: df.sparkContext.getConf
-            if isinstance(node.value, ast.Attribute) and node.value.attr in self._ATTRIBUTES:
+            if (
+                isinstance(node.value, ast.Attribute)
+                and node.value.attr in self._ATTRIBUTES
+            ):
                 yield self._get_advice(node, node.value.attr, node.attr)
 
     def _get_advice(self, node: ast.Attribute, base: str, attr: str) -> Dict:
@@ -100,25 +106,27 @@ class SparkSqlContextMatcher(Matcher):
 class MapPartitionsMatcher(Matcher):
     def lint(self, node: ast.AST) -> Iterator[Dict]:
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
-            if node.func.attr == 'mapPartitions':
+            if node.func.attr == "mapPartitions":
                 yield {
-                    "message_id": "E9002",  
+                    "message_id": "E9002",
                     "message": "Usage of 'mapPartitions' is not allowed. Use 'mapInArrow' or Pandas UDFs instead.",
                     "line": node.lineno,
                     "col": node.col_offset,
                 }
 
+
 class SetLogLevelMatcher(Matcher):
     def lint(self, node: ast.AST) -> Iterator[Dict]:
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
-            if node.func.attr == 'setLogLevel':
+            if node.func.attr == "setLogLevel":
                 yield {
                     "message_id": "E9004",
                     "message": "Setting Spark log level from code is not allowed. "
-                               "Use Spark configuration instead.",
+                    "Use Spark configuration instead.",
                     "line": node.lineno,
                     "col": node.col_offset,
                 }
+
 
 class Log4JMatcher(Matcher):
     def lint(self, node: ast.AST) -> Iterator[Dict]:
@@ -127,10 +135,11 @@ class Log4JMatcher(Matcher):
                 yield {
                     "message_id": "E9005",
                     "message": "Accessing Log4J logger from Spark JVM is not allowed. "
-                               "Use Python logging.getLogger() instead.",
+                    "Use Python logging.getLogger() instead.",
                     "line": node.lineno,
                     "col": node.col_offset,
                 }
+
 
 class CommandContextMatcher(Matcher):
     def lint(self, node: ast.AST) -> Iterator[Dict]:

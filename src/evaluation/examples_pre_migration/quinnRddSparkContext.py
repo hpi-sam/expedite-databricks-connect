@@ -8,6 +8,7 @@ from pyspark.sql.types import StructField, StructType, IntegerType, StringType
 from typing import List
 import csv
 
+
 def quinn_rdd_spark_Context(spark):
     def column_to_list(df: DataFrame, col_name: str):
         """Collect column to list of values.
@@ -37,20 +38,21 @@ def quinn_rdd_spark_Context(spark):
 
         return df.select(col_name).rdd.flatMap(lambda x: x).collect()
 
-
     data = [
         {"user_id": 1, "activity": "login"},
         {"user_id": 2, "activity": "view_product"},
         {"user_id": 1, "activity": "purchase"},
         {"user_id": 3, "activity": "logout"},
     ]
-    schema = StructType([
-        StructField("user_id", IntegerType(), True),
-        StructField("activity", StringType(), True),
-    ])
+    schema = StructType(
+        [
+            StructField("user_id", IntegerType(), True),
+            StructField("activity", StringType(), True),
+        ]
+    )
 
     user_activity_df = spark.createDataFrame(data, schema=schema)
 
     user_ids: List[int] = column_to_list(user_activity_df, "user_id")
 
-    return(user_ids)
+    return user_ids

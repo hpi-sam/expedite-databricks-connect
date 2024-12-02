@@ -11,6 +11,7 @@ linter = PythonLinter()
 
 client = OpenAI(base_url="http://localhost:8000/v1", api_key="token-abc123")
 
+
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
@@ -74,6 +75,7 @@ def create_initial_prompt(context, original_code, error):
         
     """
 
+
 def generate_answer(vectorstore, original_code, iterated_code, error, iteration):
     if iteration == 0:
         context = vectorstore.similarity_search(original_code, k=4)
@@ -92,9 +94,9 @@ def generate_answer(vectorstore, original_code, iterated_code, error, iteration)
     ]
 
     completion = client.chat.completions.create(
-    model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
-    messages=messages,
-    temperature=0.2
+        model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
+        messages=messages,
+        temperature=0.2,
     )
 
     return completion.choices[0].message.content
@@ -131,7 +133,9 @@ def generate_example(code: str, example_function):
     iterations = 10
     for i in range(iterations):
         print(f"Iteration {i+1}")
-        model_output = postprocess(generate_answer(vectorstore, code, model_output, linter_feedback, i))
+        model_output = postprocess(
+            generate_answer(vectorstore, code, model_output, linter_feedback, i)
+        )
         # ONLY FOR TESTING
         # model_output = postprocess(code)
 

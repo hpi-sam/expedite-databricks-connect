@@ -49,22 +49,22 @@ source ~/.bashrc
 ```
 
 ## 📂 Project Structure
+- docs - documentation about the setup and the different components of the project
+- resources - relevant papers and other resources used for research
 - environment.yml - Lists all dependencies for the project.
-- simpleRAGLllama.py - The main script for migrating Spark code to Spark Connect.
+- src - the code of the project
+- src/evaluation - the code used to evaluate the performance of the automated code generation
+- src/linter - code for a linter, the can be used to identify code that is not compatible with spark connect
+- src/vector_store - code to create a vectorstor e.g from spark documentation or github repositorys that is used to provide context to the llm model according to the rag approach
+- src/main.py - the main script that will run the evaluation pipeline with a code generation configured in config.py
 
 ## 🎯 Usage
-Run the migration pipeline with:
 
+To run the code migration you first need to make the cuda devices visible. 
 ```bash
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7;python3 simpleRAGLlama.py
+CUDA_VISIBLE_DEVICES=0,1,2,3;
 ```
-
-Provide Spark code that needs to be migrated to Spark Connect, and the script will return the updated code.
-
-## Usage Evaluation
-The script with included evaluation is `rag.py`. Before you run it make sure you updated your environment with the `environment2.yml` file. This is a temporary solution because the new enviroment might not work with the other scripts yet due to package version mismatches. 
-
-The script uses the served model version which you can run with the script `serve_Llama405B.sh`.
+Then run a served version of the LLM with this script `serve_Llama405B.sh`.
 
 You also need a Spark Connect Server running. You can download Spark with this command 
 ```bash
@@ -79,8 +79,8 @@ In the `sbin` folder you will find the script to start a Spark Connect server. R
 ```bash
 bash start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.3
 ```
-
-Now you can run `python rag.py`
+Now you can start the evaluation pipeline by going to the src folder and running `python main.py`.
+To migrate a single pice of code you can call the function ```migrate_code``` from src/main.py.
 
 ## 📋 Notes
 - The script uses neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16 as the LLM.

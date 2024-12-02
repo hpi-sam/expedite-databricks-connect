@@ -9,6 +9,7 @@ import csv
 
 _current_origin = threading.local()
 
+
 def setThreadOrigin(spark):
     def _capture_call_site(spark_session: "SparkSession", depth: int) -> str:
         """
@@ -69,7 +70,7 @@ def setThreadOrigin(spark):
                 if spark is not None and hasattr(func, "__name__"):
                     global current_origin
 
-                    depth = 1 
+                    depth = 1
                     set_current_origin(func.__name__, _capture_call_site(spark, depth))
                     try:
                         return func(*args, **kwargs)
@@ -77,15 +78,18 @@ def setThreadOrigin(spark):
                         set_current_origin(None, None)
                 else:
                     return func(*args, **kwargs)
-        
+
         return wrapper
 
     @_with_origin
     def sample_function():
         return "Function executed"
-    
+
     wrapper = sample_function()
 
-    result_with_session = [(current_origin().fragment, current_origin().call_site), [wrapper]]
+    result_with_session = [
+        (current_origin().fragment, current_origin().call_site),
+        [wrapper],
+    ]
 
     return result_with_session

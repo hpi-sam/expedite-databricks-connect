@@ -11,7 +11,7 @@ from python_linter.matcher import (
     CommandContextMatcher,
 )
 
-'''
+"""
 IMPORTANT
 
 How to call this file from another file:
@@ -22,7 +22,7 @@ from python_linter.__main__ import lint_file
 file_path = "file_to_lint.py"
 results = lint_file(file_path)
 print(results)
-'''
+"""
 
 
 def lint_file(file_path):
@@ -30,7 +30,7 @@ def lint_file(file_path):
     Lints the specified file and returns the diagnostics as a JSON object.
     """
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             code = f.read()
     except Exception as e:
         raise FileNotFoundError(f"Error reading file: {e}")
@@ -52,12 +52,14 @@ def lint_file(file_path):
     # Create a structured JSON response
     output = []
     for diag in diagnostics:
-        output.append({
-            "line": diag['line'],
-            "column": diag['col'],
-            "message": diag['message'],
-            "severity": "Error",  # Can also use "Error" or "Info"
-        })
+        output.append(
+            {
+                "line": diag["line"],
+                "column": diag["col"],
+                "message": diag["message"],
+                "severity": "Error",  # Can also use "Error" or "Info"
+            }
+        )
 
     return output
 
@@ -81,7 +83,7 @@ def main():
         sys.exit(1)
 
     # Optionally, save the JSON to a file
-    #with open("lint_results.json", "w") as f:
+    # with open("lint_results.json", "w") as f:
     #    json.dump(diagnostics, f, indent=2)
 
     return diagnostics

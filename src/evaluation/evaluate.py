@@ -1,18 +1,20 @@
-from .map import mapExample
-from .flatMap import flatMapExample
-from .mapPartitions import mapPartitionsExample
-from .mapReduce import mapReduceExample
-from .readJson import readJsonExample
-from .sparkContext import sparkContextExample
+from .examples_pre_migration.map import mapExample
+from .examples_pre_migration.flatMap import flatMapExample
+from .examples_pre_migration.mapPartitions import mapPartitionsExample
+from .examples_pre_migration.mapReduce import mapReduceExample
+from .examples_pre_migration.readJson import readJsonExample
+from .examples_pre_migration.sparkContext import sparkContextExample
 from .run_with_spark_connect import run_example_sc
-from .sparkJvmOrigin import setJVMOrigin
-from .quinnRddSparkContext import quinn_rdd_spark_Context
-from .frequentWords import frequentWordsExample
+from .examples_pre_migration.sparkJvmOrigin import setJVMOrigin
+from .examples_pre_migration.quinnRddSparkContext import quinn_rdd_spark_Context
+from .examples_pre_migration.frequentWords import frequentWordsExample
+from .examples_pre_migration.mixedRDD import mixedRDDExample
 import pandas as pd
 from typing import Callable
 
 
 examples = [
+    ("mixedRDD", mixedRDDExample),
     ("map", mapExample),
     ("mapPartitions", mapPartitionsExample),
     ("flatMap", flatMapExample),
@@ -70,7 +72,7 @@ def generate(
     model_generate: Callable,
     metrics: dict[str, int],
 ):
-    with open(f"evaluation/{file_name}.py", "r") as file:
+    with open(f"evaluation/examples_pre_migration/{file_name}.py", "r") as file:
         code = file.read()
 
     print(f"Old code: \n{code}")

@@ -1,14 +1,15 @@
 from pyspark.sql import SparkSession
 
-def wordProcessingExample(spark: SparkSession):
+
+def mixedRDDExample(spark: SparkSession):
     # Beispieltext
     data = [
         "Spark is amazing",
         "RDD processing with Spark is powerful",
         "FlatMap and ReduceByKey are useful in Spark",
-        "Spark is fast and scalable"
+        "Spark is fast and scalable",
     ]
-    
+
     # RDD erstellen
     rdd = spark.sparkContext.parallelize(data)
 

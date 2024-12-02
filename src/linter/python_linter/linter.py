@@ -14,6 +14,7 @@ from linter.python_linter.matcher import (
     CommandContextMatcher,
 )
 
+
 class PythonLinter:
     def __init__(self):
         self.matchers: List[Matcher] = []
@@ -34,12 +35,13 @@ class PythonLinter:
         return diagnostics
 
 
-
 """
 EXPERIMENTAL CODE PLEASE IGNORE CODE BELOW
 
 
 """
+
+
 def register(linter: PyLinter):
     """SPOLER DOES NOT WORK YET IN PRACTICE, Register the custom linter matchers with pylint."""
     custom_linter = PythonLinter()
@@ -50,7 +52,10 @@ def register(linter: PyLinter):
 
     class CustomChecker(BaseChecker):
         """A custom checker to integrate the PythonLinter with pylint."""
-        __implements__ = BaseChecker  # Use BaseChecker directly instead of IAstroidChecker
+
+        __implements__ = (
+            BaseChecker  # Use BaseChecker directly instead of IAstroidChecker
+        )
 
         name = "custom_checker"
         msgs = {
@@ -85,7 +90,6 @@ def register(linter: PyLinter):
                     line=diag.get("line", 0),
                     col_offset=diag.get("column", 0),
                 )
-
 
     # Register the custom checker with pylint
     linter.register_checker(CustomChecker(linter))

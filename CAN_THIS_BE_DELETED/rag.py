@@ -6,6 +6,7 @@ from spark_examples.evaluate import run_example_sc
 
 client = OpenAI(base_url="http://localhost:8000/v1", api_key="token-abc123")
 
+
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
@@ -35,18 +36,14 @@ def generate_answer(vectorstore, code, example_function):
         },
         {"role": "user", "content": content},
     ]
-    
-   
-   
+
     completion = client.chat.completions.create(
-    model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
-    messages=messages,
-    temperature=0.1
+        model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
+        messages=messages,
+        temperature=0.1,
     )
 
     return completion.choices[0].message.content
-
-
 
 
 def generate_example(code: str, example_function):

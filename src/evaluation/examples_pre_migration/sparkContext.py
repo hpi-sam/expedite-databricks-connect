@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 
+
 def sparkContextExample(spark: SparkSession):
     common_keys = [
         "spark.app.name",
