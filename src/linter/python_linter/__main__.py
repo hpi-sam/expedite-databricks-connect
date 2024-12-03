@@ -1,7 +1,7 @@
 import sys
 import json
-from python_linter.linter import PythonLinter
-from python_linter.matcher import (
+from linter.python_linter.linter import PythonLinter
+from linter.python_linter.matcher import (
     RDDApiMatcher,
     MapPartitionsMatcher,
     JvmAccessMatcher,
@@ -35,6 +35,39 @@ def lint_file(file_path):
     except Exception as e:
         raise FileNotFoundError(f"Error reading file: {e}")
 
+    # Instantiate the linter
+    linter = PythonLinter()
+
+    # Add matchers to the linter
+    linter.add_matcher(RDDApiMatcher())
+    linter.add_matcher(MapPartitionsMatcher())
+    linter.add_matcher(JvmAccessMatcher())
+    linter.add_matcher(SparkSqlContextMatcher())
+    linter.add_matcher(SetLogLevelMatcher())
+    linter.add_matcher(Log4JMatcher())
+    linter.add_matcher(CommandContextMatcher())
+
+    diagnostics = linter.lint(code)
+
+    # Create a structured JSON response
+    output = []
+    for diag in diagnostics:
+        output.append(
+            {
+                "line": diag["line"],
+                "column": diag["col"],
+                "message": diag["message"],
+                "severity": "Error",  # Can also use "Error" or "Info"
+            }
+        )
+
+    return output
+
+
+def lint_codestring(code):
+    """
+    Lints the specified code string and returns the diagnostics as a JSON object.
+    """
     # Instantiate the linter
     linter = PythonLinter()
 

@@ -1,7 +1,7 @@
 from huggingface_hub import login
 from openai import OpenAI
 from evaluation.evaluate import evaluate, postprocess
-from linter.python_linter.linter import PythonLinter
+from linter.python_linter.__main__ import lint_codestring
 from vector_store.vector_store_factory import VectorStoreFactory
 import config
 
@@ -46,14 +46,21 @@ def migrate_code(code: str):
     """
     login(token="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")
     client = OpenAI(base_url="http://localhost:8000/v1", api_key="token-abc123")
-    linter = PythonLinter()
     vectorstore_settings = config.VECTORSTORE_SETTINGS.get(config.VECTORSTORE_TYPE, {})
     vectorstore = VectorStoreFactory.initialize(
         config.VECTORSTORE_TYPE, **vectorstore_settings
     )
 
-    # Lint the code and retrieve relevant context for the migration prompt
-    linter_feedback = linter.lint(code)
+    print(f"Iteration 1")
+    print("----------------------------------------------")
+    linter_feedback = lint_codestring(code)
+
+    if linter_feedback:
+        print(f"Linting feedback: {linter_feedback}\n")
+    else:
+        print("DONE: No problems detected by the linter.\n")
+        return code
+
     context = vectorstore.similarity_search(code, k=4)
     prompt = config.INITIAL_PROMPT.format(
         code=code, error=linter_feedback, context=context
@@ -64,11 +71,15 @@ def migrate_code(code: str):
 
     # Optional iterative improvement process based on config settings
     if config.ITERATE:
-        for _ in range(config.ITERATION_LIMIT):
-            linter_feedback = linter.lint(code)
+        iteration = 2
+        for iteration in range(config.ITERATION_LIMIT):
+            print(f"Iteration {iteration + 1} of {config.ITERATION_LIMIT}")
+            print("----------------------------------------------")
+            linter_feedback = lint_codestring(code)
             if not linter_feedback:
-                print("Code is linted successfully")
+                print("DONE: No problems detected by the linter.\n")
                 break
+            print(f"Linting feedback: {linter_feedback}\n")
             prompt = config.ITERATED_PROMPT.format(
                 code=code, error=linter_feedback, context=context
             )

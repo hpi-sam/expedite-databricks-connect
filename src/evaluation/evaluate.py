@@ -75,11 +75,13 @@ def generate(
     with open(f"evaluation/examples_pre_migration/{file_name}.py", "r") as file:
         code = file.read()
 
-    print(f"Old code: \n{code}")
-
     output = model_generate(code)
 
-    print(f"New code:\n{postprocess(output)}")
+    print(f"-------------- Old code --------------")
+    print(f"{code}")
+
+    print(f"-------------- New code --------------")
+    print(f"{postprocess(output)}")
 
     # Execute updated function
     scope = {}
@@ -106,12 +108,22 @@ def generate(
 def evaluate(model_generation_function: Callable):
     metrics = {"score": 0, "invalid_output": 0, "code_error": 0, "different_output": 0}
 
-    for file_name, example_function in examples:
+    for i, (file_name, example_function) in enumerate(examples):
+        print("\n")
+        print(f"({i + 1}/{len(examples)}) Evaluating {file_name} example")
+        print("===============================================")
         metrics = generate(
             file_name, example_function, model_generation_function, metrics
         )
 
-    print("\nSucces Rate:", metrics["score"], len(examples))
-    print("Model output cannot be executed:", metrics["invalid_output"], len(examples))
-    print("Generated function throws error: ", metrics["code_error"], len(examples))
-    print("Different output: ", metrics["different_output"], len(examples))
+    print("\nSucces Rate:", metrics["score"], "/", len(examples))
+    print(
+        "Model output cannot be executed:",
+        metrics["invalid_output"],
+        "/",
+        len(examples),
+    )
+    print(
+        "Generated function throws error: ", metrics["code_error"], "/", len(examples)
+    )
+    print("Different output: ", metrics["different_output"], "/", len(examples))
