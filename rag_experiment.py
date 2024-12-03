@@ -12,7 +12,9 @@ import argparse
 client = OpenAI(base_url="http://localhost:8000/v1", api_key="token-abc123")
 
 config = {
-    "system_prompt": "You are an expert at programming with Python and Spark. You only return code blocks.",
+    "system_prompt": """You will be provided with PySpark Code that is not compatible with Spark Connect.
+                        You will return an updated version of the code that has exactly the same output but is Spark Connect compatible.
+                        Only return code blocks.""",
     "use_rag": True,
     "rag_store": "/raid/smilla.fox/vector_store_large",
     "number_of_examples": 9,
@@ -40,11 +42,7 @@ def build_prompt(code: str, error: str, vectorstore: Chroma) -> list[dict[str, s
         """
 
     content = f"""
-        Rewrite the given code so that it is compatible with Spark Connect. 
-        {error_prompt}
-
         This is my code:
-        
         {code}
 
         {context_prompt}
@@ -109,11 +107,9 @@ def run_experiment():
 def main():
     parser = argparse.ArgumentParser("Run RAG experiment.")
     parser.add_argument(
-        "--use_rag",
-        type=bool,
+        "--no_rag",
         help="Should additional context information be used in the prompt?",
-        nargs="?",
-        default=True,
+        action="store_false",
     )
     parser.add_argument(
         "--rag_store",
@@ -125,13 +121,13 @@ def main():
         "--rag_num_docs",
         help="Number of documents to retrieve from the vector store.",
         type=int,
-        nargs="?",
         default=1,
     )
-    parser.add_argument("--run_id", help="Name of the wandb run.", nargs="?")
+    parser.add_argument("--run_name", help="Name of the wandb run.", nargs="?")
 
     args = parser.parse_args()
-    config["use_rag"] = args.use_rag
+    print(args)
+    config["use_rag"] = args.no_rag
     config["rag_store"] = args.rag_store
     config["rag_num_docs"] = args.rag_num_docs
 
@@ -139,7 +135,7 @@ def main():
         project="mp",
         config=config,
         settings=wandb.Settings(start_method="thread"),
-        id=args.run_id,
+        name=args.run_name,
     )
 
     run_experiment()
