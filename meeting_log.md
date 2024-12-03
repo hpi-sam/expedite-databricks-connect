@@ -2,7 +2,7 @@
 
 | Name            | About                       | Title         | Agenda | Timekeeping | Notes |
 |-----------------|-----------------------------|---------------|-----------|-----------|-----------|
-| Meeting template| Meeting template for keylime| Meeting dd/mm/yy | @xyz | @xyz | @xyz |
+| Meeting template| Meeting template for keylime | Meeting dd/mm/yy | @xyz | @xyz | @xyz |
 
 ## Agenda
 - Sollen wir noch konkretere TODOs festlegen
@@ -29,6 +29,92 @@
 ## Meeting notes
 
 *
+
+---
+# Biweekly 05.12.2024
+
+| Name            | About                       | Title         | Agenda | Timekeeping | Notes |
+|-----------------|-----------------------------|---------------|-----------|-----------|-----------|
+| Meeting template| Meeting template for keylime | Meeting dd/mm/yy | @juliuspor | @xyz | @cdfhalle |
+
+## Agenda
+- Sollen wir noch konkretere TODOs festlegen
+- Meeting mit Marting
+- Todos bis Donnerstag
+- 
+
+## Attendees
+
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
+- [x] @cdfhalle
+
+## Topics
+
+* 
+
+## Actions
+
+- [ ] 
+
+## Meeting notes
+
+*
+
+---
+# Biweekly 03.12.2024
+
+| Name            | About                       | Title         | Agenda | Timekeeping | Notes |
+|-----------------|-----------------------------|---------------|-----------|-----------|-----------|
+| Biweekly | Biweekly | Meeting dd/mm/yy | @juliuspor | @xyz | @cdfhalle |
+
+## Agenda
+- White Box 
+- Fehlendes Internet 
+- Sonstiges 
+- Themen für Donnerstag
+
+## Attendees
+
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [x] @elenagensch
+- [x] @cdfhalle
+
+## Topics
+* 
+
+## Actions
+
+- [ ] Johanna's Pull request reviewen
+- [ ] Stack Overflow Code in Rag integrieren
+- [ ] Conrad läd 8Bit llama herunter
+
+## Meeting notes
+
+* Julius: Research zum thema white box uncertainty estimation für llms
+  * Ergebnis: Black box ist vermutlich besser --> Sample consistency
+    * n outputs generieren und ergebnis vergleichen + ggf. leichte variation der Promt
+* Fehlendes Internet -> Smilla ist enttäuscht
+* Johanna hat das Repository aufgeräumt
+  * Aufteilung in Evaluation, Linter, Vectorstore
+  * Main File ausführen und configurieren mit config.py
+* Smilla schaut nochmal wie leicht es ist die aktueller repo Struktur mit W&B zu nutzen
+* Vectorstore für Dokumentation und Code liegt im share ordner
+* Experimente mit Rag (Smilla)
+  * mini ablation study hat gezeigt, dass die fehlermeldungen aktuell garnicht so viel nutzen
+* Elena hat neue Repositories in zum Vectorstore hinzugefügt
+  * Es gibt wenige Beispiele die auf JVM zugreifen --> wenig context für das LLM
+* Was kann man noch ausprobieren
+  * besseres embedding model / retrieval
+  * llm googlen lassen
+  * stack overflow integrieren
+  * interaktives
+  * Code complexity ausrechnen
+* Julius ist Donnerstag nicht da
 
 ---
 # Biweekly 26.11.2024
