@@ -24,6 +24,12 @@ VECTORSTORE_SETTINGS = {
 ITERATE = False
 ITERATION_LIMIT = 5
 
+# current model options:
+# - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16
+# - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16
+# - meta-llama/CodeLlama-70b-Python-hf
+MODEL_NAME = "neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16"
+
 INITIAL_PROMPT = f"""
 
         This is code using classic spark that we want to rewrite to work with spark connect.

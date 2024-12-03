@@ -26,7 +26,7 @@ def generate_answer(client, prompt):
     ]
 
     completion = client.chat.completions.create(
-        model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
+        model=config.MODEL_NAME,
         messages=messages,
         temperature=0.2,
     )
