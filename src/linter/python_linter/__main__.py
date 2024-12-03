@@ -11,6 +11,7 @@ from linter.python_linter.matcher import (
     Log4JMatcher,
     CommandContextMatcher,
 )
+import config
 
 """
 IMPORTANT
@@ -72,7 +73,7 @@ def lint_codestring(code):
     filtered_pylint_diagnostics = [
         diag
         for diag in pylint_diagnostics
-        if diag.get("type", "").lower() != "convention"
+        if diag.get("type", "").lower() in config.LINTER_FEEDBACK_TYPES
     ]
 
     # Format pylint diagnostics to match the output structure

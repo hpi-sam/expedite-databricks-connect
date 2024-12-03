@@ -71,7 +71,7 @@ def migrate_code(code: str):
 
     # Optional iterative improvement process based on config settings
     if config.ITERATE:
-        for iteration in range(config.ITERATION_LIMIT):
+        for iteration in range(config.ITERATION_LIMIT - 1):
             print(f"Iteration {iteration + 2} of {config.ITERATION_LIMIT}")
             print("----------------------------------------------")
             linter_feedback = lint_codestring(code)

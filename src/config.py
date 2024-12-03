@@ -24,7 +24,10 @@ VECTORSTORE_SETTINGS = {
 
 
 ITERATE = True
-ITERATION_LIMIT = 10
+ITERATION_LIMIT = 5
+
+# Types of messages the linter should return. Possible values: 'error', 'warning', 'convention' (maybe more) 
+LINTER_FEEDBACK_TYPES = {"error"}
 
 # current model options:
 # - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16
