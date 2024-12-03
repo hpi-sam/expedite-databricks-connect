@@ -3,6 +3,7 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
+import os
 
 
 def get_urls():
@@ -30,11 +31,20 @@ def get_urls():
         if not box:
             box = soup.find("main")
         links.extend([base_url + link["href"] for link in box.find_all("a", href=True)])
-    print(links)
     return links
 
 
-def vector_store_from_api_ref():
+def vector_store_from_api_ref(vector_store_path):
+    model_name = "mixedbread-ai/mxbai-embed-large-v1"
+    hf_embeddings = HuggingFaceEmbeddings(
+        model_name=model_name,
+    )
+
+    if os.path.exists(vector_store_path):
+        return Chroma(
+            persist_directory=vector_store_path,
+            embedding_function=hf_embeddings,
+        )
 
     urls = get_urls()
     bs4_strainer = SoupStrainer("main")
@@ -44,15 +54,10 @@ def vector_store_from_api_ref():
     # text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=100)
     # all_splits = text_splitter.split_documents(data)
 
-    model_name = "mixedbread-ai/mxbai-embed-large-v1"
-    hf_embeddings = HuggingFaceEmbeddings(
-        model_name=model_name,
-    )
-
     vectorstore = Chroma.from_documents(
         data,
         embedding=hf_embeddings,
-        persist_directory="/raid/smilla.fox/vector_store_large",
+        persist_directory=vector_store_path,
     )
 
     return vectorstore

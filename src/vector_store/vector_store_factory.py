@@ -35,7 +35,8 @@ class VectorStoreFactory:
             return vector_store_from_repos(repo_branch_list)
 
         elif vectorstore_type == "api_ref":
-            return vector_store_from_api_ref()
+            vector_store_path = kwargs.get("vector_store_path")
+            return vector_store_from_api_ref(vector_store_path)
 
         else:
             raise ValueError(f"Unknown VectorStore-Type: {vectorstore_type}")

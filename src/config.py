@@ -17,7 +17,9 @@ VECTORSTORE_SETTINGS = {
             {"repo": "lvhuyen/SparkAid", "branch": "master"},
         ],
     },
-    "api_ref": {},
+    "api_ref": {
+        "vector_store_path": "/raid/shared/masterproject2024/vector_stores/vector_store"
+    },
 }
 
 
