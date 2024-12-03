@@ -1,0 +1,1 @@
+bash /mnt/raid/shared/shared/masterproject2024/spark-3.5.3-bin-hadoop3/sbin/start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.3
