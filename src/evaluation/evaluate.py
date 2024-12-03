@@ -39,7 +39,10 @@ def compare(file_name: str, result) -> bool:
     result_df = result_to_df(file_name, result)
 
     output_file = f"evaluation/output/{file_name}.csv"
-    true_df = pd.read_csv(output_file, header=None, index_col=None)
+    if file_name in ["mapPartitions", "readJson"]:
+        true_df = pd.read_csv(output_file, index=False)
+    else:
+        true_df = pd.read_csv(output_file, header=None, index_col=None)
     if result_df.equals(true_df):
         print("Correct result.")
         return True
