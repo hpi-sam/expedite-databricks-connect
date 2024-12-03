@@ -282,4 +282,3 @@ dependencies:
       - zipp==3.21.0
 variables:
   HF_HOME: /raid/shared/masterproject2024/huggingface/
-prefix: /home/johanna.dahlkemper/miniconda3/envs/mp
