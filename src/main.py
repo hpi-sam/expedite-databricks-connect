@@ -67,10 +67,9 @@ def migrate_code(code: str, cfg: DictConfig):
 
     print(f"Iteration 1")
     print("----------------------------------------------")
-    linter_feedback = lint_codestring(code)
+    linter_feedback = lint_codestring(code, cfg.linter_feedback_types)
 
     if linter_feedback:
-        linter_feedback = linter_feedback[0]["message"]
         print(f"Linting feedback: {linter_feedback}\n")
     else:
         print("DONE: No problems detected by the linter.\n")
@@ -87,11 +86,10 @@ def migrate_code(code: str, cfg: DictConfig):
         for iteration in range(cfg.iteration_limit - 1):
             print(f"Iteration {iteration + 2} of {cfg.iteration_limit}")
             print("----------------------------------------------")
-            linter_feedback = lint_codestring(code)
+            linter_feedback = lint_codestring(code, cfg.linter_feedback_types)
             if not linter_feedback:
                 print("DONE: No problems detected by the linter.\n")
                 break
-            linter_feedback = linter_feedback[0]["message"]
             print(f"Linting feedback: {linter_feedback}\n")
             prompt = build_prompt(cfg, code, linter_feedback, context, True)
             code = postprocess(generate_answer(cfg, client, prompt))

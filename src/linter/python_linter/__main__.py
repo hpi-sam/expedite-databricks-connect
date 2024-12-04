@@ -1,6 +1,7 @@
 import sys
 import json
 import subprocess
+import hydra
 from linter.python_linter.linter import PythonLinter
 from linter.python_linter.matcher import (
     RDDApiMatcher,
@@ -11,7 +12,7 @@ from linter.python_linter.matcher import (
     Log4JMatcher,
     CommandContextMatcher,
 )
-import config
+from omegaconf import DictConfig
 
 """
 IMPORTANT
@@ -47,7 +48,7 @@ def run_pylint(code):
     return pylint_diagnostics
 
 
-def lint_codestring(code):
+def lint_codestring(code, linter_feedback_types):
     """
     Lints the specified code string and returns the diagnostics as a JSON object.
     """
@@ -73,7 +74,7 @@ def lint_codestring(code):
     filtered_pylint_diagnostics = [
         diag
         for diag in pylint_diagnostics
-        if diag.get("type", "").lower() in config.LINTER_FEEDBACK_TYPES
+        if diag.get("type", "").lower() in linter_feedback_types
     ]
 
     # Format pylint diagnostics to match the output structure
@@ -81,9 +82,13 @@ def lint_codestring(code):
         diagnostics.append(
             {
                 "line": diag.get("line", 0),  # Default to 0 if line key is missing
-                "column": diag.get("column", 0),  # Default to 0 if column key is missing
+                "column": diag.get(
+                    "column", 0
+                ),  # Default to 0 if column key is missing
                 "message": diag.get("message", "Unknown issue"),
-                "severity": diag.get("type", "Error").capitalize(),  # Default to "Error"
+                "severity": diag.get(
+                    "type", "Error"
+                ).capitalize(),  # Default to "Error"
             }
         )
 
@@ -102,7 +107,7 @@ def lint_codestring(code):
     return output
 
 
-def lint_file(file_path):
+def lint_file(file_path, linter_feedback_types):
     """
     Lints the specified file and returns the diagnostics as a JSON object.
     """
@@ -112,13 +117,13 @@ def lint_file(file_path):
     except Exception as e:
         raise FileNotFoundError(f"Error reading file: {e}")
 
-    output = lint_codestring(code)
+    output = lint_codestring(code, linter_feedback_types)
 
     return output
 
 
-
-def main():
+@hydra.main(version_base=None, config_path=".", config_name="config")
+def main(cfg: DictConfig):
     """
     Main function to handle CLI execution.
     """
@@ -129,7 +134,7 @@ def main():
     file_path = sys.argv[1]
 
     try:
-        diagnostics = lint_file(file_path)
+        diagnostics = lint_file(file_path, cfg.linter_feedback_types)
         # Print the diagnostics as a JSON string
         print(json.dumps(diagnostics, indent=2))
     except Exception as e:
