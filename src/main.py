@@ -105,11 +105,14 @@ def migrate_code(code: str):
         config.VECTORSTORE_TYPE, **vectorstore_settings
     )
 
-    print(f"Iteration 1")
+    print(f"\nIteration 1")
     print("----------------------------------------------")
     linter_feedback = lint_codestring(code)
 
-    if not linter_feedback:
+    if linter_feedback:
+        print("Linting feedback:")
+        for str in linter_feedback: print(str)
+    else:
         print("DONE: No problems detected by the linter.\n")
         return code
 
@@ -124,12 +127,14 @@ def migrate_code(code: str):
     # Optional iterative improvement process based on config settings
     if config.ITERATE:
         for iteration in range(config.ITERATION_LIMIT):
-            print(f"Iteration {iteration + 1} of {config.ITERATION_LIMIT}")
+            print(f"\nIteration {iteration + 1} of {config.ITERATION_LIMIT}")
             print("----------------------------------------------")
             linter_feedback = lint_codestring(code)
             if not linter_feedback:
                 print("DONE: No problems detected by the linter.\n")
                 break
+            print("Linting feedback:")
+            for str in linter_feedback: print(str)
             prompt = config.LINTER_ERROR_PROMPT.format(error=linter_feedback)
             code = postprocess(assistant.generate_answer(prompt))
 
