@@ -1,5 +1,6 @@
 import sys
 import json
+import subprocess
 from linter.python_linter.linter import PythonLinter
 from linter.python_linter.matcher import (
     RDDApiMatcher,
@@ -10,6 +11,7 @@ from linter.python_linter.matcher import (
     Log4JMatcher,
     CommandContextMatcher,
 )
+import config
 
 """
 IMPORTANT
@@ -25,43 +27,24 @@ print(results)
 """
 
 
-def lint_file(file_path):
+def run_pylint(code):
     """
-    Lints the specified file and returns the diagnostics as a JSON object.
+    Run pylint on the given code string and return the diagnostics as a list of JSON objects.
     """
+    with open("temp_lint_code.py", "w") as temp_file:
+        temp_file.write(code)
     try:
-        with open(file_path, "r") as f:
-            code = f.read()
-    except Exception as e:
-        raise FileNotFoundError(f"Error reading file: {e}")
-
-    # Instantiate the linter
-    linter = PythonLinter()
-
-    # Add matchers to the linter
-    linter.add_matcher(RDDApiMatcher())
-    linter.add_matcher(MapPartitionsMatcher())
-    linter.add_matcher(JvmAccessMatcher())
-    linter.add_matcher(SparkSqlContextMatcher())
-    linter.add_matcher(SetLogLevelMatcher())
-    linter.add_matcher(Log4JMatcher())
-    linter.add_matcher(CommandContextMatcher())
-
-    diagnostics = linter.lint(code)
-
-    # Create a structured JSON response
-    output = []
-    for diag in diagnostics:
-        output.append(
-            {
-                "line": diag["line"],
-                "column": diag["col"],
-                "message": diag["message"],
-                "severity": "Error",  # Can also use "Error" or "Info"
-            }
+        result = subprocess.run(
+            ["pylint", "--output-format=json", "temp_lint_code.py"],
+            capture_output=True,
+            text=True,
+            check=True,
         )
-
-    return output
+        pylint_diagnostics = json.loads(result.stdout)
+    except subprocess.CalledProcessError as e:
+        # Handle cases where pylint exits with errors
+        pylint_diagnostics = json.loads(e.stdout) if e.stdout else []
+    return pylint_diagnostics
 
 
 def lint_codestring(code):
@@ -80,21 +63,59 @@ def lint_codestring(code):
     linter.add_matcher(Log4JMatcher())
     linter.add_matcher(CommandContextMatcher())
 
+    # Collect diagnostics from custom matchers
     diagnostics = linter.lint(code)
+
+    # Collect diagnostics from pylint
+    pylint_diagnostics = run_pylint(code)
+
+    # Filter out "Conventions" from pylint diagnostics
+    filtered_pylint_diagnostics = [
+        diag
+        for diag in pylint_diagnostics
+        if diag.get("type", "").lower() in config.LINTER_FEEDBACK_TYPES
+    ]
+
+    # Format pylint diagnostics to match the output structure
+    for diag in filtered_pylint_diagnostics:
+        diagnostics.append(
+            {
+                "line": diag.get("line", 0),  # Default to 0 if line key is missing
+                "column": diag.get("column", 0),  # Default to 0 if column key is missing
+                "message": diag.get("message", "Unknown issue"),
+                "severity": diag.get("type", "Error").capitalize(),  # Default to "Error"
+            }
+        )
 
     # Create a structured JSON response
     output = []
     for diag in diagnostics:
         output.append(
             {
-                "line": diag["line"],
-                "column": diag["col"],
-                "message": diag["message"],
-                "severity": "Error",  # Can also use "Error" or "Info"
+                "line": diag.get("line", 0),  # Default to 0 if line is missing
+                "column": diag.get("column", 0),  # Default to 0 if column is missing
+                "message": diag.get("message", "No message provided"),
+                "severity": diag.get("severity", "Error"),  # Default to "Error"
             }
         )
 
     return output
+
+
+def lint_file(file_path):
+    """
+    Lints the specified file and returns the diagnostics as a JSON object.
+    """
+    try:
+        with open(file_path, "r") as f:
+            code = f.read()
+    except Exception as e:
+        raise FileNotFoundError(f"Error reading file: {e}")
+
+    output = lint_codestring(code)
+
+    return output
+
 
 
 def main():
