@@ -14,7 +14,7 @@ def build_prompt(cfg: DictConfig, code: str, error: str, context: str, iterate: 
     else:
         prompt = cfg.initial_prompt + code
     if cfg.use_error:
-        prompt += cfg.error_prompt + error
+        prompt += cfg.error_prompt + str(error)
     if cfg.use_rag:
         prompt += cfg.context_prompt + str(context)
     return prompt
