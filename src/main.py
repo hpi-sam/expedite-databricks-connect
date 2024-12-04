@@ -113,7 +113,7 @@ def run_experiment(cfg: DictConfig):
 
     for iteration in range(cfg.eval_iterations):
         metrics = evaluate(migrate_code, cfg)
-        wandb.log({"iteration": iteration})
+        metrics["iteration"] = iteration
         wandb.log(metrics)
         avg_score += metrics["score"]
 
