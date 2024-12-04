@@ -1,6 +1,6 @@
 use_rag: true
 num_rag_docs: 1
-vectorstore_type: "docs" # Mögliche Werte: 'docs', 'code', 'api_ref'
+vectorstore_type: "api_ref" # Mögliche Werte: 'docs', 'code', 'api_ref'
 vectorstore_setting: 
     docs: 
         docs: 
@@ -21,7 +21,7 @@ vectorstore_setting:
         vector_store_path: "/raid/shared/masterproject2024/vector_stores/vector_store"
     
     
-iterate: true
+iterate: false
 iteration_limit: 10
 # current model options:
 # - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16
@@ -30,14 +30,13 @@ iteration_limit: 10
 model_name: "neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16"
 model_temperature: 0.2
 initial_prompt: "
-        This is code using classic spark that we want to rewrite to work with spark connect.
         The rewritten code should have exactly the same functionality as the original code and should return exactly the same output.
         This is the original code that does not work with spark connect:
         
         "
-error_prompt: "When executed, the code produces the following error: "
+error_prompt: "\nWhen executed, the code produces the following error: "
 
-context_prompt: "In case it is helpful you can use the following context to help you with the task: 
+context_prompt: "\n\nIn case it is helpful you can use the following context to help you with the task: 
 
                 "
 
@@ -52,6 +51,6 @@ system_prompt: "You will be provided with PySpark Code that is not compatible wi
 use_error: true
 number_of_examples: 10
 eval_iterations: 5
-log_results: false
+log_results: true
 run_name: null
 

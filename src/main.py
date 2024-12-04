@@ -5,7 +5,7 @@ from linter.python_linter.__main__ import lint_codestring
 from vector_store.vector_store_factory import VectorStoreFactory
 import wandb
 import hydra
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 
 def build_prompt(cfg: DictConfig, code: str, error: str, context: str, iterate: bool):
@@ -104,15 +104,16 @@ def run_experiment(cfg: DictConfig):
 
     wandb.init(
         project="mp",
-        config=cfg,
+        config=OmegaConf.to_container(cfg, resolve=True),
         settings=wandb.Settings(start_method="thread"),
         name=cfg.run_name,
     )
 
     avg_score = 0
 
-    for _ in range(cfg.eval_iterations):
-        metrics = evaluate(migrate_code)
+    for iteration in range(cfg.eval_iterations):
+        metrics = evaluate(migrate_code, cfg)
+        wandb.log({"iteration": iteration})
         wandb.log(metrics)
         avg_score += metrics["score"]
 

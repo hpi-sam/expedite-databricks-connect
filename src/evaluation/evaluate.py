@@ -132,3 +132,5 @@ def evaluate(model_generation_function: Callable, cfg: DictConfig):
         "Generated function throws error: ", metrics["code_error"], "/", len(examples)
     )
     print("Different output: ", metrics["different_output"], "/", len(examples))
+
+    return metrics
