@@ -22,7 +22,6 @@ VECTORSTORE_SETTINGS = {
     },
 }
 
-
 ITERATE = True
 ITERATION_LIMIT = 5
 
@@ -37,7 +36,9 @@ LINTER_CONFIG = {
 # - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16
 # - meta-llama/CodeLlama-70b-Python-hf
 MODEL_NAME = "neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16"
-
+# model length in token make sure the same value is used for serving the model
+MAX_MODEL_LENGTH = 8192
+ANSWER_TOKEN_LENGTH = 2048
 INITIAL_PROMPT = f"""
 
         This is code using classic spark that we want to rewrite to work with spark connect.
@@ -70,7 +71,10 @@ ITERATED_PROMPT = f"""
         </code>
 
         When this code is executed, it produces the following error:
+        
+        <linter_error_message>
         {{error}}
+        </linter_error_message>
 
         In case it is helpful you can use the following context to help you with the task:
 
@@ -80,3 +84,15 @@ ITERATED_PROMPT = f"""
 
         Make sure to only return the rewritten code and nothing else.
     """
+
+LINTER_ERROR_PROMPT = f"""
+        Unfortunately, the code does not seem to work with spark connect.
+        The Spark Connect Linter produces the following error:
+
+        <linter_error_message>
+        {{error}}
+        </linter_error_message>
+        
+        Please rewrite the code to work with spark connect. Make sure the code is correct python code that can be executed without errors.
+"""
+SYSTEM_PROMPT = f"""You are an assistant to help migrating code from using classic spark to using spark connect."""

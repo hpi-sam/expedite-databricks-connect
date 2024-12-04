@@ -9,6 +9,12 @@ from .examples_pre_migration.sparkJvmOrigin import setJVMOrigin
 from .examples_pre_migration.quinnRddSparkContext import quinn_rdd_spark_Context
 from .examples_pre_migration.frequentWords import frequentWordsExample
 from .examples_pre_migration.mixedRDD import mixedRDDExample
+from .examples_pre_migration.sumNumbers import sumNumbers
+from .examples_pre_migration.readJsonCsv import test_sql_dataframe_reader_api
+from .examples_pre_migration.pi import test_python_pi_issue
+from .examples_pre_migration.prefixSpan import test_prefix_span_example
+import pandas as pd
+from ast import literal_eval
 import pandas as pd
 from typing import Callable
 
@@ -24,6 +30,10 @@ examples = [
     ("sparkJvmOrigin", setJVMOrigin),
     ("quinnRddSparkContext", quinn_rdd_spark_Context),
     ("frequentWords", frequentWordsExample),
+    ("sumNumbers", sumNumbers),
+    ("readJsonCsv", test_sql_dataframe_reader_api),
+    ("pi", test_python_pi_issue),
+    ("prefixSpan", test_prefix_span_example),
 ]
 
 
@@ -57,14 +67,17 @@ def result_to_df(file_name: str, result: pd.DataFrame):
     # This is necessary because the outputs of the example functions needed to be formatted differently before saving them to a csv
     reformatted_result = result
 
-    if file_name in ["map", "flatMap", "frequentWords"]:
+    if file_name in ["map", "flatMap", "frequentWords", "reduce", "pi", "readJsonCsv"]:
         reformatted_result = pd.DataFrame(result)
-    elif file_name == "mapReduce":
+    elif file_name in ["mapReduce", "sumNumbers"]:
         reformatted_result = pd.DataFrame([result])
     elif file_name in ["mapPartitions", "readJson"]:
         reformatted_result = result.toPandas()
     elif file_name == "sparkContext":
         reformatted_result = pd.DataFrame(result.items())
+    elif file_name == "prefixSpan":
+        reformatted_result[0] = result[0].apply(literal_eval)  # make string to list
+        reformatted_result = reformatted_result.drop(index=0).reset_index(drop=True)
 
     return reformatted_result
 
