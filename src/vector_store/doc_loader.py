@@ -9,6 +9,9 @@ def vector_store_from_docs(docs: list[str]) -> Chroma | None:
 
     data = loader.load()
 
+    for doc in data:
+        doc.metadata["type"] = "documentation"
+
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=50)
     all_splits = text_splitter.split_documents(data)
 
@@ -16,7 +19,6 @@ def vector_store_from_docs(docs: list[str]) -> Chroma | None:
     hf_embeddings = HuggingFaceEmbeddings(
         model_name=model_name,
     )
-
     vectorstore = Chroma.from_documents(all_splits, embedding=hf_embeddings)
 
     return vectorstore
