@@ -1,37 +1,83 @@
+import pprint
+from typing import Dict, List
+
 from huggingface_hub import login
 from openai import OpenAI
+from transformers import AutoTokenizer, PreTrainedTokenizerFast
+
+import config
 from evaluation.evaluate import evaluate, postprocess
 from linter.python_linter.__main__ import lint_codestring
 from vector_store.vector_store_factory import VectorStoreFactory
-import config
 
 
-def generate_answer(client, prompt):
-    """
-    Generates a response from the AI model based on the given prompt.
+def format_messages(messages: List[Dict[str, str]]) -> str:
+    formated_messages = []
+    for message in messages:
+        formated_message = {}
+        for key, value in message.items():
+            formated_message[key] = pprint.pformat(value)
+        formated_messages.append(formated_message)
+    return pprint.pformat(formated_messages)
 
-    Args:
-        client: The OpenAI client used to call the AI model.
-        prompt (str): The prompt to provide to the AI for generating a response.
 
-    Returns:
-        str: The generated response from the AI model.
-    """
-    messages = [
-        {
+class Assistant:
+    model_name: str
+    temperature: float
+    _client: OpenAI
+    _system_message: Dict[str, str]
+    _messages: List[Dict[str, str]]
+    _tokenizer: PreTrainedTokenizerFast
+
+    def __init__(self, model_temperature: float):
+        login(token="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")
+        self._client = OpenAI(
+            base_url="http://localhost:8000/v1", api_key="token-abc123"
+        )
+        self._system_message = {
             "role": "system",
-            "content": "You are an assistant to help migrating code from using classic spark to using spark connect.",
-        },
-        {"role": "user", "content": prompt},
-    ]
+            "content": config.SYSTEM_PROMPT,
+        }
+        self._messages = []
+        self.temperature = model_temperature
+        self.model_name = config.MODEL_NAME
+        self._tokenizer = AutoTokenizer.from_pretrained(config.MODEL_NAME)
+        assert (
+                self._tokenizer != False
+        ), f"somthing went wrong when fetching the default tokenizer for model {config.MODEL_NAME}"
 
-    completion = client.chat.completions.create(
-        model=config.MODEL_NAME,
-        messages=messages,
-        temperature=0.2,
-    )
+    def _all_messages(self):
+        return [self._system_message] + self._messages
 
-    return completion.choices[0].message.content
+    def _tokenized_messages(self):
+        return self._tokenizer.apply_chat_template(self._all_messages(), tokenize=True)
+
+    def generate_answer(self, prompt: str) -> str:
+        self._messages += [
+            {"role": "user", "content": prompt},
+        ]
+        num_tokens = len(self._tokenized_messages())
+        while num_tokens > config.MAX_MODEL_LENGTH - config.ANSWER_TOKEN_LENGTH:
+            self._messages.pop(0)
+            num_tokens = len(self._tokenized_messages())
+
+        print(
+            f"calling model with messages: \n {format_messages(self._all_messages())}"
+        )
+        completion = self._client.completions.create(
+            model=self.model_name,
+            max_tokens=config.ANSWER_TOKEN_LENGTH,
+            prompt=self._tokenized_messages(),
+            temperature=self.temperature,
+        )
+        answer = completion.choices.pop().text
+        self._messages += [
+            {
+                "role": "assistant",
+                "content": answer,
+            }
+        ]
+        return answer
 
 
 def migrate_code(code: str):
@@ -44,8 +90,7 @@ def migrate_code(code: str):
     Returns:
         str: The migrated and potentially linted Spark Connect code.
     """
-    login(token="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")
-    client = OpenAI(base_url="http://localhost:8000/v1", api_key="token-abc123")
+    assistant = Assistant(0.2)
     vectorstore_settings = config.VECTORSTORE_SETTINGS.get(config.VECTORSTORE_TYPE, {})
     vectorstore = VectorStoreFactory.initialize(
         config.VECTORSTORE_TYPE, **vectorstore_settings
@@ -67,11 +112,10 @@ def migrate_code(code: str):
     )
 
     # Generate initial migration suggestion
-    code = postprocess(generate_answer(client, prompt))
+    code = postprocess(assistant.generate_answer(prompt))
 
     # Optional iterative improvement process based on config settings
     if config.ITERATE:
-        iteration = 2
         for iteration in range(config.ITERATION_LIMIT):
             print(f"Iteration {iteration + 1} of {config.ITERATION_LIMIT}")
             print("----------------------------------------------")
@@ -80,10 +124,8 @@ def migrate_code(code: str):
                 print("DONE: No problems detected by the linter.\n")
                 break
             print(f"Linting feedback: {linter_feedback}\n")
-            prompt = config.ITERATED_PROMPT.format(
-                code=code, error=linter_feedback, context=context
-            )
-            code = postprocess(generate_answer(client, prompt))
+            prompt = config.LINTER_ERROR_PROMPT.format(error=linter_feedback)
+            code = postprocess(assistant.generate_answer(prompt))
 
     return code
 
