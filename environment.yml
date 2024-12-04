@@ -282,3 +282,4 @@ dependencies:
       - zipp==3.21.0
 variables:
   HF_HOME: /raid/shared/masterproject2024/huggingface/
+  CODE_DATA_FILE_PATH: /raid/shared/masterproject2024/rag/data/code.json
