@@ -1,6 +1,7 @@
 import sys
 import json
 import subprocess
+import hydra
 from linter.python_linter.linter import PythonLinter
 from linter.python_linter.spark_connect_matcher import (
     RDDApiMatcher,
@@ -11,7 +12,7 @@ from linter.python_linter.spark_connect_matcher import (
     Log4JMatcher,
     CommandContextMatcher,
 )
-import config
+from omegaconf import DictConfig
 
 """
 IMPORTANT
@@ -26,11 +27,12 @@ results = lint_file(file_path)
 print(results)
 """
 
-def filter_diagnostics(diagnostics):
+
+def filter_diagnostics(diagnostics, lint_config):
     """
     Filters diagnostics to only contain entries with type in config.LINTER_CONFIG["feedback_types"].
     """
-    feedback_types = config.LINTER_CONFIG["feedback_types"]
+    feedback_types = lint_config.feedback_types
     return [diag for diag in diagnostics if diag["type"] in feedback_types]
 
 
@@ -46,7 +48,7 @@ def format_diagnostics(diagnostics, linter_type):
                 "line": diag.get("line", 0),
                 "col": diag.get("col", 0),
                 "type": diag.get("type", "error"),
-                "linter": linter_type
+                "linter": linter_type,
             }
         )
     return formatted_diagnostics
@@ -58,7 +60,9 @@ def make_readable(diagnostics):
     """
     readable_diagnostics = []
     for diag in diagnostics:
-        readable_diagnostics.append(f"{diag['linter']} [{diag['type']}]: {diag['message']} (line {diag['line']}, col {diag['col']})")
+        readable_diagnostics.append(
+            f"{diag['linter']} [{diag['type']}]: {diag['message']} (line {diag['line']}, col {diag['col']})"
+        )
     return readable_diagnostics
 
 
@@ -121,16 +125,18 @@ def run_mypy(code):
         for line in result.stdout.splitlines():
             parts = line.split(":")
             if len(parts) >= 4:
-                diagnostics.append({
-                    "line": int(parts[1]),
-                    "col": int(parts[2]),
-                    "message": ":".join(parts[3:]).strip(),
-                    "type": "type_error"
-                })
+                diagnostics.append(
+                    {
+                        "line": int(parts[1]),
+                        "col": int(parts[2]),
+                        "message": ":".join(parts[3:]).strip(),
+                        "type": "type_error",
+                    }
+                )
         return diagnostics
     except Exception as e:
         return []
-    
+
 
 def run_flake8(code):
     """
@@ -140,7 +146,11 @@ def run_flake8(code):
         temp_file.write(code)
     try:
         result = subprocess.run(
-            ["flake8", "--format=%(row)d:%(col)d:%(code)s:%(text)s", "temp_lint_code.py"],
+            [
+                "flake8",
+                "--format=%(row)d:%(col)d:%(code)s:%(text)s",
+                "temp_lint_code.py",
+            ],
             capture_output=True,
             text=True,
             check=False,
@@ -149,33 +159,37 @@ def run_flake8(code):
         for line in result.stdout.splitlines():
             parts = line.split(":")
             if len(parts) >= 4:
-                diagnostics.append({
-                    "line": int(parts[0]),
-                    "col": int(parts[1]),
-                    "message": parts[3].strip(),
-                    "type": parts[2].strip()
-                })
+                diagnostics.append(
+                    {
+                        "line": int(parts[0]),
+                        "col": int(parts[1]),
+                        "message": parts[3].strip(),
+                        "type": parts[2].strip(),
+                    }
+                )
         return diagnostics
     except Exception as e:
         return []
 
 
-def lint_codestring(code):
+def lint_codestring(code, lint_config):
     """
     Lints the given code string and returns the diagnostics as a JSON object.
     """
     diagnostics = []
 
-    if "spark_connect" in config.LINTER_CONFIG["enabled_linters"]:
-        diagnostics += format_diagnostics(run_spark_connect_linter(code), "spark_connect")
-    if "pylint" in config.LINTER_CONFIG["enabled_linters"]:
+    if "spark_connect" in lint_config.enabled_linters:
+        diagnostics += format_diagnostics(
+            run_spark_connect_linter(code), "spark_connect"
+        )
+    if "pylint" in lint_config.enabled_linters:
         diagnostics += format_diagnostics(run_pylint(code), "pylint")
-    if "mypy" in config.LINTER_CONFIG["enabled_linters"]:
+    if "mypy" in lint_config.enabled_linters:
         diagnostics += format_diagnostics(run_mypy(code), "mypy")
-    if "flake8" in config.LINTER_CONFIG["enabled_linters"]:
+    if "flake8" in lint_config.enabled_linters:
         diagnostics += format_diagnostics(run_flake8(code), "flake8")
 
-    diagnostics = filter_diagnostics(diagnostics)
+    diagnostics = filter_diagnostics(diagnostics, lint_config)
     diagnostics.sort(key=lambda x: (x["line"], x["col"]))
     diagnostics = make_readable(diagnostics)
 
@@ -201,7 +215,6 @@ def lint_codestring(code):
 #     output = lint_codestring(code)
 
 #     return output
-
 
 
 # def main():

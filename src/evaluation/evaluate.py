@@ -3,6 +3,7 @@ from ast import literal_eval
 from typing import Callable
 
 import pandas as pd
+from omegaconf import DictConfig
 
 from .examples_pre_migration.flatMap import flatMapExample
 from .examples_pre_migration.frequentWords import frequentWordsExample
@@ -18,9 +19,9 @@ from .examples_pre_migration.readJsonCsv import test_sql_dataframe_reader_api
 from .examples_pre_migration.sparkContext import sparkContextExample
 from .examples_pre_migration.sparkJvmOrigin import setJVMOrigin
 from .examples_pre_migration.sumNumbers import sumNumbers
-from .run_with_spark_connect import run_example_sc
 
 logger = logging.getLogger(__name__)
+
 examples = [
     ("mixedRDD", mixedRDDExample),
     ("map", mapExample),
@@ -89,11 +90,12 @@ def generate(
         example_function: Callable,
         model_generate: Callable,
         metrics: dict[str, int],
+        cfg: DictConfig,
 ):
     with open(f"evaluation/examples_pre_migration/{file_name}.py", "r") as file:
         code = file.read()
 
-    output = model_generate(code)
+    output = model_generate(code, cfg)
 
     print(f"----------------- Old code ------------------")
     print(f"{code}")
@@ -123,8 +125,7 @@ def generate(
     return metrics
 
 
-def evaluate(model_generation_function: Callable):
-    logger.info("evaluate")
+def evaluate(model_generation_function: Callable, cfg: DictConfig):
     metrics = {"score": 0, "invalid_output": 0, "code_error": 0, "different_output": 0}
 
     for i, (file_name, example_function) in enumerate(examples):
@@ -132,7 +133,7 @@ def evaluate(model_generation_function: Callable):
         print(f"({i + 1}/{len(examples)}) Evaluating {file_name} example")
         print("==============================================")
         metrics = generate(
-            file_name, example_function, model_generation_function, metrics
+            file_name, example_function, model_generation_function, metrics, cfg
         )
 
     print("\nSucces Rate:", metrics["score"], "/", len(examples))
@@ -146,3 +147,5 @@ def evaluate(model_generation_function: Callable):
         "Generated function throws error: ", metrics["code_error"], "/", len(examples)
     )
     print("Different output: ", metrics["different_output"], "/", len(examples))
+
+    return metrics

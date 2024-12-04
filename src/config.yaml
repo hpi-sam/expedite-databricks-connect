@@ -1,0 +1,73 @@
+use_rag: true
+num_rag_docs: 1
+vectorstore_type: "api_ref" # Mögliche Werte: 'docs', 'code', 'api_ref'
+vectorstore_settings: 
+    docs: 
+        docs: 
+            - "https://docs.databricks.com/en/dev-tools/databricks-connect/python/limitations.html"
+            - "https://docs.databricks.com/en/dev-tools/databricks-connect/index.html#pyspark-dataframe-api-limitations"
+            - "https://spark.apache.org/docs/latest/spark-connect-overview.html"
+        
+
+    code: 
+        repo_branch_list:
+            - { repo: "mrpowers-io/quinn", branch: "main"}
+            - { repo: "debugger24/pyspark-test", branch: "main"}
+            - { repo: "julioasotodv/spark-df-profiling", branch: "master"}
+            - { repo: "Labelbox/labelspark", branch: "master"}
+            - { repo: "lvhuyen/SparkAid", branch: "master"}
+
+    api_ref:
+        vector_store_path: "/raid/shared/masterproject2024/vector_stores/vector_store"
+    
+    
+iterate: false
+iteration_limit: 5
+# Types of messages the linter should return. Possible values: 'error', 'warning', 'convention' (maybe more) 
+linter_feedback_types: 
+    - error
+# current model options:
+# - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16
+# - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16
+# - meta-llama/CodeLlama-70b-Python-hf
+model_name: "neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16"
+model_temperature: 0.2
+# model length in token make sure the same value is used for serving the model
+max_model_length: 8192
+answer_token_length: 2048
+linter_config : 
+    enabled_linters: 
+        - pylint
+        - mypy
+        - flake8
+        - spark_connect
+    feedback_types: 
+        - error
+        - warning  # Return only these severities. Possible values: 'error', 'warning', 'convention' (maybe more)
+initial_prompt: "
+        The rewritten code should have exactly the same functionality as the original code and should return exactly the same output.
+        This is the original code that does not work with spark connect:
+        
+        "
+error_prompt: "\nWhen executed, the code produces the following error: "
+
+context_prompt: "\n\nIn case it is helpful you can use the following context to help you with the task: 
+
+                "
+
+linter_error_prompt : "
+        Unfortunately, the code does not seem to work with spark connect.
+        Please rewrite the code to work with spark connect. Make sure the code is correct python code that can be executed without errors.
+        The Spark Connect Linter produces the following error:
+        
+      
+"
+system_prompt: "You will be provided with PySpark Code that is not compatible with Spark Connect.
+                You will return an updated version of the code that has exactly the same output but is compatible with Spark Connect.
+                Only return code blocks."
+use_error: true
+number_of_examples: 14
+eval_iterations: 5
+log_results: false
+run_name: null
+

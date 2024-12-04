@@ -59,3 +59,8 @@ conda remove -n <name> --all
 ```
 Replace `<name>` with the name of the environment you wish to delete.
 
+## Export Enviromnent
+To export your environment:
+```bash
+conda env export | grep -v "^prefix: " > environment.yml
+```
