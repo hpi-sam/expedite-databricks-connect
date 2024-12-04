@@ -80,10 +80,10 @@ def generate(
 
     output = model_generate(code)
 
-    print(f"-------------- Old code --------------")
+    print(f"----------------- Old code ------------------")
     print(f"{code}")
 
-    print(f"-------------- New code --------------")
+    print(f"----------------- New code ------------------")
     print(f"{postprocess(output)}")
 
     # Execute updated function
@@ -114,7 +114,7 @@ def evaluate(model_generation_function: Callable):
     for i, (file_name, example_function) in enumerate(examples):
         print("\n")
         print(f"({i + 1}/{len(examples)}) Evaluating {file_name} example")
-        print("===============================================")
+        print("==============================================")
         metrics = generate(
             file_name, example_function, model_generation_function, metrics
         )

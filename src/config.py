@@ -26,8 +26,11 @@ VECTORSTORE_SETTINGS = {
 ITERATE = True
 ITERATION_LIMIT = 5
 
-# Types of messages the linter should return. Possible values: 'error', 'warning', 'convention' (maybe more) 
-LINTER_FEEDBACK_TYPES = {"error"}
+LINTER_CONFIG = {
+    "enabled_linters": ["pylint", "mypy", "flake8", "spark_connect"],
+    "feedback_types": {"error", "warning"},  # Return only these severities. Possible values: 'error', 'warning', 'convention' (maybe more)
+}
+
 
 # current model options:
 # - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16

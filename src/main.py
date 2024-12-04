@@ -1,7 +1,7 @@
 from huggingface_hub import login
 from openai import OpenAI
 from evaluation.evaluate import evaluate, postprocess
-from linter.python_linter.__main__ import lint_codestring
+from linter.python_linter.__main__ import lint_codestring, print_linter_diagnostics
 from vector_store.vector_store_factory import VectorStoreFactory
 import config
 
@@ -56,7 +56,7 @@ def migrate_code(code: str):
     linter_feedback = lint_codestring(code)
 
     if linter_feedback:
-        print(f"Linting feedback: {linter_feedback}\n")
+        print_linter_diagnostics(linter_feedback)
     else:
         print("DONE: No problems detected by the linter.\n")
         return code
@@ -78,7 +78,8 @@ def migrate_code(code: str):
             if not linter_feedback:
                 print("DONE: No problems detected by the linter.\n")
                 break
-            print(f"Linting feedback: {linter_feedback}\n")
+            print_linter_diagnostics(linter_feedback)
+            print("\n")
             prompt = config.ITERATED_PROMPT.format(
                 code=code, error=linter_feedback, context=context
             )
