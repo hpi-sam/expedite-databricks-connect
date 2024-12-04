@@ -42,7 +42,6 @@ def format_diagnostics(diagnostics, linter_type):
     for diag in diagnostics:
         formatted_diagnostics.append(
             {
-                "message_id": diag.get("message_id", ""),
                 "message": diag.get("message", ""),
                 "line": diag.get("line", 0),
                 "col": diag.get("col", 0),
@@ -53,12 +52,14 @@ def format_diagnostics(diagnostics, linter_type):
     return formatted_diagnostics
 
 
-def print_linter_diagnostics(diagnostics):
+def make_readable(diagnostics):
     """
-    Prints the diagnostics in a human-readable format.
+    Makes the diagnostics more human-readable.
     """
+    readable_diagnostics = []
     for diag in diagnostics:
-        print(f"{diag['linter']} [{diag['type']}]: {diag['message']} (line {diag['line']}, col {diag['col']})")
+        readable_diagnostics.append(f"{diag['linter']} [{diag['type']}]: {diag['message']} (line {diag['line']}, col {diag['col']})")
+    return readable_diagnostics
 
 
 def run_pylint(code):
@@ -175,51 +176,58 @@ def lint_codestring(code):
         diagnostics += format_diagnostics(run_flake8(code), "flake8")
 
     diagnostics = filter_diagnostics(diagnostics)
+    diagnostics.sort(key=lambda x: (x["line"], x["col"]))
+    diagnostics = make_readable(diagnostics)
+
+    # for some of the linters a temporary file is created, remove it if it exists
+    try:
+        subprocess.run(["rm", "temp_lint_code.py"])
+    except Exception as e:
+        pass
 
     return diagnostics
 
 
+# def lint_file(file_path):
+#     """
+#     Lints the specified file and returns the diagnostics as a JSON object.
+#     """
+#     try:
+#         with open(file_path, "r") as f:
+#             code = f.read()
+#     except Exception as e:
+#         raise FileNotFoundError(f"Error reading file: {e}")
 
-def lint_file(file_path):
-    """
-    Lints the specified file and returns the diagnostics as a JSON object.
-    """
-    try:
-        with open(file_path, "r") as f:
-            code = f.read()
-    except Exception as e:
-        raise FileNotFoundError(f"Error reading file: {e}")
+#     output = lint_codestring(code)
 
-    output = lint_codestring(code)
-
-    return output
-
+#     return output
 
 
-def main():
-    """
-    Main function to handle CLI execution.
-    """
-    if len(sys.argv) < 2:
-        print("Usage: python-linter <file>")
-        sys.exit(1)
 
-    file_path = sys.argv[1]
+# def main():
+#     """
+#     Main function to handle CLI execution.
+#     """
+#     if len(sys.argv) < 2:
+#         print("Usage: python-linter <file>")
+#         sys.exit(1)
 
-    try:
-        diagnostics = lint_file(file_path)
-        # Print the diagnostics as a JSON string
-        print(json.dumps(diagnostics, indent=2))
-    except Exception as e:
-        print(f"Error: {e}")
-        sys.exit(1)
+#     file_path = sys.argv[1]
 
-    # Optionally, save the JSON to a file
-    # with open("lint_results.json", "w") as f:
-    #    json.dump(diagnostics, f, indent=2)
+#     try:
+#         diagnostics = lint_file(file_path)
+#         # Print the diagnostics as a JSON string
+#         print(json.dumps(diagnostics, indent=2))
+#     except Exception as e:
+#         print(f"Error: {e}")
+#         sys.exit(1)
 
-    return diagnostics
+#     # Optionally, save the JSON to a file
+#     # with open("lint_results.json", "w") as f:
+#     #    json.dump(diagnostics, f, indent=2)
+
+#     return diagnostics
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
