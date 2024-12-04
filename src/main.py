@@ -125,7 +125,6 @@ def migrate_code(code: str, cfg: DictConfig):
 
     context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
     prompt = build_prompt(cfg, code, linter_feedback, context)
-    print("PROMPT: ", prompt)
 
     # Generate initial migration suggestion
     code = postprocess(assistant.generate_answer(prompt, cfg))
