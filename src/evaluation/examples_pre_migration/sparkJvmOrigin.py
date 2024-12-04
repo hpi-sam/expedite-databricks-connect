@@ -82,4 +82,5 @@ def setJVMOrigin(spark):
     spark = SparkSession.getActiveSession()
     origin = spark._jvm.org.apache.spark.sql.catalyst.trees.CurrentOrigin.get()
     result_with_session = [(origin.line(), origin.startPosition()), [wrapper]]
+
     return result_with_session

@@ -1,18 +1,20 @@
+import pprint
+from typing import Dict, List
+
 from huggingface_hub import login
 from openai import OpenAI
+from transformers import AutoTokenizer, PreTrainedTokenizerFast
+
 from evaluation.evaluate import evaluate, postprocess
 from linter.python_linter.__main__ import lint_codestring
 from vector_store.vector_store_factory import VectorStoreFactory
-import wandb
 import hydra
+import wandb
 from omegaconf import DictConfig, OmegaConf
 
 
-def build_prompt(cfg: DictConfig, code: str, error: str, context: str, iterate: bool):
-    if iterate:
-        prompt = cfg.iterated_prompt + code
-    else:
-        prompt = cfg.initial_prompt + code
+def build_prompt(cfg: DictConfig, code: str, error: str, context: str):
+    prompt = cfg.initial_prompt + code
     if cfg.use_error:
         prompt += cfg.error_prompt + str(error)
     if cfg.use_rag:
@@ -20,32 +22,77 @@ def build_prompt(cfg: DictConfig, code: str, error: str, context: str, iterate: 
     return prompt
 
 
-def generate_answer(cfg: DictConfig, client, prompt: str) -> str:
-    """
-    Generates a response from the AI model based on the given prompt.
+def build_linter_error_prompt(prompt, error):
+    return prompt + str(error)
 
-    Args:
-        client: The OpenAI client used to call the AI model.
-        prompt (str): The prompt to provide to the AI for generating a response.
 
-    Returns:
-        str: The generated response from the AI model.
-    """
-    messages = [
-        {
+def format_messages(messages: List[Dict[str, str]]) -> str:
+    formated_messages = []
+    for message in messages:
+        formated_message = {}
+        for key, value in message.items():
+            formated_message[key] = pprint.pformat(value)
+        formated_messages.append(formated_message)
+    return pprint.pformat(formated_messages)
+
+
+class Assistant:
+    model_name: str
+    temperature: float
+    _client: OpenAI
+    _system_message: Dict[str, str]
+    _messages: List[Dict[str, str]]
+    _tokenizer: PreTrainedTokenizerFast
+
+    def __init__(self, model_temperature: float, cfg: DictConfig):
+        login(token="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")
+        self._client = OpenAI(
+            base_url="http://localhost:8000/v1", api_key="token-abc123"
+        )
+        self._system_message = {
             "role": "system",
             "content": cfg.system_prompt,
-        },
-        {"role": "user", "content": prompt},
-    ]
+        }
+        self._messages = []
+        self.temperature = model_temperature
+        self.model_name = cfg.model_name
+        self._tokenizer = AutoTokenizer.from_pretrained(cfg.model_name)
+        assert (
+            self._tokenizer != False
+        ), f"somthing went wrong when fetching the default tokenizer for model {cfg.model_name}"
 
-    completion = client.chat.completions.create(
-        model=cfg.model_name,
-        messages=messages,
-        temperature=cfg.model_temperature,
-    )
+    def _all_messages(self):
+        return [self._system_message] + self._messages
 
-    return completion.choices[0].message.content
+    def _tokenized_messages(self):
+        return self._tokenizer.apply_chat_template(self._all_messages(), tokenize=True)
+
+    def generate_answer(self, prompt: str, cfg: DictConfig) -> str:
+        self._messages += [
+            {"role": "user", "content": prompt},
+        ]
+        num_tokens = len(self._tokenized_messages())
+        while num_tokens > cfg.max_model_length - cfg.answer_token_length:
+            self._messages.pop(0)
+            num_tokens = len(self._tokenized_messages())
+
+        # print(
+        #     f"calling model with messages: \n {format_messages(self._all_messages())}"
+        # )
+        completion = self._client.completions.create(
+            model=self.model_name,
+            max_tokens=cfg.answer_token_length,
+            prompt=self._tokenized_messages(),
+            temperature=self.temperature,
+        )
+        answer = completion.choices.pop().text
+        self._messages += [
+            {
+                "role": "assistant",
+                "content": answer,
+            }
+        ]
+        return answer
 
 
 def migrate_code(code: str, cfg: DictConfig):
@@ -58,41 +105,45 @@ def migrate_code(code: str, cfg: DictConfig):
     Returns:
         str: The migrated and potentially linted Spark Connect code.
     """
-    login(token="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")
-    client = OpenAI(base_url="http://localhost:8000/v1", api_key="token-abc123")
-    vectorstore_settings = cfg.vectorstore_setting.get(cfg.vectorstore_type, {})
+    assistant = Assistant(0.2, cfg)
+    vectorstore_settings = cfg.vectorstore_settings.get(cfg.vectorstore_type, {})
     vectorstore = VectorStoreFactory.initialize(
         cfg.vectorstore_type, **vectorstore_settings
     )
 
-    print(f"Iteration 1")
+    print(f"\nIteration 1")
     print("----------------------------------------------")
-    linter_feedback = lint_codestring(code, cfg.linter_feedback_types)
+    linter_feedback = lint_codestring(code, cfg.linter_config)
 
     if linter_feedback:
-        print(f"Linting feedback: {linter_feedback}\n")
+        print("Linting feedback:")
+        for str in linter_feedback:
+            print(str)
     else:
         print("DONE: No problems detected by the linter.\n")
         return code
 
     context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
-    prompt = build_prompt(cfg, code, linter_feedback, context, False)
+    prompt = build_prompt(cfg, code, linter_feedback, context)
+    print("PROMPT: ", prompt)
 
     # Generate initial migration suggestion
-    code = postprocess(generate_answer(cfg, client, prompt))
+    code = postprocess(assistant.generate_answer(prompt, cfg))
 
     # Optional iterative improvement process based on config settings
     if cfg.iterate:
-        for iteration in range(cfg.iteration_limit - 1):
-            print(f"Iteration {iteration + 2} of {cfg.iteration_limit}")
+        for iteration in range(cfg.iteration_limit):
+            print(f"\nIteration {iteration + 1} of {cfg.iteration_limit}")
             print("----------------------------------------------")
-            linter_feedback = lint_codestring(code, cfg.linter_feedback_types)
+            linter_feedback = lint_codestring(code, cfg.linter_config)
             if not linter_feedback:
                 print("DONE: No problems detected by the linter.\n")
                 break
-            print(f"Linting feedback: {linter_feedback}\n")
-            prompt = build_prompt(cfg, code, linter_feedback, context, True)
-            code = postprocess(generate_answer(cfg, client, prompt))
+            print("Linting feedback:")
+            for str in linter_feedback:
+                print(str)
+            prompt = build_linter_error_prompt(cfg.linter_error_prompt, linter_feedback)
+            code = postprocess(assistant.generate_answer(prompt, cfg))
 
     return code
 

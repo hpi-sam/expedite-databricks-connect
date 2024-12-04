@@ -3,7 +3,7 @@ import json
 import subprocess
 import hydra
 from linter.python_linter.linter import PythonLinter
-from linter.python_linter.matcher import (
+from linter.python_linter.spark_connect_matcher import (
     RDDApiMatcher,
     MapPartitionsMatcher,
     JvmAccessMatcher,
@@ -28,6 +28,44 @@ print(results)
 """
 
 
+def filter_diagnostics(diagnostics, lint_config):
+    """
+    Filters diagnostics to only contain entries with type in config.LINTER_CONFIG["feedback_types"].
+    """
+    feedback_types = lint_config.feedback_types
+    return [diag for diag in diagnostics if diag["type"] in feedback_types]
+
+
+def format_diagnostics(diagnostics, linter_type):
+    """
+    Formats a diagnostic object to match the expected output structure.
+    """
+    formatted_diagnostics = []
+    for diag in diagnostics:
+        formatted_diagnostics.append(
+            {
+                "message": diag.get("message", ""),
+                "line": diag.get("line", 0),
+                "col": diag.get("col", 0),
+                "type": diag.get("type", "error"),
+                "linter": linter_type,
+            }
+        )
+    return formatted_diagnostics
+
+
+def make_readable(diagnostics):
+    """
+    Makes the diagnostics more human-readable.
+    """
+    readable_diagnostics = []
+    for diag in diagnostics:
+        readable_diagnostics.append(
+            f"{diag['linter']} [{diag['type']}]: {diag['message']} (line {diag['line']}, col {diag['col']})"
+        )
+    return readable_diagnostics
+
+
 def run_pylint(code):
     """
     Run pylint on the given code string and return the diagnostics as a list of JSON objects.
@@ -48,9 +86,9 @@ def run_pylint(code):
     return pylint_diagnostics
 
 
-def lint_codestring(code, linter_feedback_types):
+def run_spark_connect_linter(code):
     """
-    Lints the specified code string and returns the diagnostics as a JSON object.
+    Run the Spark Connect linter on the given code string and return the diagnostics as a list of JSON objects.
     """
     # Instantiate the linter
     linter = PythonLinter()
@@ -65,88 +103,144 @@ def lint_codestring(code, linter_feedback_types):
     linter.add_matcher(CommandContextMatcher())
 
     # Collect diagnostics from custom matchers
-    diagnostics = linter.lint(code)
+    spark_connect_diagnostics = linter.lint(code)
 
-    # Collect diagnostics from pylint
-    pylint_diagnostics = run_pylint(code)
-
-    # Filter out "Conventions" from pylint diagnostics
-    filtered_pylint_diagnostics = [
-        diag
-        for diag in pylint_diagnostics
-        if diag.get("type", "").lower() in linter_feedback_types
-    ]
-
-    # Format pylint diagnostics to match the output structure
-    for diag in filtered_pylint_diagnostics:
-        diagnostics.append(
-            {
-                "line": diag.get("line", 0),  # Default to 0 if line key is missing
-                "column": diag.get(
-                    "column", 0
-                ),  # Default to 0 if column key is missing
-                "message": diag.get("message", "Unknown issue"),
-                "severity": diag.get(
-                    "type", "Error"
-                ).capitalize(),  # Default to "Error"
-            }
-        )
-
-    # Create a structured JSON response
-    output = []
-    for diag in diagnostics:
-        output.append(
-            {
-                "line": diag.get("line", 0),  # Default to 0 if line is missing
-                "column": diag.get("column", 0),  # Default to 0 if column is missing
-                "message": diag.get("message", "No message provided"),
-                "severity": diag.get("severity", "Error"),  # Default to "Error"
-            }
-        )
-
-    return output
+    return spark_connect_diagnostics
 
 
-def lint_file(file_path, linter_feedback_types):
+def run_mypy(code):
     """
-    Lints the specified file and returns the diagnostics as a JSON object.
+    Run mypy on the given code string and return diagnostics as a list of JSON objects.
     """
+    with open("temp_lint_code.py", "w") as temp_file:
+        temp_file.write(code)
     try:
-        with open(file_path, "r") as f:
-            code = f.read()
+        result = subprocess.run(
+            ["mypy", "--show-error-codes", "temp_lint_code.py"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        diagnostics = []
+        for line in result.stdout.splitlines():
+            parts = line.split(":")
+            if len(parts) >= 4:
+                diagnostics.append(
+                    {
+                        "line": int(parts[1]),
+                        "col": int(parts[2]),
+                        "message": ":".join(parts[3:]).strip(),
+                        "type": "type_error",
+                    }
+                )
+        return diagnostics
     except Exception as e:
-        raise FileNotFoundError(f"Error reading file: {e}")
-
-    output = lint_codestring(code, linter_feedback_types)
-
-    return output
+        return []
 
 
-@hydra.main(version_base=None, config_path=".", config_name="config")
-def main(cfg: DictConfig):
+def run_flake8(code):
     """
-    Main function to handle CLI execution.
+    Run flake8 on the given code string and return diagnostics as a list of JSON objects.
     """
-    if len(sys.argv) < 2:
-        print("Usage: python-linter <file>")
-        sys.exit(1)
-
-    file_path = sys.argv[1]
-
+    with open("temp_lint_code.py", "w") as temp_file:
+        temp_file.write(code)
     try:
-        diagnostics = lint_file(file_path, cfg.linter_feedback_types)
-        # Print the diagnostics as a JSON string
-        print(json.dumps(diagnostics, indent=2))
+        result = subprocess.run(
+            [
+                "flake8",
+                "--format=%(row)d:%(col)d:%(code)s:%(text)s",
+                "temp_lint_code.py",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        diagnostics = []
+        for line in result.stdout.splitlines():
+            parts = line.split(":")
+            if len(parts) >= 4:
+                diagnostics.append(
+                    {
+                        "line": int(parts[0]),
+                        "col": int(parts[1]),
+                        "message": parts[3].strip(),
+                        "type": parts[2].strip(),
+                    }
+                )
+        return diagnostics
     except Exception as e:
-        print(f"Error: {e}")
-        sys.exit(1)
+        return []
 
-    # Optionally, save the JSON to a file
-    # with open("lint_results.json", "w") as f:
-    #    json.dump(diagnostics, f, indent=2)
+
+def lint_codestring(code, lint_config):
+    """
+    Lints the given code string and returns the diagnostics as a JSON object.
+    """
+    diagnostics = []
+
+    if "spark_connect" in lint_config.enabled_linters:
+        diagnostics += format_diagnostics(
+            run_spark_connect_linter(code), "spark_connect"
+        )
+    if "pylint" in lint_config.enabled_linters:
+        diagnostics += format_diagnostics(run_pylint(code), "pylint")
+    if "mypy" in lint_config.enabled_linters:
+        diagnostics += format_diagnostics(run_mypy(code), "mypy")
+    if "flake8" in lint_config.enabled_linters:
+        diagnostics += format_diagnostics(run_flake8(code), "flake8")
+
+    diagnostics = filter_diagnostics(diagnostics, lint_config)
+    diagnostics.sort(key=lambda x: (x["line"], x["col"]))
+    diagnostics = make_readable(diagnostics)
+
+    # for some of the linters a temporary file is created, remove it if it exists
+    try:
+        subprocess.run(["rm", "temp_lint_code.py"])
+    except Exception as e:
+        pass
 
     return diagnostics
 
 
-if __name__ == "__main__":
-    main()
+# def lint_file(file_path):
+#     """
+#     Lints the specified file and returns the diagnostics as a JSON object.
+#     """
+#     try:
+#         with open(file_path, "r") as f:
+#             code = f.read()
+#     except Exception as e:
+#         raise FileNotFoundError(f"Error reading file: {e}")
+
+#     output = lint_codestring(code)
+
+#     return output
+
+
+# def main():
+#     """
+#     Main function to handle CLI execution.
+#     """
+#     if len(sys.argv) < 2:
+#         print("Usage: python-linter <file>")
+#         sys.exit(1)
+
+#     file_path = sys.argv[1]
+
+#     try:
+#         diagnostics = lint_file(file_path)
+#         # Print the diagnostics as a JSON string
+#         print(json.dumps(diagnostics, indent=2))
+#     except Exception as e:
+#         print(f"Error: {e}")
+#         sys.exit(1)
+
+#     # Optionally, save the JSON to a file
+#     # with open("lint_results.json", "w") as f:
+#     #    json.dump(diagnostics, f, indent=2)
+
+#     return diagnostics
+
+
+# if __name__ == "__main__":
+#     main()
