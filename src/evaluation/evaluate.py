@@ -1,24 +1,26 @@
-from .examples_pre_migration.map import mapExample
-from .examples_pre_migration.flatMap import flatMapExample
-from .examples_pre_migration.mapPartitions import mapPartitionsExample
-from .examples_pre_migration.mapReduce import mapReduceExample
-from .examples_pre_migration.readJson import readJsonExample
-from .examples_pre_migration.sparkContext import sparkContextExample
-from .run_with_spark_connect import run_example_sc
-from .examples_pre_migration.sparkJvmOrigin import setJVMOrigin
-from .examples_pre_migration.quinnRddSparkContext import quinn_rdd_spark_Context
-from .examples_pre_migration.frequentWords import frequentWordsExample
-from .examples_pre_migration.mixedRDD import mixedRDDExample
-from .examples_pre_migration.sumNumbers import sumNumbers
-from .examples_pre_migration.readJsonCsv import test_sql_dataframe_reader_api
-from .examples_pre_migration.pi import test_python_pi_issue
-from .examples_pre_migration.prefixSpan import test_prefix_span_example
-import pandas as pd
+import logging
 from ast import literal_eval
-import pandas as pd
 from typing import Callable
 
+import pandas as pd
 
+from .examples_pre_migration.flatMap import flatMapExample
+from .examples_pre_migration.frequentWords import frequentWordsExample
+from .examples_pre_migration.map import mapExample
+from .examples_pre_migration.mapPartitions import mapPartitionsExample
+from .examples_pre_migration.mapReduce import mapReduceExample
+from .examples_pre_migration.mixedRDD import mixedRDDExample
+from .examples_pre_migration.pi import test_python_pi_issue
+from .examples_pre_migration.prefixSpan import test_prefix_span_example
+from .examples_pre_migration.quinnRddSparkContext import quinn_rdd_spark_Context
+from .examples_pre_migration.readJson import readJsonExample
+from .examples_pre_migration.readJsonCsv import test_sql_dataframe_reader_api
+from .examples_pre_migration.sparkContext import sparkContextExample
+from .examples_pre_migration.sparkJvmOrigin import setJVMOrigin
+from .examples_pre_migration.sumNumbers import sumNumbers
+from .run_with_spark_connect import run_example_sc
+
+logger = logging.getLogger(__name__)
 examples = [
     ("mixedRDD", mixedRDDExample),
     ("map", mapExample),
@@ -83,10 +85,10 @@ def result_to_df(file_name: str, result: pd.DataFrame):
 
 
 def generate(
-    file_name: str,
-    example_function: Callable,
-    model_generate: Callable,
-    metrics: dict[str, int],
+        file_name: str,
+        example_function: Callable,
+        model_generate: Callable,
+        metrics: dict[str, int],
 ):
     with open(f"evaluation/examples_pre_migration/{file_name}.py", "r") as file:
         code = file.read()
@@ -122,6 +124,7 @@ def generate(
 
 
 def evaluate(model_generation_function: Callable):
+    logger.info("evaluate")
     metrics = {"score": 0, "invalid_output": 0, "code_error": 0, "different_output": 0}
 
     for i, (file_name, example_function) in enumerate(examples):

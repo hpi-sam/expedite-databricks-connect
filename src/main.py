@@ -1,4 +1,7 @@
-import pprint
+import datetime
+import logging
+import os
+from pathlib import Path
 from typing import Dict, List
 
 from huggingface_hub import login
@@ -7,18 +10,24 @@ from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
 import config
 from evaluation.evaluate import evaluate, postprocess
-from linter.python_linter.__main__ import lint_codestring, print_linter_diagnostics
+from linter.python_linter.__main__ import lint_codestring
 from vector_store.vector_store_factory import VectorStoreFactory
 
+logger = logging.getLogger(__name__)
 
-def format_messages(messages: List[Dict[str, str]]) -> str:
-    formated_messages = []
-    for message in messages:
-        formated_message = {}
-        for key, value in message.items():
-            formated_message[key] = pprint.pformat(value)
-        formated_messages.append(formated_message)
-    return pprint.pformat(formated_messages)
+
+def log_messages(messages: List[Dict[str, str]]) -> None:
+    num_messages = len(messages)
+    logger_message = ""
+    for i, message in enumerate(messages):
+        logger_message += f"""
+Message {i + 1}/{num_messages}
+{"=" * 100}
+Role: {message["role"]}
+Content: {message["content"]}
+{"=" * 100}
+"""
+    logger.info(logger_message)
 
 
 class Assistant:
@@ -61,9 +70,7 @@ class Assistant:
             self._messages.pop(0)
             num_tokens = len(self._tokenized_messages())
 
-        print(
-            f"calling model with messages: \n {format_messages(self._all_messages())}"
-        )
+        log_messages(self._all_messages())
         completion = self._client.completions.create(
             model=self.model_name,
             max_tokens=config.ANSWER_TOKEN_LENGTH,
@@ -74,7 +81,9 @@ class Assistant:
         self._messages += [
             {
                 "role": "assistant",
-                "content": answer,
+                "content": answer.replace(
+                    "<|start_header_id|>assistant<|end_header_id|>", ""
+                ),
             }
         ]
         return answer
@@ -100,9 +109,7 @@ def migrate_code(code: str):
     print("----------------------------------------------")
     linter_feedback = lint_codestring(code)
 
-    if linter_feedback:
-        print_linter_diagnostics(linter_feedback)
-    else:
+    if not linter_feedback:
         print("DONE: No problems detected by the linter.\n")
         return code
 
@@ -123,8 +130,6 @@ def migrate_code(code: str):
             if not linter_feedback:
                 print("DONE: No problems detected by the linter.\n")
                 break
-            print_linter_diagnostics(linter_feedback)
-            print("\n")
             prompt = config.LINTER_ERROR_PROMPT.format(error=linter_feedback)
             code = postprocess(assistant.generate_answer(prompt))
 
@@ -136,4 +141,12 @@ if __name__ == "__main__":
     Entry point for the script. Evaluates the `migrate_code` function
     to test its performance on pre-defined code samples.
     """
+    logging_dir = Path("../logs/")
+    logging_file = (
+            logging_dir
+            / f"{datetime.datetime.now().strftime(format="%Y-%m-%d_%H:%M:%S")}.log"
+    )
+    os.makedirs(logging_dir, exist_ok=True)
+    logging.basicConfig(filename=logging_file, level=logging.INFO)
+    logging.Filter()
     evaluate(migrate_code)
