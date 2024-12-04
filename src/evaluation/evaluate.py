@@ -17,6 +17,7 @@ import pandas as pd
 from ast import literal_eval
 import pandas as pd
 from typing import Callable
+from omegaconf import DictConfig
 
 
 examples = [
@@ -87,11 +88,12 @@ def generate(
     example_function: Callable,
     model_generate: Callable,
     metrics: dict[str, int],
+    cfg: DictConfig,
 ):
     with open(f"evaluation/examples_pre_migration/{file_name}.py", "r") as file:
         code = file.read()
 
-    output = model_generate(code)
+    output = model_generate(code, cfg)
 
     print(f"----------------- Old code ------------------")
     print(f"{code}")
@@ -121,7 +123,7 @@ def generate(
     return metrics
 
 
-def evaluate(model_generation_function: Callable):
+def evaluate(model_generation_function: Callable, cfg: DictConfig):
     metrics = {"score": 0, "invalid_output": 0, "code_error": 0, "different_output": 0}
 
     for i, (file_name, example_function) in enumerate(examples):
@@ -129,7 +131,7 @@ def evaluate(model_generation_function: Callable):
         print(f"({i + 1}/{len(examples)}) Evaluating {file_name} example")
         print("==============================================")
         metrics = generate(
-            file_name, example_function, model_generation_function, metrics
+            file_name, example_function, model_generation_function, metrics, cfg
         )
 
     print("\nSucces Rate:", metrics["score"], "/", len(examples))
@@ -143,3 +145,5 @@ def evaluate(model_generation_function: Callable):
         "Generated function throws error: ", metrics["code_error"], "/", len(examples)
     )
     print("Different output: ", metrics["different_output"], "/", len(examples))
+
+    return metrics

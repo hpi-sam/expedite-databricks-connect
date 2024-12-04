@@ -5,10 +5,25 @@ from huggingface_hub import login
 from openai import OpenAI
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
-import config
 from evaluation.evaluate import evaluate, postprocess
 from linter.python_linter.__main__ import lint_codestring
 from vector_store.vector_store_factory import VectorStoreFactory
+import hydra
+import wandb
+from omegaconf import DictConfig, OmegaConf
+
+
+def build_prompt(cfg: DictConfig, code: str, error: str, context: str):
+    prompt = cfg.initial_prompt + code
+    if cfg.use_error:
+        prompt += cfg.error_prompt + str(error)
+    if cfg.use_rag:
+        prompt += cfg.context_prompt + str(context)
+    return prompt
+
+
+def build_linter_error_prompt(prompt, error):
+    return prompt + str(error)
 
 
 def format_messages(messages: List[Dict[str, str]]) -> str:
@@ -29,22 +44,22 @@ class Assistant:
     _messages: List[Dict[str, str]]
     _tokenizer: PreTrainedTokenizerFast
 
-    def __init__(self, model_temperature: float):
+    def __init__(self, model_temperature: float, cfg: DictConfig):
         login(token="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")
         self._client = OpenAI(
             base_url="http://localhost:8000/v1", api_key="token-abc123"
         )
         self._system_message = {
             "role": "system",
-            "content": config.SYSTEM_PROMPT,
+            "content": cfg.system_prompt,
         }
         self._messages = []
         self.temperature = model_temperature
-        self.model_name = config.MODEL_NAME
-        self._tokenizer = AutoTokenizer.from_pretrained(config.MODEL_NAME)
+        self.model_name = cfg.model_name
+        self._tokenizer = AutoTokenizer.from_pretrained(cfg.model_name)
         assert (
-                self._tokenizer != False
-        ), f"somthing went wrong when fetching the default tokenizer for model {config.MODEL_NAME}"
+            self._tokenizer != False
+        ), f"somthing went wrong when fetching the default tokenizer for model {cfg.model_name}"
 
     def _all_messages(self):
         return [self._system_message] + self._messages
@@ -52,12 +67,12 @@ class Assistant:
     def _tokenized_messages(self):
         return self._tokenizer.apply_chat_template(self._all_messages(), tokenize=True)
 
-    def generate_answer(self, prompt: str) -> str:
+    def generate_answer(self, prompt: str, cfg: DictConfig) -> str:
         self._messages += [
             {"role": "user", "content": prompt},
         ]
         num_tokens = len(self._tokenized_messages())
-        while num_tokens > config.MAX_MODEL_LENGTH - config.ANSWER_TOKEN_LENGTH:
+        while num_tokens > cfg.max_model_length - cfg.answer_token_length:
             self._messages.pop(0)
             num_tokens = len(self._tokenized_messages())
 
@@ -66,7 +81,7 @@ class Assistant:
         # )
         completion = self._client.completions.create(
             model=self.model_name,
-            max_tokens=config.ANSWER_TOKEN_LENGTH,
+            max_tokens=cfg.answer_token_length,
             prompt=self._tokenized_messages(),
             temperature=self.temperature,
         )
@@ -80,7 +95,7 @@ class Assistant:
         return answer
 
 
-def migrate_code(code: str):
+def migrate_code(code: str, cfg: DictConfig):
     """
     Try to migrate provided code from classic Spark to Spark Connect.
 
@@ -90,51 +105,81 @@ def migrate_code(code: str):
     Returns:
         str: The migrated and potentially linted Spark Connect code.
     """
-    assistant = Assistant(0.2)
-    vectorstore_settings = config.VECTORSTORE_SETTINGS.get(config.VECTORSTORE_TYPE, {})
+    assistant = Assistant(0.2, cfg)
+    vectorstore_settings = cfg.vectorstore_settings.get(cfg.vectorstore_type, {})
     vectorstore = VectorStoreFactory.initialize(
-        config.VECTORSTORE_TYPE, **vectorstore_settings
+        cfg.vectorstore_type, **vectorstore_settings
     )
 
     print(f"\nIteration 1")
     print("----------------------------------------------")
-    linter_feedback = lint_codestring(code)
+    linter_feedback = lint_codestring(code, cfg.linter_config)
 
     if linter_feedback:
         print("Linting feedback:")
-        for str in linter_feedback: print(str)
+        for str in linter_feedback:
+            print(str)
     else:
         print("DONE: No problems detected by the linter.\n")
         return code
 
-    context = vectorstore.similarity_search(code, k=4)
-    prompt = config.INITIAL_PROMPT.format(
-        code=code, error=linter_feedback, context=context
-    )
+    context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
+    prompt = build_prompt(cfg, code, linter_feedback, context)
 
     # Generate initial migration suggestion
-    code = postprocess(assistant.generate_answer(prompt))
+    code = postprocess(assistant.generate_answer(prompt, cfg))
 
     # Optional iterative improvement process based on config settings
-    if config.ITERATE:
-        for iteration in range(config.ITERATION_LIMIT):
-            print(f"\nIteration {iteration + 1} of {config.ITERATION_LIMIT}")
+    if cfg.iterate:
+        for iteration in range(cfg.iteration_limit):
+            print(f"\nIteration {iteration + 1} of {cfg.iteration_limit}")
             print("----------------------------------------------")
-            linter_feedback = lint_codestring(code)
+            linter_feedback = lint_codestring(code, cfg.linter_config)
             if not linter_feedback:
                 print("DONE: No problems detected by the linter.\n")
                 break
             print("Linting feedback:")
-            for str in linter_feedback: print(str)
-            prompt = config.LINTER_ERROR_PROMPT.format(error=linter_feedback)
-            code = postprocess(assistant.generate_answer(prompt))
+            for str in linter_feedback:
+                print(str)
+            prompt = build_linter_error_prompt(cfg.linter_error_prompt, linter_feedback)
+            code = postprocess(assistant.generate_answer(prompt, cfg))
 
     return code
 
 
-if __name__ == "__main__":
+def run_experiment(cfg: DictConfig):
+
+    wandb.init(
+        project="mp",
+        config=OmegaConf.to_container(cfg, resolve=True),
+        settings=wandb.Settings(start_method="thread"),
+        name=cfg.run_name,
+    )
+
+    avg_score = 0
+
+    for iteration in range(cfg.eval_iterations):
+        metrics = evaluate(migrate_code, cfg)
+        metrics["iteration"] = iteration
+        wandb.log(metrics)
+        avg_score += metrics["score"]
+
+    avg_score /= cfg.eval_iterations
+
+    wandb.log({"avg_score": avg_score})
+
+
+@hydra.main(version_base=None, config_path=".", config_name="config")
+def main(cfg: DictConfig):
     """
     Entry point for the script. Evaluates the `migrate_code` function
     to test its performance on pre-defined code samples.
     """
-    evaluate(migrate_code)
+    if cfg.log_results:
+        run_experiment(cfg)
+    else:
+        evaluate(migrate_code, cfg)
+
+
+if __name__ == "__main__":
+    main()
