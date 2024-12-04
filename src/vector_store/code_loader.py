@@ -9,8 +9,6 @@ from langchain_text_splitters import (
 from langchain.schema import Document
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
-from python_linter.__main__ import get_linter
-from python_linter.linter import PythonLinter
 
 
 CODE_DATA_FILE_PATH = os.environ["CODE_DATA_FILE_PATH"]
