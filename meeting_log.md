@@ -30,7 +30,41 @@
 
 *
 
----
+# Meeting with Martin 05.12.2024
+
+## Agenda
+-  Present progress
+  
+## Attendees
+
+- [ ] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [ ] @elenagensch
+- [x] @cdfhalle
+
+
+## Meeting notes
+
+
+- Finding out which kind of errors
+  - use python interpreter to check if it is syntactically correct?
+  - import all imports and then eval code
+
+- Martin's idea for more examples:
+    - use unit tests from pyspark for rdds etc
+- record small demo video 3-5 minutes, little presentation and go through code and example
+    - for beginning of January
+- final presentation in Databricks office 
+
+Internal discussion with Chris:
+- get runtime errors by running code by executing code just to find out if this would help
+- track for individual examples the distribution of how often they fail
+    - track what makes the code complex
+- how is the code split? - are there different ways of splitting it?
+- try OpenAI model -> which subscription necessary?
+- Elena's card receipt for team building
+
 # Biweekly 05.12.2024
 
 | Name            | About                       | Title         | Agenda | Timekeeping | Notes |
