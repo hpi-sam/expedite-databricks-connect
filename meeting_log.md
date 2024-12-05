@@ -38,14 +38,11 @@
 | Meeting template| Meeting template for keylime | Meeting dd/mm/yy | @juliuspor | @xyz | @cdfhalle |
 
 ## Agenda
-- Sollen wir noch konkretere TODOs festlegen
-- Meeting mit Marting
-- Todos bis Donnerstag
-- 
+- conda und den umgang mit main auf github
 
 ## Attendees
 
-- [x] @juliuspor
+- [ ] @juliuspor
 - [x] @sm1lla
 - [x] @joh-dah
 - [x] @elenagensch
@@ -61,7 +58,27 @@
 
 ## Meeting notes
 
-*
+* Johanna hat statische Analyzer hinzugefügt: Mypy und Flake8
+* Johanna hat Prints formatiert
+* Smilla hat alles auf wandb geändert
+* ...und experimente laufen lassen
+  * no Rag funktioniert am besten
+  * no Rag no Error funktioniert am zweitbesten
+* Zur benutztung von Main smillas PR lesen
+* Conrad hat Assistant Klasse geschrieben, Conda environment gefixt und Logging eingebaut (noch nicht gemerged)
+* Bei Änderungen an der environment.yml am besten form mergen noch einmal versuchen ein Environment mit der yml zu erstellen.
+  * Außerdem aufpassen beim mergen.
+* Bei kleineren Änderungen zumindest nachricht in den Telegram
+* Bei größeren Änderungen pull request auf machen
+* Bei dingen vermutlich viele Konflikte erzeugen pull request reviewen lassen
+* Was kann man noch machen?
+  * Embedding Funktion checken / Retriever Anschauen
+  * Stack Overflow Code verwenden
+  * Modell selbst den Vectorstore durchsuchen lassen
+  * (mehr) Experimente Machen, schauen was hilft und was nicht
+    * Konkret anschauen, welche Beispiele gelöst werden
+  * Prompt engineering
+    * Linter output neben den Code Zeilen die den Error produzieren
 
 ---
 # Biweekly 03.12.2024
