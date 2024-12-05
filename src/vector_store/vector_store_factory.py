@@ -32,7 +32,7 @@ class VectorStoreFactory:
 
         elif vectorstore_type == "code":
             repo_branch_list = kwargs.get("repo_branch_list", [])
-            return vector_store_from_repos(repo_branch_list)
+            return vector_store_from_repos()
 
         elif vectorstore_type == "api_ref":
             vector_store_path = kwargs.get("vector_store_path")
