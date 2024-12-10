@@ -123,7 +123,12 @@ def migrate_code(code: str, cfg: DictConfig):
         print("DONE: No problems detected by the linter.\n")
         return code
 
-    context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
+    filter = None
+    if "type" in vectorstore_settings:
+        if cfg.vectorstore_type == "code":
+            filter = {"type": vectorstore_settings["type"]}
+
+    context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
     context = [c.page_content for c in context]
     prompt = build_prompt(cfg, code, linter_feedback, context)
 

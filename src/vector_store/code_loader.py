@@ -14,16 +14,7 @@ from langchain_chroma import Chroma
 CODE_DATA_FILE_PATH = os.environ["CODE_DATA_FILE_PATH"]
 
 
-def vector_store_from_repos():
-    """
-    Load the saved data from a JSON file and reconstruct documents.
-
-    Args:
-        filename (str): The filename to load the data from.
-
-    Returns:
-        list: A list of LangChain Document objects.
-    """
+def load_data_from_file():
     with open(CODE_DATA_FILE_PATH, "r") as f:
         data = json.load(f)
 
@@ -33,16 +24,46 @@ def vector_store_from_repos():
     ]
 
     text_splitter = RecursiveCharacterTextSplitter.from_language(
-        language=Language.PYTHON, chunk_size=1000, chunk_overlap=50
+        language=Language.PYTHON, chunk_size=1000
     )
 
+    splits = text_splitter.split_documents(code_docs)[:5000]
+
+    return splits
+
+
+def vector_store_from_repos(
+    data_path: str,
+    vector_store_path: str,
+    from_json: bool = False,
+    from_store: bool = True,
+):
+    """
+    Load the saved data from a JSON file and reconstruct documents.
+
+    Args:
+        filename (str): The filename to load the data from.
+
+    Returns:
+        list: A list of LangChain Document objects.
+    """
     model_name = "mixedbread-ai/mxbai-embed-large-v1"
     hf_embeddings = HuggingFaceEmbeddings(
         model_name=model_name,
     )
 
-    splits = text_splitter.split_documents(code_docs)
+    if os.path.exists(vector_store_path):
+        return Chroma(
+            persist_directory=vector_store_path,
+            embedding_function=hf_embeddings,
+        )
 
-    vectorstore = Chroma.from_documents(splits, embedding=hf_embeddings)
+    splits = load_data_from_file()
+
+    vectorstore = Chroma.from_documents(
+        splits,
+        embedding=hf_embeddings,
+        persist_directory="/raid/shared/masterproject2024/vector_stores/code_vector_store_small",
+    )
 
     return vectorstore

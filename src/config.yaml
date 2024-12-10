@@ -10,12 +10,17 @@ vectorstore_settings:
         
 
     code: 
+        vector_store_path: "/raid/shared/masterproject2024/vector_stores/code_vector_store_small"
+        data_path: "/raid/shared/masterproject2024/rag/data/code.json"
         repo_branch_list:
             - { repo: "mrpowers-io/quinn", branch: "main"}
             - { repo: "debugger24/pyspark-test", branch: "main"}
             - { repo: "julioasotodv/spark-df-profiling", branch: "master"}
             - { repo: "Labelbox/labelspark", branch: "master"}
             - { repo: "lvhuyen/SparkAid", branch: "master"}
+        from_json: False
+        from_store: True
+        type: connect
 
     api_ref:
         vector_store_path: "/raid/shared/masterproject2024/vector_stores/vector_store"
@@ -30,7 +35,7 @@ linter_feedback_types:
 # - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16
 # - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16
 # - meta-llama/CodeLlama-70b-Python-hf
-model_name: "neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16"
+model_name: "neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16"
 model_temperature: 0.2
 # model length in token make sure the same value is used for serving the model
 max_model_length: 8192
