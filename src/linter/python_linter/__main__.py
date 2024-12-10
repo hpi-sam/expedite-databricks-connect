@@ -11,6 +11,7 @@ from linter.python_linter.spark_connect_matcher import (
     SetLogLevelMatcher,
     Log4JMatcher,
     CommandContextMatcher,
+    RddAttributeMatcher,
 )
 from omegaconf import DictConfig
 
@@ -101,6 +102,7 @@ def run_spark_connect_linter(code):
     linter.add_matcher(SetLogLevelMatcher())
     linter.add_matcher(Log4JMatcher())
     linter.add_matcher(CommandContextMatcher())
+    linter.add_matcher(RddAttributeMatcher())
 
     # Collect diagnostics from custom matchers
     spark_connect_diagnostics = linter.lint(code)
