@@ -1,3 +1,32 @@
+# Biweekly 10.12.2024
+
+| Name            | About                       | Title         | Agenda         | Timekeeping | Notes        |
+|------------------|-----------------------------|---------------|----------------|-------------|--------------|
+| Meeting Template |  | Meeting 01/01/0001 | |    | @elenagensch |
+
+## Agenda
+- OpenAI credits: Julius will write an email.
+- Linter feedback as inline comments in the code, PR to be created.
+- Conrad suggests "Chain of Thought."
+- Julius will try using Google for solutions.
+- Discuss deliverables for Martin on Thursday (code video + final presentation).
+
+## Attendees
+
+- [x] @juliuspor  
+- [ ] @sm1lla  
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle  
+
+## Topics
+
+- **OpenAI Credits**: Julius will write and send an email regarding this.
+- **Linter Feedback Prompt engineering**: Feedback is added as inline comments in the code, followed by creating a PR.
+- **Chain of Thought**: potential approach for better logical reasoning - @cdfhalle.
+- **Google Searches**:  explore solutions using Google for prompts - @juliuspor.
+- **Deliverables**: Code video and final presentation to be discussed on Thursday.
+
 # Biweekly 01.01.0001
 
 | Name            | About                       | Title         | Agenda | Timekeeping | Notes |
