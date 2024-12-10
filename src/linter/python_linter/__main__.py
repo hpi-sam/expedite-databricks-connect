@@ -54,16 +54,50 @@ def format_diagnostics(diagnostics, linter_type):
     return formatted_diagnostics
 
 
-def make_readable(diagnostics):
+def annotate_code_with_diagnostics(code, diagnostics):
+    """
+    Annotates the given code with comments based on the diagnostics provided.
+
+    Parameters:
+        code (str): The original code as a string.
+        diagnostics (list): A list of diagnostic dictionaries containing:
+            - message (str): The diagnostic message.
+            - line (int): The line number of the diagnostic (1-based).
+            - col (int): The column number of the diagnostic.
+            - type (str): The type of diagnostic (e.g., "error").
+            - linter (str): The linter name.
+
+    Returns:
+        str: The annotated code as a string.
+    """
+    # Split the code into lines
+    code_lines = code.split("\n")
+
+    # Group diagnostics by line number
+    diagnostics_by_line = {}
+    for diag in diagnostics:
+        line = diag["line"] - 2  # Convert to 0-based index
+        if line not in diagnostics_by_line:
+            diagnostics_by_line[line] = []
+        diagnostics_by_line[line].append(diag)
+
+    # Annotate code lines with diagnostics
+    annotaded_code = ""
+    for i, line in enumerate(code_lines):
+        annotaded_code += line + "\n"
+        if i in diagnostics_by_line:
+            for diag in diagnostics_by_line[i]:
+                annotaded_code += f"# {diag['linter']} - {diag['type'].capitalize()}: {diag['message']}\n"
+    return annotaded_code
+
+
+def print_diagnostics(diagnostics):
     """
     Makes the diagnostics more human-readable.
     """
-    readable_diagnostics = []
+    print("Linter diagnostics:")
     for diag in diagnostics:
-        readable_diagnostics.append(
-            f"{diag['linter']} [{diag['type']}]: {diag['message']} (line {diag['line']}, col {diag['col']})"
-        )
-    return readable_diagnostics
+        print(f"{diag['linter']} [{diag['type']}]: {diag['message']} (line {diag['line']}, col {diag['col']})")
 
 
 def run_pylint(code):
@@ -191,7 +225,6 @@ def lint_codestring(code, lint_config):
 
     diagnostics = filter_diagnostics(diagnostics, lint_config)
     diagnostics.sort(key=lambda x: (x["line"], x["col"]))
-    diagnostics = make_readable(diagnostics)
 
     # for some of the linters a temporary file is created, remove it if it exists
     try:
@@ -200,7 +233,6 @@ def lint_codestring(code, lint_config):
         pass
 
     return diagnostics
-
 
 # def lint_file(file_path):
 #     """

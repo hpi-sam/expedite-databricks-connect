@@ -30,38 +30,37 @@ linter_feedback_types:
 # - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16
 # - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16
 # - meta-llama/CodeLlama-70b-Python-hf
-model_name: "neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16"
+model_name: "neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16"
 model_temperature: 0.2
 # model length in token make sure the same value is used for serving the model
 max_model_length: 8192
 answer_token_length: 2048
 linter_config : 
-    enabled_linters: 
+    enabled_linters: # List of linters to use. Possible values: 'pylint', 'mypy', 'flake8', 'spark_connect'
         - pylint
-        - mypy
-        - flake8
         - spark_connect
     feedback_types: 
         - error
         - warning  # Return only these severities. Possible values: 'error', 'warning', 'convention' (maybe more)
 initial_prompt: "
+        You are provided with PySpark code that is not compatible with Spark Connect. Rewrite the code so that it is compatible with Spark Connect.
         The rewritten code should have exactly the same functionality as the original code and should return exactly the same output.
-        This is the original code that does not work with spark connect:
+        This is the original code that does not work with spark connect.
         
         "
-error_prompt: "\nWhen executed, the code produces the following error: "
+iterated_linter_prompt : "
+        Unfortunately, the code does not seem to work. This can be due to the fact that the code is not compatible with Spark Connect or
+        other issues.
+        Please fix the issues and make sure that the code you produce is correct and compatible with spark connect.
+        
+      
+"
+linter_prompt: "The code was preprocessed by a linter. Known issues are added as comments to the code\n\n"
 
 context_prompt: "\n\nIn case it is helpful you can use the following context to help you with the task: 
 
                 "
 
-linter_error_prompt : "
-        Unfortunately, the code does not seem to work with spark connect.
-        Please rewrite the code to work with spark connect. Make sure the code is correct python code that can be executed without errors.
-        The Spark Connect Linter produces the following error:
-        
-      
-"
 system_prompt: "You will be provided with PySpark Code that is not compatible with Spark Connect.
                 You will return an updated version of the code that has exactly the same output but is compatible with Spark Connect.
                 Only return code blocks."
