@@ -10,12 +10,17 @@ vectorstore_settings:
         
 
     code: 
+        vector_store_path: "/raid/shared/masterproject2024/vector_stores/code_vector_store_small"
+        data_path: "/raid/shared/masterproject2024/rag/data/code.json"
         repo_branch_list:
             - { repo: "mrpowers-io/quinn", branch: "main"}
             - { repo: "debugger24/pyspark-test", branch: "main"}
             - { repo: "julioasotodv/spark-df-profiling", branch: "master"}
             - { repo: "Labelbox/labelspark", branch: "master"}
             - { repo: "lvhuyen/SparkAid", branch: "master"}
+        from_json: False
+        from_store: True
+        type: connect
 
     api_ref:
         vector_store_path: "/raid/shared/masterproject2024/vector_stores/vector_store"

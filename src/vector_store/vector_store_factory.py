@@ -31,8 +31,14 @@ class VectorStoreFactory:
             return vector_store_from_docs(docs)
 
         elif vectorstore_type == "code":
-            repo_branch_list = kwargs.get("repo_branch_list", [])
-            return vector_store_from_repos()
+            vector_store_path = kwargs.get("vector_store_path")
+            data_path = kwargs.get("data_path")
+            from_json = kwargs.get("from_json")
+            from_store = kwargs.get("from_vect")
+
+            return vector_store_from_repos(
+                data_path, vector_store_path, from_json, from_store
+            )
 
         elif vectorstore_type == "api_ref":
             vector_store_path = kwargs.get("vector_store_path")

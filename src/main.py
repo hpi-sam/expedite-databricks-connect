@@ -132,7 +132,12 @@ def migrate_code(code: str, cfg: DictConfig):
         print("DONE: No problems detected by the linter.\n")
         return code
 
-    context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
+    filter = None
+    if "type" in vectorstore_settings:
+        if cfg.vectorstore_type == "code":
+            filter = {"type": vectorstore_settings["type"]}
+
+    context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
     context = [c.page_content for c in context]
     prompt = build_prompt(cfg, code, linter_diagnostics, context)
     print(f"Prompt: {prompt}")
@@ -166,18 +171,29 @@ def run_experiment(cfg: DictConfig):
         config=OmegaConf.to_container(cfg, resolve=True),
         settings=wandb.Settings(start_method="thread"),
         name=cfg.run_name,
+        entity="conrad-halle-university-of-potsdam",
     )
 
     avg_score = 0
+    individual_metrics = {}
 
     for iteration in range(cfg.eval_iterations):
         metrics = evaluate(migrate_code, cfg)
         metrics["iteration"] = iteration
-        wandb.log(metrics)
         avg_score += metrics["score"]
+        for key, value in metrics["individual_metrics"].items():
+            if key not in individual_metrics:
+                individual_metrics[key] = value
+            else:
+                individual_metrics[key] += value
+        metrics.pop("individual_metrics", None)
+        wandb.log(metrics)
 
     avg_score /= cfg.eval_iterations
+    for key, value in individual_metrics.items():
+        individual_metrics[key] = value / cfg.eval_iterations
 
+    wandb.log({"avg_individual_metrics": individual_metrics})
     wandb.log({"avg_score": avg_score})
 
 
