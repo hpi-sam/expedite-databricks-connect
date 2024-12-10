@@ -155,6 +155,7 @@ def run_experiment(cfg: DictConfig):
         config=OmegaConf.to_container(cfg, resolve=True),
         settings=wandb.Settings(start_method="thread"),
         name=cfg.run_name,
+        entity="conrad-halle-university-of-potsdam",
     )
 
     avg_score = 0
