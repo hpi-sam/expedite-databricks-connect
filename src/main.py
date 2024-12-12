@@ -140,7 +140,7 @@ def migrate_code(code: str, cfg: DictConfig):
     context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
     context = [c.page_content for c in context]
     prompt = build_prompt(cfg, code, linter_diagnostics, context)
-    print(f"Prompt: {prompt}")
+    # print(f"Prompt: {prompt}")
 
     # Generate initial migration suggestion
     code = postprocess(assistant.generate_answer(prompt, cfg))
@@ -158,7 +158,7 @@ def migrate_code(code: str, cfg: DictConfig):
             context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
             context = [c.page_content for c in context]
             prompt = build_linter_error_prompt(cfg, code, linter_diagnostics, context)
-            print(f"Iterated Prompt: {prompt}")
+            # print(f"Iterated Prompt: {prompt}")
             code = postprocess(assistant.generate_answer(prompt, cfg))
 
     return code
