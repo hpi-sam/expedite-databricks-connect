@@ -44,9 +44,8 @@ linter_config :
     enabled_linters: # List of linters to use. Possible values: 'pylint', 'mypy', 'flake8', 'spark_connect'
         - pylint
         - spark_connect
-    feedback_types: 
-        - error
-        - warning  # Return only these severities. Possible values: 'error', 'warning', 'convention' (maybe more)
+    feedback_types: # Return only these severities. Possible values: 'error', 'warning', 'convention' (maybe more) 
+        - error 
 initial_prompt: "
         You are provided with PySpark code that is not compatible with Spark Connect. Rewrite the code so that it is compatible with Spark Connect.
         The rewritten code should have exactly the same functionality as the original code and should return exactly the same output.
