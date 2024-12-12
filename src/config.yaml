@@ -1,6 +1,6 @@
 use_rag: true
 num_rag_docs: 1
-vectorstore_type: "api_ref" # Mögliche Werte: 'docs', 'code', 'api_ref'
+vectorstore_type: "code" # Mögliche Werte: 'docs', 'code', 'api_ref'
 vectorstore_settings: 
     docs: 
         docs: 

@@ -88,7 +88,7 @@ def annotate_code_with_diagnostics(code, diagnostics):
         annotaded_code += line + "\n"
         if i in diagnostics_by_line:
             for diag in diagnostics_by_line[i]:
-                annotaded_code += f"# {diag['linter']} - {diag['type'].capitalize()}: {diag['message']}\n"
+                annotaded_code += f"# {diag['type'].upper()}({diag['linter']}): {diag['message']}\n"
     return annotaded_code
 
 
