@@ -26,7 +26,7 @@ vectorstore_settings:
         vector_store_path: "/raid/shared/masterproject2024/vector_stores/vector_store"
     
     
-iterate: true
+iterate: false
 iteration_limit: 5
 # Types of messages the linter should return. Possible values: 'error', 'warning', 'convention' (maybe more) 
 linter_feedback_types: 
@@ -71,6 +71,6 @@ system_prompt: "You will be provided with PySpark Code that is not compatible wi
 use_error: true
 number_of_examples: 14
 eval_iterations: 5
-log_results: false
-run_name: null
+log_results: true
+run_name: "error messages integrated in prompt, no iteration"
 
