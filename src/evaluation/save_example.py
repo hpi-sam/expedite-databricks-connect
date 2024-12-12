@@ -10,6 +10,7 @@ from examples_pre_migration.pi import test_python_pi_issue
 from examples_pre_migration.prefixSpan import test_prefix_span_example
 from examples_pre_migration.readJsonCsv import test_sql_dataframe_reader_api
 from examples_pre_migration.sumNumbers import sumNumbers
+from examples_pre_migration.mixedRDD import mixedRDDExample
 from pyspark.sql import SparkSession
 import pandas as pd
 
@@ -40,9 +41,7 @@ pd.DataFrame(sumNumbers(spark)).to_csv(
     "output/sumNumbers.csv", index=False, header=False
 )
 
-pd.DataFrame(test_sql_dataframe_reader_api(spark)).to_csv(
-    "output/readJsonCsv.csv", index=False, header=False
-)
+pd.DataFrame(test_sql_dataframe_reader_api(spark)).to_pickle("output/readJsonCsv.pkl")
 
 pd.DataFrame(test_python_pi_issue(spark)).to_csv(
     "output/pi.csv", index=False, header=False
@@ -51,3 +50,5 @@ pd.DataFrame(test_python_pi_issue(spark)).to_csv(
 pd.DataFrame(test_prefix_span_example(spark)).to_csv(
     "output/prefixSpan.csv", index=False, header=False
 )
+
+pd.DataFrame(mixedRDDExample(spark)).to_pickle("output/mixedRDD.pkl")
