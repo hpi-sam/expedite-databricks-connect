@@ -10,6 +10,7 @@ class Matcher:
         """
         raise NotImplementedError("Subclasses must implement 'lint'")
 
+
 class RddAttributeMatcher(Matcher):
     def lint(self, node: ast.AST) -> Iterator[Dict]:
         if isinstance(node, ast.Attribute) and node.attr == "rdd":
@@ -19,6 +20,7 @@ class RddAttributeMatcher(Matcher):
                 "line": node.lineno,
                 "col": node.col_offset,
             }
+
 
 class JvmAccessMatcher(Matcher):
     _FIELDS = [

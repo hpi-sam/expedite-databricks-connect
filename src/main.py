@@ -6,8 +6,13 @@ from openai import OpenAI
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
 from evaluation.evaluate import evaluate, postprocess
-from linter.python_linter.__main__ import lint_codestring, print_diagnostics, annotate_code_with_diagnostics
+from linter.python_linter.__main__ import (
+    lint_codestring,
+    print_diagnostics,
+    annotate_code_with_diagnostics,
+)
 from vector_store.vector_store_factory import VectorStoreFactory
+from prompt_generation.main import generate_prompt
 import hydra
 import wandb
 from omegaconf import DictConfig, OmegaConf
@@ -25,7 +30,9 @@ def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: s
     return prompt
 
 
-def build_linter_error_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: str):
+def build_linter_error_prompt(
+    cfg: DictConfig, code: str, diagnostics: list[dict], context: str
+):
     prompt = cfg.iterated_prompt
     if cfg.use_error:
         prompt += cfg.linter_prompt
@@ -139,11 +146,12 @@ def migrate_code(code: str, cfg: DictConfig):
 
     context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
     context = [c.page_content for c in context]
-    prompt = build_prompt(cfg, code, linter_diagnostics, context)
-    # print(f"Prompt: {prompt}")
+    draft_prompt = build_prompt(cfg, code, linter_diagnostics, context)
+    refined_prompt = generate_prompt(draft_prompt)
+    print(f"Prompt: {refined_prompt}")
 
     # Generate initial migration suggestion
-    code = postprocess(assistant.generate_answer(prompt, cfg))
+    code = postprocess(assistant.generate_answer(refined_prompt, cfg))
 
     # Optional iterative improvement process based on config settings
     if cfg.iterate:
@@ -157,9 +165,12 @@ def migrate_code(code: str, cfg: DictConfig):
             print_diagnostics(linter_diagnostics)
             context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
             context = [c.page_content for c in context]
-            prompt = build_linter_error_prompt(cfg, code, linter_diagnostics, context)
+            draft_prompt = build_linter_error_prompt(
+                cfg, code, linter_diagnostics, context
+            )
             # print(f"Iterated Prompt: {prompt}")
-            code = postprocess(assistant.generate_answer(prompt, cfg))
+            refined_prompt = generate_prompt(draft_prompt)
+            code = postprocess(assistant.generate_answer(refined_prompt, cfg))
 
     return code
 

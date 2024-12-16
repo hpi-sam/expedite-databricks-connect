@@ -1,6 +1,7 @@
 from random import random
 from operator import add
 
+
 def test_python_pi_issue(spark):
     """
     Test function for Pi computation focusing on identified issues at specific lines.

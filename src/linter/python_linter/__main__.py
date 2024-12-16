@@ -88,7 +88,9 @@ def annotate_code_with_diagnostics(code, diagnostics):
         annotaded_code += line + "\n"
         if i in diagnostics_by_line:
             for diag in diagnostics_by_line[i]:
-                annotaded_code += f"# {diag['type'].upper()}({diag['linter']}): {diag['message']}\n"
+                annotaded_code += (
+                    f"# {diag['type'].upper()}({diag['linter']}): {diag['message']}\n"
+                )
     return annotaded_code
 
 
@@ -98,7 +100,9 @@ def print_diagnostics(diagnostics):
     """
     print("Linter diagnostics:")
     for diag in diagnostics:
-        print(f"{diag['linter']} [{diag['type']}]: {diag['message']} (line {diag['line']}, col {diag['col']})")
+        print(
+            f"{diag['linter']} [{diag['type']}]: {diag['message']} (line {diag['line']}, col {diag['col']})"
+        )
 
 
 def run_pylint(code):
@@ -235,6 +239,7 @@ def lint_codestring(code, lint_config):
         pass
 
     return diagnostics
+
 
 # def lint_file(file_path):
 #     """

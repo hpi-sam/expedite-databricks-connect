@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark import SparkContext
 
+
 def sumNumbers(spark):
     """
     Function to test the pip sanity check by triggering the error on line 24 of the original script.
