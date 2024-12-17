@@ -1,0 +1,94 @@
+/* Apply box-sizing globally */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Reset some default styles */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* App container to take full height */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: white; /* Background color of the header */
+  position: relative; /* To position child elements if needed */
+}
+
+/* Grouped left and center sections */
+.header__left-center {
+  display: flex;
+  align-items: center;
+  border-bottom: 8px solid #b20036; /* The big orange rectangle #b20036  #df6300*/
+  padding-bottom: 5px; /* Optional: Adjust spacing below the content */
+  /* Ensure the border spans only the left and center */
+  flex: 1;
+}
+
+/* Left section styling */
+.header__left {
+  flex: 0 0 auto; /* Prevents the left section from stretching */
+  text-align: left;
+  margin-right: 20px;
+}
+
+/* Center section styling */
+.header__center {
+  flex: 1; /* Allows the center section to fill available space */
+  text-align: center;
+}
+
+
+/* Right section styling */
+.header__right {
+  flex: 0 0 auto; /* Prevents the logo section from stretching */
+  text-align: right;
+}
+
+/* Logo styling */
+/* Logo styling */
+#logo {
+  max-height: 100px; /* Maximum height of the logo */
+  width: auto;       /* Maintain aspect ratio */
+}
+
+
+/* Main content should take available space */
+main {
+  flex: 1;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Footer styling */
+.footer {
+  padding: 10px 20px;
+  background-color: white; /* Match the header background color */
+  text-align: right;
+  position: relative; /* Changed from sticky to relative */
+  width: 100%;
+}
+
+/* Optional: Ensure footer stays at the bottom if content is short */
+body, html, .app-container {
+  height: 100%;
+}
+
+
+
+/* Ensure the orange border doesn't interfere with other elements */
+.header__right img {
+  display: block;
+}
