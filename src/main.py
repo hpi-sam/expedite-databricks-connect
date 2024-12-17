@@ -12,7 +12,7 @@ from linter.python_linter.__main__ import (
     annotate_code_with_diagnostics,
 )
 from vector_store.vector_store_factory import VectorStoreFactory
-from prompt_generation.main import generate_prompt
+from prompt_generation.main import generate_initial_prompt, generate_iterated_prompt
 import hydra
 import wandb
 from omegaconf import DictConfig, OmegaConf
@@ -22,7 +22,6 @@ def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: s
     prompt = cfg.initial_prompt
     if cfg.use_error:
         prompt += cfg.linter_prompt
-        prompt += annotate_code_with_diagnostics(code, diagnostics)
     else:
         prompt += code
     if cfg.use_rag:
@@ -30,13 +29,12 @@ def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: s
     return prompt
 
 
-def build_linter_error_prompt(
+def build_iterated_prompt(
     cfg: DictConfig, code: str, diagnostics: list[dict], context: str
 ):
     prompt = cfg.iterated_prompt
     if cfg.use_error:
         prompt += cfg.linter_prompt
-        prompt += annotate_code_with_diagnostics(code, diagnostics)
     else:
         prompt += code
     if cfg.use_rag:
@@ -123,6 +121,7 @@ def migrate_code(code: str, cfg: DictConfig):
     Returns:
         str: The migrated and potentially linted Spark Connect code.
     """
+    original_code = code
     assistant = Assistant(cfg.model_temperature, cfg)
     vectorstore_settings = cfg.vectorstore_settings.get(cfg.vectorstore_type, {})
     vectorstore = VectorStoreFactory.initialize(
@@ -146,8 +145,10 @@ def migrate_code(code: str, cfg: DictConfig):
 
     context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
     context = [c.page_content for c in context]
-    draft_prompt = build_prompt(cfg, code, linter_diagnostics, context)
-    refined_prompt = generate_prompt(draft_prompt)
+    refined_prompt = generate_initial_prompt(code, linter_diagnostics, context)
+
+    # draft_prompt = build_prompt(cfg, code, linter_diagnostics, context)
+    # refined_prompt = generate_prompt(draft_prompt)
     print(f"Prompt: {refined_prompt}")
 
     # Generate initial migration suggestion
@@ -165,11 +166,13 @@ def migrate_code(code: str, cfg: DictConfig):
             print_diagnostics(linter_diagnostics)
             context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
             context = [c.page_content for c in context]
-            draft_prompt = build_linter_error_prompt(
-                cfg, code, linter_diagnostics, context
-            )
-            # print(f"Iterated Prompt: {prompt}")
-            refined_prompt = generate_prompt(draft_prompt)
+            # draft_prompt = build_linter_error_prompt(
+            #     cfg, code, linter_diagnostics, context
+            # )
+            # # print(f"Iterated Prompt: {prompt}")
+            # refined_prompt = generate_prompt(draft_prompt)
+            refined_prompt = generate_iterated_prompt(original_code, code, linter_diagnostics, context)
+            print(f"Prompt: {refined_prompt}")
             code = postprocess(assistant.generate_answer(refined_prompt, cfg))
 
     return code

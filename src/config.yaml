@@ -26,7 +26,7 @@ vectorstore_settings:
         vector_store_path: "/raid/shared/masterproject2024/vector_stores/vector_store"
     
     
-iterate: false
+iterate: true
 iteration_limit: 5
 # Types of messages the linter should return. Possible values: 'error', 'warning', 'convention' (maybe more) 
 linter_feedback_types: 
@@ -46,57 +46,10 @@ linter_config :
         - spark_connect
     feedback_types: # Return only these severities. Possible values: 'error', 'warning', 'convention' (maybe more) 
         - error 
-initial_prompt: "
-        You are provided with PySpark code that is not compatible with Spark Connect. Rewrite the code so that it is compatible with Spark Connect. 
-        Here is an example for code that you could be provided with:
-
-        ```python
-        from pyspark.sql import SparkSession
-
-        def create_spark_session():
-            spark = SparkSession.builder.appName('example').getOrCreate()
-            return spark
-
-        def read_data(spark, path):
-            df = spark.read.csv(path
-            return df
-
-        def main():
-            spark = create_spark_session()
-            df = read_data(spark, 'data.csv')
-            df.show()
-
-        if __name__ == '__main__':
-            main()
-        ```
-
-        Your task is to rewrite the code so that it is compatible with Spark Connect. The result for this example would be:
-
-        ```python
-        from pyspark.sql import SparkSession
-
-        def create_spark_session():
-            spark = SparkSession.builder.appName('example').getOrCreate()
-            return spark
-
-        def read_data(spark, path):
-            df = spark.read.csv(path)
-            return df
-
-        def main():
-            spark = create_spark_session()
-            df = read_data(spark, 'data.csv')
-            df.show()
-
-        if __name__ == '__main__':
-            main()
-        ```
-
-        The rewritten code should have exactly the same functionality as the original code and should return exactly the same output. 
-        Dont change anything from the function signature and the function name. dont add anything outside the existing funtion.
-        This is the original code that does not work with spark connect, your task is to rewrite this specific piece of code:
-
-       "
+initial_prompt: |
+    We have a code snippet that is not compatible with Spark Connect. 
+    Please describe in detail what this code does and what the expected output is.
+    Now identify the issues in the code that make it incompatible with Spark Connect and describe how you would fix them.
 
 iterated_prompt : "
         Unfortunately, the code does not seem to work. This can be due to the fact that the code is not compatible with Spark Connect or
@@ -105,7 +58,7 @@ iterated_prompt : "
         
       
 "
-linter_prompt: "The code was preprocessed by a linter. Known issues are added as comments to the code\n\n"
+linter_prompt: "The code was preprocessed by a linter. The detected problems are listed here:\n\n"
 
 context_prompt: "\n\nIn case it is helpful you can use the following context to help you with the task: 
 
