@@ -1,0 +1,40 @@
+.page-container {
+    justify-content: space-evenly;
+    align-items: stretch;
+    display: flex;
+    flex-direction: column; /* Makes content stack vertically */
+    height: 80vh;
+    margin: 0;
+    padding: 0;
+    gap: 20px; /* Reduces space between editor windows and button */
+}
+
+.editors-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+    gap: 100px;
+    flex: 1;
+}
+
+.left-box, .right-box {
+    flex: 1;
+    box-sizing: border-box;
+    max-width: 50%;
+    /*border: 1px solid black;   /**/
+}
+
+.editor-container {
+    border-radius: 15px;
+    box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+.center-button{
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically (if needed) */
+    margin-top: 15px; /* Add space between editors and button */
+}

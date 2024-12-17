@@ -35,6 +35,7 @@ body, html, #root {
   padding-bottom: 5px; /* Optional: Adjust spacing below the content */
   /* Ensure the border spans only the left and center */
   flex: 1;
+  margin-right: 20px; /*a bit space between logo*/
 }
 
 /* Left section styling */
