@@ -42,7 +42,12 @@ class VectorStoreFactory:
 
         elif vectorstore_type == "api_ref":
             vector_store_path = kwargs.get("vector_store_path")
-            return vector_store_from_api_ref(vector_store_path)
+            split_documents = kwargs.get("split_documents")
+            chunk_size = kwargs.get("chunk_size")
+            chunk_overlap = kwargs.get("chunk_overlap")
+            return vector_store_from_api_ref(
+                vector_store_path, split_documents, chunk_size, chunk_overlap
+            )
 
         else:
             raise ValueError(f"Unknown VectorStore-Type: {vectorstore_type}")

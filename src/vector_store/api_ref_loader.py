@@ -1,6 +1,7 @@
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 import os
@@ -34,7 +35,9 @@ def get_urls():
     return links
 
 
-def vector_store_from_api_ref(vector_store_path):
+def vector_store_from_api_ref(
+    vector_store_path: str, split_documents: bool, chunk_size: int, chunk_overlap: int
+):
     model_name = "mixedbread-ai/mxbai-embed-large-v1"
     hf_embeddings = HuggingFaceEmbeddings(
         model_name=model_name,
@@ -51,8 +54,11 @@ def vector_store_from_api_ref(vector_store_path):
     loader = WebBaseLoader(urls, bs_kwargs={"parse_only": bs4_strainer})
     data = loader.lazy_load()
 
-    # text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=100)
-    # all_splits = text_splitter.split_documents(data)
+    if split_documents:
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size, chunk_overlap=chunk_overlap
+        )
+        data = text_splitter.split_documents(data)
 
     vectorstore = Chroma.from_documents(
         data,

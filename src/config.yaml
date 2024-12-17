@@ -24,6 +24,9 @@ vectorstore_settings:
 
     api_ref:
         vector_store_path: "/raid/shared/masterproject2024/vector_stores/vector_store"
+        split_documents: False
+        chunk_size: 5000
+        chunk_overlap: 100
     
     
 iterate: false
