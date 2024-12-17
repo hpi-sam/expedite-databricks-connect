@@ -1,6 +1,27 @@
 # Biweekly 12.12.2024  
 
 ## Attendees  
+- [x] @juliuspor  
+- [x] @sm1lla  
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle  
+
+## Topics  
+- **High priority**: Discuss deliverables for video next Tuesday.  
+- Prompt Engineering: generate prompt automatically
+- Julius neues modell ausprobieren (4-6/14 gelöst)
+- Elena: stack overflow code: Der github code scheint besser zu funktionieren
+- Smilla: Beispiele die falsch geparsed werden etc. fixen, context mit generiertem code fetchen
+- Conrad: Mit Embeddng models herumexperimentiert
+
+## Actions
+- Video machen
+- Julius: Webapp bauen, damit alles ein bisschen schicker aussieht
+
+# Biweekly 12.12.2024  
+
+## Attendees  
 - [ ] @juliuspor  
 - [x] @sm1lla  
 - [ ] @joh-dah  
