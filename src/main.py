@@ -132,8 +132,17 @@ def migrate_code(code: str, cfg: DictConfig):
     context = [c.page_content for c in context]
     prompt = build_prompt(cfg, code, linter_feedback, context)
 
+    old_code = code
     # Generate initial migration suggestion
     code = postprocess(assistant.generate_answer(prompt, cfg))
+
+    if cfg.use_rag and cfg.update_context:
+        # Second try retrieving context:
+        assistant = Assistant(cfg.model_temperature, cfg)
+        context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
+        context = [c.page_content for c in context]
+        prompt = build_prompt(cfg, old_code, linter_feedback, context)
+        code = postprocess(assistant.generate_answer(prompt, cfg))
 
     # Optional iterative improvement process based on config settings
     if cfg.iterate:
