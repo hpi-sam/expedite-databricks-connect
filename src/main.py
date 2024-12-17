@@ -105,7 +105,7 @@ def migrate_code(code: str, cfg: DictConfig):
     Returns:
         str: The migrated and potentially linted Spark Connect code.
     """
-    assistant = Assistant(0.2, cfg)
+    assistant = Assistant(cfg.model_temperature, cfg)
     vectorstore_settings = cfg.vectorstore_settings.get(cfg.vectorstore_type, {})
     vectorstore = VectorStoreFactory.initialize(
         cfg.vectorstore_type, **vectorstore_settings
@@ -160,18 +160,29 @@ def run_experiment(cfg: DictConfig):
         config=OmegaConf.to_container(cfg, resolve=True),
         settings=wandb.Settings(start_method="thread"),
         name=cfg.run_name,
+        entity="conrad-halle-university-of-potsdam",
     )
 
     avg_score = 0
+    individual_metrics = {}
 
     for iteration in range(cfg.eval_iterations):
         metrics = evaluate(migrate_code, cfg)
         metrics["iteration"] = iteration
-        wandb.log(metrics)
         avg_score += metrics["score"]
+        for key, value in metrics["individual_metrics"].items():
+            if key not in individual_metrics:
+                individual_metrics[key] = value
+            else:
+                individual_metrics[key] += value
+        metrics.pop("individual_metrics", None)
+        wandb.log(metrics)
 
     avg_score /= cfg.eval_iterations
+    for key, value in individual_metrics.items():
+        individual_metrics[key] = value / cfg.eval_iterations
 
+    wandb.log({"avg_individual_metrics": individual_metrics})
     wandb.log({"avg_score": avg_score})
 
 

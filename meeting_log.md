@@ -1,3 +1,81 @@
+# Biweekly 12.12.2024  
+
+## Attendees  
+- [x] @juliuspor  
+- [x] @sm1lla  
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle  
+
+## Topics  
+- **High priority**: Discuss deliverables for video next Tuesday.  
+- Prompt Engineering: generate prompt automatically
+- Julius neues modell ausprobieren (4-6/14 gelöst)
+- Elena: stack overflow code: Der github code scheint besser zu funktionieren
+- Smilla: Beispiele die falsch geparsed werden etc. fixen, context mit generiertem code fetchen
+- Conrad: Mit Embeddng models herumexperimentiert
+
+## Actions
+- Video machen
+- Julius: Webapp bauen, damit alles ein bisschen schicker aussieht
+
+# Biweekly 12.12.2024  
+
+## Attendees  
+- [ ] @juliuspor  
+- [x] @sm1lla  
+- [ ] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle  
+
+## Topics  
+- **High priority**: Discuss deliverables for video next Tuesday.  
+- Embedding functions in Conrad.  
+- Vectorize: Compare RAG embedding models, evaluate differences (Llama 70B, OpenAI embedding).  
+- Retriever from RAG: Benchmark papers—most retrievers are embedding models, ranking models, or Salesforce SFR embedding.  
+- Experiment with adding context to generated code.  
+- Code context experiments are in WandB reports (some configurations slightly outperform or perform similarly to setups without RAG).
+- stackoverflow code now in json, no experiments yet
+- Evaluate via pickle not Csvs
+- Hybrid API migration paper: started to apply to our problem, sketch out code.
+- The responsibility to note what one is working on lies with each individual. Please document it in the meeting log yourself.
+
+## Actions
+-  stackoverflow, code experiments: @elenagensch
+- @cdfhalle
+- @joh-dah
+- @sm1lla
+- @juliuspor
+
+# Biweekly 10.12.2024
+
+| Name            | About                       | Title         | Agenda         | Timekeeping | Notes        |
+|------------------|-----------------------------|---------------|----------------|-------------|--------------|
+| Meeting Template |  | Meeting 01/01/0001 | |    | @elenagensch |
+
+## Agenda
+- OpenAI credits: Julius will write an email.
+- Linter feedback as inline comments in the code, PR to be created.
+- Conrad suggests "Chain of Thought."
+- Julius will try using Google for solutions.
+- Discuss deliverables for Martin on Thursday (code video + final presentation).
+
+## Attendees
+
+- [x] @juliuspor  
+- [ ] @sm1lla  
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle  
+
+## Topics
+
+- **OpenAI Credits**: Julius will write and send an email regarding this.
+- **Linter Feedback Prompt engineering**: Feedback is added as inline comments in the code, followed by creating a PR.
+- **Chain of Thought**: potential approach for better logical reasoning - @cdfhalle.
+- **Google Searches**:  explore solutions using Google for prompts - @juliuspor.
+- **Deliverables**: Code video and final presentation to be discussed on Thursday.
+
 # Biweekly 01.01.0001
 
 | Name            | About                       | Title         | Agenda | Timekeeping | Notes |
@@ -30,7 +108,41 @@
 
 *
 
----
+# Meeting with Martin 05.12.2024
+
+## Agenda
+-  Present progress
+  
+## Attendees
+
+- [ ] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah
+- [ ] @elenagensch
+- [x] @cdfhalle
+
+
+## Meeting notes
+
+
+- Finding out which kind of errors
+  - use python interpreter to check if it is syntactically correct?
+  - import all imports and then eval code
+
+- Martin's idea for more examples:
+    - use unit tests from pyspark for rdds etc
+- record small demo video 3-5 minutes, little presentation and go through code and example
+    - for beginning of January
+- final presentation in Databricks office 
+
+Internal discussion with Chris:
+- get runtime errors by running code by executing code just to find out if this would help
+- track for individual examples the distribution of how often they fail
+    - track what makes the code complex
+- how is the code split? - are there different ways of splitting it?
+- try OpenAI model -> which subscription necessary?
+- Elena's card receipt for team building
+
 # Biweekly 05.12.2024
 
 | Name            | About                       | Title         | Agenda | Timekeeping | Notes |

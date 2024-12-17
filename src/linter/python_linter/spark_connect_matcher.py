@@ -10,6 +10,15 @@ class Matcher:
         """
         raise NotImplementedError("Subclasses must implement 'lint'")
 
+class RddAttributeMatcher(Matcher):
+    def lint(self, node: ast.AST) -> Iterator[Dict]:
+        if isinstance(node, ast.Attribute) and node.attr == "rdd":
+            yield {
+                "message_id": "E9009",
+                "message": "Accessing 'rdd' from a DataFrame is not allowed. Use DataFrame APIs instead.",
+                "line": node.lineno,
+                "col": node.col_offset,
+            }
 
 class JvmAccessMatcher(Matcher):
     _FIELDS = [
