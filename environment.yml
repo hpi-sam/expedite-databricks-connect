@@ -296,3 +296,5 @@ dependencies:
 variables:
   HF_HOME: /raid/shared/masterproject2024/huggingface/
   CODE_DATA_FILE_PATH: /raid/shared/masterproject2024/rag/data/code.json
+  VLLM_BASE_URL: "http://localhost:8000/v1"
+  OPENAI_API_KEY: "token-abc123"

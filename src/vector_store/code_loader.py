@@ -1,3 +1,4 @@
+from pathlib import Path
 import re
 import json
 import os
@@ -34,7 +35,8 @@ def load_data_from_file():
 
 def vector_store_from_repos(
     data_path: str,
-    vector_store_path: str,
+    vector_store_path: str | Path,
+    embedding_function: HuggingFaceEmbeddings,
     from_json: bool = False,
     from_store: bool = True,
 ):
@@ -47,23 +49,19 @@ def vector_store_from_repos(
     Returns:
         list: A list of LangChain Document objects.
     """
-    model_name = "mixedbread-ai/mxbai-embed-large-v1"
-    hf_embeddings = HuggingFaceEmbeddings(
-        model_name=model_name,
-    )
 
     if os.path.exists(vector_store_path):
         return Chroma(
-            persist_directory=vector_store_path,
-            embedding_function=hf_embeddings,
+            persist_directory=str(vector_store_path),
+            embedding_function=embedding_function,
         )
 
     splits = load_data_from_file()
 
     vectorstore = Chroma.from_documents(
         splits,
-        embedding=hf_embeddings,
-        persist_directory="/raid/shared/masterproject2024/vector_stores/code_vector_store_small",
+        embedding=embedding_function,
+        persist_directory=str(vector_store_path),
     )
 
     return vectorstore
