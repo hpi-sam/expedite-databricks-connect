@@ -42,7 +42,7 @@ def vector_store_from_api_ref(vector_store_path):
 
     if os.path.exists(vector_store_path):
         return Chroma(
-            persist_directory=vector_store_path,
+            persist_directory=str(vector_store_path),
             embedding_function=hf_embeddings,
         )
 
