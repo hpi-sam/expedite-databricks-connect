@@ -104,7 +104,7 @@ def migrate_code(code: str, cfg: DictConfig):
     Returns:
         str: The migrated and potentially linted Spark Connect code.
     """
-    assistant = Assistant(0.2, cfg)
+    assistant = Assistant(cfg.model_temperature, cfg)
     vectorstore_settings = cfg.vectorstore_settings.get(cfg.vectorstore_type, {})
     embedding_model_name = cfg.get("embedding_model_name")
     vectorstore = VectorStoreFactory.initialize(

@@ -1,3 +1,52 @@
+# Biweekly 12.12.2024  
+
+## Attendees  
+- [x] @juliuspor  
+- [x] @sm1lla  
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle  
+
+## Topics  
+- **High priority**: Discuss deliverables for video next Tuesday.  
+- Prompt Engineering: generate prompt automatically
+- Julius neues modell ausprobieren (4-6/14 gelöst)
+- Elena: stack overflow code: Der github code scheint besser zu funktionieren
+- Smilla: Beispiele die falsch geparsed werden etc. fixen, context mit generiertem code fetchen
+- Conrad: Mit Embeddng models herumexperimentiert
+
+## Actions
+- Video machen
+- Julius: Webapp bauen, damit alles ein bisschen schicker aussieht
+
+# Biweekly 12.12.2024  
+
+## Attendees  
+- [ ] @juliuspor  
+- [x] @sm1lla  
+- [ ] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle  
+
+## Topics  
+- **High priority**: Discuss deliverables for video next Tuesday.  
+- Embedding functions in Conrad.  
+- Vectorize: Compare RAG embedding models, evaluate differences (Llama 70B, OpenAI embedding).  
+- Retriever from RAG: Benchmark papers—most retrievers are embedding models, ranking models, or Salesforce SFR embedding.  
+- Experiment with adding context to generated code.  
+- Code context experiments are in WandB reports (some configurations slightly outperform or perform similarly to setups without RAG).
+- stackoverflow code now in json, no experiments yet
+- Evaluate via pickle not Csvs
+- Hybrid API migration paper: started to apply to our problem, sketch out code.
+- The responsibility to note what one is working on lies with each individual. Please document it in the meeting log yourself.
+
+## Actions
+-  stackoverflow, code experiments: @elenagensch
+- @cdfhalle
+- @joh-dah
+- @sm1lla
+- @juliuspor
+
 # Biweekly 10.12.2024
 
 | Name            | About                       | Title         | Agenda         | Timekeeping | Notes        |
