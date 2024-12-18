@@ -295,7 +295,6 @@ dependencies:
       - zipp==3.21.0
 variables:
   HF_HOME: /raid/shared/masterproject2024/huggingface/
-  GITHUB_ACCESS_TOKEN: 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
   CODE_DATA_FILE_PATH: /raid/shared/masterproject2024/rag/data/code.json
   VLLM_BASE_URL: "http://localhost:8000/v1"
   OPENAI_API_KEY: "token-abc123"
