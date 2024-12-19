@@ -94,6 +94,9 @@ class Assistant:
         ]
         return answer
 
+    def clear_messages(self):
+        self._messages = []
+
 
 def migrate_code(code: str, cfg: DictConfig):
     """
@@ -138,9 +141,11 @@ def migrate_code(code: str, cfg: DictConfig):
 
     if cfg.use_rag and cfg.update_context:
         # Second try retrieving context:
-        assistant = Assistant(cfg.model_temperature, cfg)
+        assistant.clear_messages()
         context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
         context = [c.page_content for c in context]
+        for c in context:
+            print(c)
         prompt = build_prompt(cfg, old_code, linter_feedback, context)
         code = postprocess(assistant.generate_answer(prompt, cfg))
 
