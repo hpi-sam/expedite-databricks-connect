@@ -1,38 +1,22 @@
 from langchain_chroma import Chroma
-from langchain_community.document_loaders import WebBaseLoader
-from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-import requests
-from bs4 import BeautifulSoup, SoupStrainer
+from langchain.schema import Document
 import os
+from pathlib import Path
+import json
 
 
-def get_urls():
-    links = []
-    base_urls = [
-        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/",
-        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.pandas/",
-        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.ss/",
-        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.html",
-        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.errors.html",
+def load_documents():
+    store_path = Path("/raid/shared/masterproject2024/rag/data/api_reference.json")
+    with open(store_path, "r") as f:
+        data = json.load(f)
+
+    docs = [
+        Document(metadata=item["metadata"], page_content=item["page_content"])
+        for item in data
     ]
 
-    for index, base_url in enumerate(base_urls):
-        if index <= 2:
-            website = base_url + "index.html"
-        else:
-            website = base_url
-            base_url = "https://spark.apache.org/docs/latest/api/python/reference/"
-
-        result = requests.get(website)
-        content = result.text
-        soup = BeautifulSoup(content, "lxml")
-
-        box = soup.find("div", class_="toctree-wrapper compound")
-        if not box:
-            box = soup.find("main")
-        links.extend([base_url + link["href"] for link in box.find_all("a", href=True)])
-    return links
+    return docs
 
 
 def vector_store_from_api_ref(
@@ -49,10 +33,7 @@ def vector_store_from_api_ref(
             embedding_function=embedding_function,
         )
 
-    urls = get_urls()
-    bs4_strainer = SoupStrainer("main")
-    loader = WebBaseLoader(urls, bs_kwargs={"parse_only": bs4_strainer})
-    data = loader.lazy_load()
+    data = load_documents()
 
     if split_documents:
         text_splitter = RecursiveCharacterTextSplitter(
@@ -63,7 +44,7 @@ def vector_store_from_api_ref(
     vectorstore = Chroma.from_documents(
         data,
         embedding=embedding_function,
-        persist_directory=vector_store_path,
+        persist_directory=str(vector_store_path),
     )
 
     return vectorstore

@@ -44,7 +44,7 @@ class VectorStoreFactory:
             model_kwargs={
                 "trust_remote_code": True,
             },
-            encode_kwargs={"device": "cuda"},
+            encode_kwargs={"device": "cuda", "batch_size": 1},
         )
 
         if vectorstore_type == "docs":
