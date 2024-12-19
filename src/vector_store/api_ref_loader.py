@@ -36,17 +36,17 @@ def get_urls():
 
 
 def vector_store_from_api_ref(
-    vector_store_path: str, split_documents: bool, chunk_size: int, chunk_overlap: int
+    vector_store_path: str,
+    split_documents: bool,
+    chunk_size: int,
+    chunk_overlap: int,
+    embedding_function,
 ):
-    model_name = "mixedbread-ai/mxbai-embed-large-v1"
-    hf_embeddings = HuggingFaceEmbeddings(
-        model_name=model_name,
-    )
 
     if os.path.exists(vector_store_path):
         return Chroma(
-            persist_directory=vector_store_path,
-            embedding_function=hf_embeddings,
+            persist_directory=str(vector_store_path),
+            embedding_function=embedding_function,
         )
 
     urls = get_urls()
@@ -62,7 +62,7 @@ def vector_store_from_api_ref(
 
     vectorstore = Chroma.from_documents(
         data,
-        embedding=hf_embeddings,
+        embedding=embedding_function,
         persist_directory=vector_store_path,
     )
 
