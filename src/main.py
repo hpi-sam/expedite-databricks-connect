@@ -11,6 +11,7 @@ from vector_store.vector_store_factory import VectorStoreFactory
 import hydra
 import wandb
 from omegaconf import DictConfig, OmegaConf
+import os
 
 
 def build_prompt(cfg: DictConfig, code: str, error: str, context: str):
@@ -46,9 +47,7 @@ class Assistant:
 
     def __init__(self, model_temperature: float, cfg: DictConfig):
         login(token="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")
-        self._client = OpenAI(
-            base_url="http://localhost:8000/v1", api_key="token-abc123"
-        )
+        self._client = OpenAI(base_url=os.getenv("VLLM_BASE_URL"))
         self._system_message = {
             "role": "system",
             "content": cfg.system_prompt,
@@ -105,10 +104,11 @@ def migrate_code(code: str, cfg: DictConfig):
     Returns:
         str: The migrated and potentially linted Spark Connect code.
     """
-    assistant = Assistant(0.2, cfg)
+    assistant = Assistant(cfg.model_temperature, cfg)
     vectorstore_settings = cfg.vectorstore_settings.get(cfg.vectorstore_type, {})
+    embedding_model_name = cfg.get("embedding_model_name")
     vectorstore = VectorStoreFactory.initialize(
-        cfg.vectorstore_type, **vectorstore_settings
+        cfg.vectorstore_type, embedding_model_name, **vectorstore_settings
     )
 
     print(f"\nIteration 1")
@@ -160,18 +160,29 @@ def run_experiment(cfg: DictConfig):
         config=OmegaConf.to_container(cfg, resolve=True),
         settings=wandb.Settings(start_method="thread"),
         name=cfg.run_name,
+        entity="conrad-halle-university-of-potsdam",
     )
 
     avg_score = 0
+    individual_metrics = {}
 
     for iteration in range(cfg.eval_iterations):
         metrics = evaluate(migrate_code, cfg)
         metrics["iteration"] = iteration
-        wandb.log(metrics)
         avg_score += metrics["score"]
+        for key, value in metrics["individual_metrics"].items():
+            if key not in individual_metrics:
+                individual_metrics[key] = value
+            else:
+                individual_metrics[key] += value
+        metrics.pop("individual_metrics", None)
+        wandb.log(metrics)
 
     avg_score /= cfg.eval_iterations
+    for key, value in individual_metrics.items():
+        individual_metrics[key] = value / cfg.eval_iterations
 
+    wandb.log({"avg_individual_metrics": individual_metrics})
     wandb.log({"avg_score": avg_score})
 
 

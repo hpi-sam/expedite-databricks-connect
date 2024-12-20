@@ -52,6 +52,8 @@ def compare(file_name: str, result) -> bool:
     output_file = f"evaluation/output/{file_name}.csv"
     if file_name in ["mapPartitions", "readJson"]:
         true_df = pd.read_csv(output_file, index=False)
+    elif file_name in ["readJsonCsv", "mixedRDD", "sparkJvmOrigin"]:
+        true_df = pd.read_pickle(f"evaluation/output/{file_name}.pkl")
     else:
         true_df = pd.read_csv(output_file, header=None, index_col=None)
     if result_df.equals(true_df):
@@ -79,6 +81,8 @@ def result_to_df(file_name: str, result: pd.DataFrame):
     elif file_name == "prefixSpan":
         reformatted_result[0] = result[0].apply(literal_eval)  # make string to list
         reformatted_result = reformatted_result.drop(index=0).reset_index(drop=True)
+    else:
+        reformatted_result = pd.DataFrame(result)
 
     return reformatted_result
 
@@ -111,20 +115,30 @@ def generate(
         if successful:
             if compare(file_name, example_result):
                 metrics["score"] += 1
+                metrics["individual_metrics"][file_name] = 1
             else:
                 metrics["different_output"] += 1
+                metrics["individual_metrics"][file_name] = 0
         else:
             print("Error:", example_result)
             metrics["code_error"] += 1
+            metrics["individual_metrics"][file_name] = 0
 
     except Exception as e:
         print("Generated code produces error: ", e)
         metrics["invalid_output"] += 1
+        metrics["individual_metrics"][file_name] = 0
     return metrics
 
 
 def evaluate(model_generation_function: Callable, cfg: DictConfig):
-    metrics = {"score": 0, "invalid_output": 0, "code_error": 0, "different_output": 0}
+    metrics = {
+        "score": 0,
+        "invalid_output": 0,
+        "code_error": 0,
+        "different_output": 0,
+        "individual_metrics": {},
+    }
 
     for i, (file_name, example_function) in enumerate(examples):
         print("\n")
