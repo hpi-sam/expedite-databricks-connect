@@ -60,15 +60,17 @@ def generate_initial_prompt(code, linter_diagnostics, context):
         prompt += "\n\n## Linter Feedback\n"
         prompt += "The code was preprocessed by a linter. The detected problems are listed here:\n"
         for diag in linter_diagnostics:
-            prompt += f"- {diag['message']} at line {diag['line']}, column {diag['col']}\n"
+            prompt += (
+                f"- {diag['message']} at line {diag['line']}, column {diag['col']}\n"
+            )
     if context:
         prompt += f"\n\n## Context\n"
         prompt += "In case it is helpful you can use the following context to help you with the task: \n"
         prompt += str(context)
 
     completion = client.chat.completions.create(
-    model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
-    messages=[
+        model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
+        messages=[
             {
                 "role": "system",
                 "content": META_PROMPT,
@@ -87,22 +89,24 @@ def generate_iterated_prompt(adjusted_code, linter_diagnostics, context):
     prompt = """You were supposed to rewrite the provided PySpark code to be compatible with Spark Connect, 
     however, there are still some issues with the code. Please review the code snippet below and make the necessary adjustments to ensure it is compatible with Spark Connect. 
     The code snippet is as follows:"""
-       
+
     prompt += "\n\n## Adjusted Version of Code (still contains issues)\n"
     prompt += adjusted_code
     if linter_diagnostics:
         prompt += "\n\n## Linter Feedback\n"
         prompt += "The code was preprocessed by a linter. The remaining problems are listed here:\n"
         for diag in linter_diagnostics:
-            prompt += f"- {diag['message']} at line {diag['line']}, column {diag['col']}\n"
+            prompt += (
+                f"- {diag['message']} at line {diag['line']}, column {diag['col']}\n"
+            )
     if context:
         prompt += f"\n\n## Context\n"
         prompt += "In case it is helpful you can use the following context to help you with the task: \n"
         prompt += str(context)
 
     completion = client.chat.completions.create(
-    model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
-    messages=[
+        model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
+        messages=[
             {
                 "role": "system",
                 "content": META_PROMPT,
@@ -115,7 +119,3 @@ def generate_iterated_prompt(adjusted_code, linter_diagnostics, context):
     )
 
     return completion.choices[0].message.content
-    
-    
-
-

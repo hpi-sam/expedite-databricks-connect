@@ -6,10 +6,7 @@ from openai import OpenAI
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
 from evaluation.evaluate import evaluate, postprocess
-from linter.python_linter.__main__ import (
-    lint_codestring,
-    print_diagnostics
-)
+from linter.python_linter.__main__ import lint_codestring, print_diagnostics
 from vector_store.vector_store_factory import VectorStoreFactory
 from prompt_generation.main import generate_initial_prompt, generate_iterated_prompt
 import hydra
