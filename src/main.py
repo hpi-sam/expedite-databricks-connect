@@ -131,7 +131,12 @@ def migrate_code(code: str, cfg: DictConfig):
         if cfg.vectorstore_type == "code":
             filter = {"type": vectorstore_settings["type"]}
 
-    context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
+    retrieval_task = (
+        "Instruct: Given a piece of code, retrieve passages that are related.\nQuery:\n"
+    )
+    context = vectorstore.similarity_search(
+        retrieval_task + code, k=cfg.num_rag_docs, filter=filter
+    )
     context = [c.page_content for c in context]
     prompt = build_prompt(cfg, code, linter_feedback, context)
 
@@ -142,7 +147,9 @@ def migrate_code(code: str, cfg: DictConfig):
     if cfg.use_rag and cfg.update_context:
         # Second try retrieving context:
         assistant.clear_messages()
-        context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
+        context = vectorstore.similarity_search(
+            retrieval_task + code, k=cfg.num_rag_docs, filter=filter
+        )
         context = [c.page_content for c in context]
         for c in context:
             print(c)

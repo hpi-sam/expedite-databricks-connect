@@ -33,6 +33,7 @@ def vector_store_from_api_ref(
             embedding_function=embedding_function,
         )
 
+    print("Creating vectorstore.")
     data = load_documents()
 
     if split_documents:
