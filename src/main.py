@@ -15,6 +15,7 @@ from prompt_generation.main import generate_initial_prompt, generate_iterated_pr
 import hydra
 import wandb
 from omegaconf import DictConfig, OmegaConf
+import os
 
 
 def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: str):
@@ -61,9 +62,7 @@ class Assistant:
 
     def __init__(self, model_temperature: float, cfg: DictConfig):
         login(token="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")
-        self._client = OpenAI(
-            base_url="http://localhost:8000/v1", api_key="token-abc123"
-        )
+        self._client = OpenAI(base_url=os.getenv("VLLM_BASE_URL"))
         self._system_message = {
             "role": "system",
             "content": cfg.system_prompt,
@@ -122,8 +121,9 @@ def migrate_code(code: str, cfg: DictConfig):
     """
     assistant = Assistant(cfg.model_temperature, cfg)
     vectorstore_settings = cfg.vectorstore_settings.get(cfg.vectorstore_type, {})
+    embedding_model_name = cfg.get("embedding_model_name")
     vectorstore = VectorStoreFactory.initialize(
-        cfg.vectorstore_type, **vectorstore_settings
+        cfg.vectorstore_type, embedding_model_name, **vectorstore_settings
     )
 
     print(f"\nIteration 1")
