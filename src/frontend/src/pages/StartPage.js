@@ -5,7 +5,6 @@ import Button from '@mui/material/Button'; // Import MUI Button
 import Stack from '@mui/material/Stack';
 
 import './Pages.css';
-import '../styles/ButtonStyles.css'; // Import your existing button styles
 
 const StartPage = () => {
   const handleButtonClick = () => {

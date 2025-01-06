@@ -69,13 +69,13 @@ body, html, #root {
 /* Main content should take available space */
 main {
   flex: 1;
-  padding: 20px;
+  padding: 10px;
   width: 100%;
 }
 
 /* Footer styling */
 .footer {
-  padding: 10px 20px;
+  padding: 0px 20px;
   background-color: white; /* Match the header background color */
   text-align: right;
   position: relative; /* Changed from sticky to relative */

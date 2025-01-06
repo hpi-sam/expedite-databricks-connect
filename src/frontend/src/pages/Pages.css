@@ -12,18 +12,18 @@
 
 .editors-container {
     display: flex;
-    justify-content: center; /* Align editors with space in the middle */
+    justify-content: center; 
     align-items: stretch;
     flex: 1;
-    padding: 0 20px; /* Horizontal padding */
-    gap: 50px; /* Add stable gap between editors */
-    min-height: 0; /* Prevent flexbox sizing issues */
+    padding: 0 20px; 
+    gap: 50px; 
+    min-height: 0; 
 }
 
 .left-box, .right-box {
-    flex: 1 1 0%; /* Flex-grow, shrink, basis */
+    flex: 1 1 0%; 
     box-sizing: border-box;
-    min-width: 400px; /* Prevent excessive shrinking */
+    min-width: 400px; 
     max-width: calc(50% - 25px); /* Ensure stability with gap taken into account */
 }
 
@@ -39,8 +39,8 @@
 
 /* Button container */
 .center-button {
-    display: flex; /* Use flexbox */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    margin-top: 15px; /* Space between editors and button */
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    margin-top: 0px; 
 }
