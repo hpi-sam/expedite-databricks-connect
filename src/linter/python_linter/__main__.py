@@ -13,7 +13,6 @@ from linter.python_linter.spark_connect_matcher import (
     CommandContextMatcher,
     RddAttributeMatcher,
 )
-from omegaconf import DictConfig
 
 """
 IMPORTANT
@@ -217,6 +216,20 @@ def lint_codestring(code, lint_config):
     Lints the given code string and returns the diagnostics as a JSON object.
     """
     diagnostics = []
+
+    # check if "code" does actually contain code and is parseable with ast
+    try:
+        compile(code, "temp_lint_code.py", "exec")
+    except Exception as e:
+        return [
+            {
+                "message": "Syntax error: " + str(e),
+                "line": 0,
+                "col": 0,
+                "type": "syntax_error",
+                "linter": "syntax",
+            }
+        ]
 
     if "spark_connect" in lint_config.enabled_linters:
         diagnostics += format_diagnostics(

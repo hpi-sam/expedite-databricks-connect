@@ -8,8 +8,7 @@ from transformers import AutoTokenizer, PreTrainedTokenizerFast
 from evaluation.evaluate import evaluate, postprocess
 from linter.python_linter.__main__ import (
     lint_codestring,
-    print_diagnostics,
-    annotate_code_with_diagnostics,
+    print_diagnostics
 )
 from vector_store.vector_store_factory import VectorStoreFactory
 from prompt_generation.main import generate_initial_prompt, generate_iterated_prompt
@@ -121,7 +120,6 @@ def migrate_code(code: str, cfg: DictConfig):
     Returns:
         str: The migrated and potentially linted Spark Connect code.
     """
-    original_code = code
     assistant = Assistant(cfg.model_temperature, cfg)
     vectorstore_settings = cfg.vectorstore_settings.get(cfg.vectorstore_type, {})
     vectorstore = VectorStoreFactory.initialize(
@@ -145,14 +143,15 @@ def migrate_code(code: str, cfg: DictConfig):
 
     context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
     context = [c.page_content for c in context]
-    refined_prompt = generate_initial_prompt(code, linter_diagnostics, context)
+    if cfg.generate_prompt:
+        prompt = generate_initial_prompt(code, linter_diagnostics, context)
+    else:
+        prompt = build_prompt(cfg, code, linter_diagnostics, context)
 
-    # draft_prompt = build_prompt(cfg, code, linter_diagnostics, context)
-    # refined_prompt = generate_prompt(draft_prompt)
-    print(f"Prompt: {refined_prompt}")
+    print(f"Prompt: {prompt}")
 
     # Generate initial migration suggestion
-    code = postprocess(assistant.generate_answer(refined_prompt, cfg))
+    code = postprocess(assistant.generate_answer(prompt, cfg))
 
     # Optional iterative improvement process based on config settings
     if cfg.iterate:
@@ -166,15 +165,12 @@ def migrate_code(code: str, cfg: DictConfig):
             print_diagnostics(linter_diagnostics)
             context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
             context = [c.page_content for c in context]
-            # draft_prompt = build_linter_error_prompt(
-            #     cfg, code, linter_diagnostics, context
-            # )
-            # # print(f"Iterated Prompt: {prompt}")
-            # refined_prompt = generate_prompt(draft_prompt)
-            refined_prompt = generate_iterated_prompt(original_code, code, linter_diagnostics, context)
-            print(f"Prompt: {refined_prompt}")
-            code = postprocess(assistant.generate_answer(refined_prompt, cfg))
-
+            if cfg.generate_prompt:
+                prompt = generate_iterated_prompt(code, linter_diagnostics, context)
+            else:
+                prompt = build_iterated_prompt(cfg, code, linter_diagnostics, context)
+            print(f"Iterated Prompt: {prompt}")
+            code = postprocess(assistant.generate_answer(prompt, cfg))
     return code
 
 
