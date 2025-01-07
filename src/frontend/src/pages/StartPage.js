@@ -25,10 +25,11 @@ const StartPage = () => {
         <Stack spacing={2} direction="row">
           {/* MUI Button with click event */}
           <Button 
-            variant="contained" 
-            onClick={handleButtonClick}
-          >
-            Calculate Readability
+              variant="contained" 
+              onClick={handleButtonClick}
+              style={{ backgroundColor: '#b20036', color: '#fff' }}
+            >
+              Calculate
           </Button>
         </Stack>
       </div>

@@ -75,7 +75,7 @@ main {
 
 /* Footer styling */
 .footer {
-  padding: 0px 20px;
+  padding: 5px 20px;
   background-color: white; /* Match the header background color */
   text-align: right;
   position: relative; /* Changed from sticky to relative */
