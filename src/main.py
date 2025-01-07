@@ -26,7 +26,7 @@ def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: s
 
 def build_iterated_prompt(
     cfg: DictConfig, code: str, diagnostics: list[dict], context: str
-):
+) -> str:
     prompt = cfg.iterated_prompt + code
     if cfg.use_error:
         prompt += cfg.linter_prompt + str(diagnostics)
@@ -83,9 +83,6 @@ class Assistant:
             self._messages.pop(0)
             num_tokens = len(self._tokenized_messages())
 
-        # print(
-        #     f"calling model with messages: \n {format_messages(self._all_messages())}"
-        # )
         completion = self._client.completions.create(
             model=self.model_name,
             max_tokens=cfg.answer_token_length,
@@ -102,7 +99,7 @@ class Assistant:
         return answer
 
 
-def migrate_code(code: str, cfg: DictConfig):
+def migrate_code(code: str, cfg: DictConfig) -> str:
     """
     Try to migrate provided code from classic Spark to Spark Connect.
 
@@ -168,7 +165,6 @@ def migrate_code(code: str, cfg: DictConfig):
 
 
 def run_experiment(cfg: DictConfig):
-
     wandb.init(
         project="mp",
         config=OmegaConf.to_container(cfg, resolve=True),
