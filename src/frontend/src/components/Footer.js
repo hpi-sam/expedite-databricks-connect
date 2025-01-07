@@ -4,7 +4,7 @@ import '../App.css';
 function Footer() {
   return (
     <footer className="footer">
-      This is a demo created by HPI students. For more information, see{' '}
+      This is a demo created by HPI students. For more information, see our{' '}
       <a href="https://github.com/hpi-sam/expedite-databricks-connect">GitHub</a>.
     </footer>
   );

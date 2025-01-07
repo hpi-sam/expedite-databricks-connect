@@ -27,9 +27,9 @@ const StartPage = () => {
           <Button 
               variant="contained" 
               onClick={handleButtonClick}
-              style={{ backgroundColor: '#b20036', color: '#fff' }}
+              style={{ backgroundColor: '#b20036'}}
             >
-              Calculate
+              Migrate
           </Button>
         </Stack>
       </div>
