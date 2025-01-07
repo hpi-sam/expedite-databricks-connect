@@ -16,11 +16,9 @@ import os
 
 
 def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: str):
-    prompt = cfg.initial_prompt
+    prompt = cfg.initial_prompt + code
     if cfg.use_error:
-        prompt += cfg.linter_prompt
-    else:
-        prompt += code
+        prompt += cfg.linter_prompt + str(diagnostics)
     if cfg.use_rag:
         prompt += cfg.context_prompt + str(context)
     return prompt
@@ -29,11 +27,9 @@ def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: s
 def build_iterated_prompt(
     cfg: DictConfig, code: str, diagnostics: list[dict], context: str
 ):
-    prompt = cfg.iterated_prompt
+    prompt = cfg.iterated_prompt + code
     if cfg.use_error:
-        prompt += cfg.linter_prompt
-    else:
-        prompt += code
+        prompt += cfg.linter_prompt + str(diagnostics)
     if cfg.use_rag:
         prompt += cfg.context_prompt + str(context)
     return prompt

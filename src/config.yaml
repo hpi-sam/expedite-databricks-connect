@@ -49,6 +49,7 @@ linter_config :
     feedback_types: # Return only these severities. Possible values: 'error', 'warning', 'convention' (maybe more) 
         - error 
 initial_prompt: "
+        Update the provided PySpark code to be compatible with Spark Connect.
         The rewritten code should have exactly the same functionality as the original code and should return exactly the same output.
         This is the original code that does not work with spark connect:
         
@@ -61,10 +62,7 @@ iterated_prompt : "
         
       
 "
-linter_prompt: "
-        Unfortunately, the code does not seem to work properly.
-        Please rewrite the code to work with spark connect. Make sure the code is correct python code that can be executed without errors.
-        The detected issues are listed here:
+linter_prompt: "\n\nIssues in the code detected by the linter are listed here:
 
         "
 
