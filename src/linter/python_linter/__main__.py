@@ -13,7 +13,6 @@ from linter.python_linter.spark_connect_matcher import (
     CommandContextMatcher,
     RddAttributeMatcher,
 )
-from omegaconf import DictConfig
 
 """
 IMPORTANT
@@ -55,16 +54,15 @@ def format_diagnostics(diagnostics, linter_type):
     return formatted_diagnostics
 
 
-def make_readable(diagnostics):
+def print_diagnostics(diagnostics):
     """
     Makes the diagnostics more human-readable.
     """
-    readable_diagnostics = []
+    print("Linter diagnostics:")
     for diag in diagnostics:
-        readable_diagnostics.append(
+        print(
             f"{diag['linter']} [{diag['type']}]: {diag['message']} (line {diag['line']}, col {diag['col']})"
         )
-    return readable_diagnostics
 
 
 def run_pylint(code):
@@ -180,6 +178,20 @@ def lint_codestring(code, lint_config):
     """
     diagnostics = []
 
+    # check if "code" does actually contain code and is parseable with ast
+    try:
+        compile(code, "temp_lint_code.py", "exec")
+    except Exception as e:
+        return [
+            {
+                "message": "Syntax error: " + str(e),
+                "line": 0,
+                "col": 0,
+                "type": "syntax_error",
+                "linter": "syntax",
+            }
+        ]
+
     if "spark_connect" in lint_config.enabled_linters:
         diagnostics += format_diagnostics(
             run_spark_connect_linter(code), "spark_connect"
@@ -193,7 +205,6 @@ def lint_codestring(code, lint_config):
 
     diagnostics = filter_diagnostics(diagnostics, lint_config)
     diagnostics.sort(key=lambda x: (x["line"], x["col"]))
-    diagnostics = make_readable(diagnostics)
 
     # for some of the linters a temporary file is created, remove it if it exists
     try:

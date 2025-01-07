@@ -6,25 +6,33 @@ from openai import OpenAI
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
 from evaluation.evaluate import evaluate, postprocess
-from linter.python_linter.__main__ import lint_codestring
+from linter.python_linter.__main__ import lint_codestring, print_diagnostics
 from vector_store.vector_store_factory import VectorStoreFactory
+from prompt_generation.main import generate_initial_prompt, generate_iterated_prompt
 import hydra
 import wandb
 from omegaconf import DictConfig, OmegaConf
 import os
 
 
-def build_prompt(cfg: DictConfig, code: str, error: str, context: str):
+def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: str):
     prompt = cfg.initial_prompt + code
     if cfg.use_error:
-        prompt += cfg.error_prompt + str(error)
+        prompt += cfg.linter_prompt + str(diagnostics)
     if cfg.use_rag:
         prompt += cfg.context_prompt + str(context)
     return prompt
 
 
-def build_linter_error_prompt(prompt, error):
-    return prompt + str(error)
+def build_iterated_prompt(
+    cfg: DictConfig, code: str, diagnostics: list[dict], context: str
+):
+    prompt = cfg.iterated_prompt + code
+    if cfg.use_error:
+        prompt += cfg.linter_prompt + str(diagnostics)
+    if cfg.use_rag:
+        prompt += cfg.context_prompt + str(context)
+    return prompt
 
 
 def format_messages(messages: List[Dict[str, str]]) -> str:
@@ -113,12 +121,10 @@ def migrate_code(code: str, cfg: DictConfig):
 
     print(f"\nIteration 1")
     print("----------------------------------------------")
-    linter_feedback = lint_codestring(code, cfg.linter_config)
+    linter_diagnostics = lint_codestring(code, cfg.linter_config)
 
-    if linter_feedback:
-        print("Linting feedback:")
-        for str in linter_feedback:
-            print(str)
+    if linter_diagnostics:
+        print_diagnostics(linter_diagnostics)
     else:
         print("DONE: No problems detected by the linter.\n")
         return code
@@ -130,7 +136,12 @@ def migrate_code(code: str, cfg: DictConfig):
 
     context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
     context = [c.page_content for c in context]
-    prompt = build_prompt(cfg, code, linter_feedback, context)
+    if cfg.generate_prompt:
+        prompt = generate_initial_prompt(code, linter_diagnostics, context)
+    else:
+        prompt = build_prompt(cfg, code, linter_diagnostics, context)
+
+    print(f"Prompt: {prompt}")
 
     # Generate initial migration suggestion
     code = postprocess(assistant.generate_answer(prompt, cfg))
@@ -140,16 +151,19 @@ def migrate_code(code: str, cfg: DictConfig):
         for iteration in range(cfg.iteration_limit):
             print(f"\nIteration {iteration + 1} of {cfg.iteration_limit}")
             print("----------------------------------------------")
-            linter_feedback = lint_codestring(code, cfg.linter_config)
-            if not linter_feedback:
+            linter_diagnostics = lint_codestring(code, cfg.linter_config)
+            if not linter_diagnostics:
                 print("DONE: No problems detected by the linter.\n")
                 break
-            print("Linting feedback:")
-            for str in linter_feedback:
-                print(str)
-            prompt = build_linter_error_prompt(cfg.linter_error_prompt, linter_feedback)
+            print_diagnostics(linter_diagnostics)
+            context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
+            context = [c.page_content for c in context]
+            if cfg.generate_prompt:
+                prompt = generate_iterated_prompt(code, linter_diagnostics, context)
+            else:
+                prompt = build_iterated_prompt(cfg, code, linter_diagnostics, context)
+            print(f"Iterated Prompt: {prompt}")
             code = postprocess(assistant.generate_answer(prompt, cfg))
-
     return code
 
 
