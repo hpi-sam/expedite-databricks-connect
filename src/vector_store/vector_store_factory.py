@@ -44,7 +44,7 @@ class VectorStoreFactory:
             model_kwargs={
                 "trust_remote_code": True,
             },
-            encode_kwargs={"device": "cpu"},
+            encode_kwargs={"device": "cpu", "batch_size": 1},
         )
 
         if vectorstore_type == "docs":
@@ -65,7 +65,16 @@ class VectorStoreFactory:
 
         elif vectorstore_type == "api_ref":
             vector_store_path = Path(kwargs.get("vector_store_path"))
-            return vector_store_from_api_ref(vector_store_path, embedding_function)
+            split_documents = kwargs.get("split_documents")
+            chunk_size = kwargs.get("chunk_size")
+            chunk_overlap = kwargs.get("chunk_overlap")
+            return vector_store_from_api_ref(
+                vector_store_path,
+                split_documents,
+                chunk_size,
+                chunk_overlap,
+                embedding_function,
+            )
 
         else:
             raise ValueError(f"Unknown VectorStore-Type: {vectorstore_type}")
