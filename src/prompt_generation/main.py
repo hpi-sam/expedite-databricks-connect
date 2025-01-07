@@ -50,7 +50,7 @@ This should adress the issues in the original code pointed out by the linter and
 """.strip()
 
 
-def generate_initial_prompt(code, linter_diagnostics, context):
+def generate_initial_prompt(code, linter_diagnostics, context, model_name):
     prompt = """We have a code snippet that is not compatible with Spark Connect. 
     Your task is to output code that is compatible with Spark Connect and maintains the same functionality and output.
     The code snippet is as follows:
@@ -69,7 +69,7 @@ def generate_initial_prompt(code, linter_diagnostics, context):
         prompt += str(context)
 
     completion = client.chat.completions.create(
-        model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
+        model=model_name,
         messages=[
             {
                 "role": "system",
@@ -85,7 +85,7 @@ def generate_initial_prompt(code, linter_diagnostics, context):
     return completion.choices[0].message.content
 
 
-def generate_iterated_prompt(adjusted_code, linter_diagnostics, context):
+def generate_iterated_prompt(adjusted_code, linter_diagnostics, context, model_name):
     prompt = """You were supposed to rewrite the provided PySpark code to be compatible with Spark Connect, 
     however, there are still some issues with the code. Please review the code snippet below and make the necessary adjustments to ensure it is compatible with Spark Connect. 
     The code snippet is as follows:"""
@@ -105,7 +105,7 @@ def generate_iterated_prompt(adjusted_code, linter_diagnostics, context):
         prompt += str(context)
 
     completion = client.chat.completions.create(
-        model="neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16",
+        model=model_name,
         messages=[
             {
                 "role": "system",

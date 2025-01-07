@@ -134,7 +134,9 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
     context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
     context = [c.page_content for c in context]
     if cfg.generate_prompt:
-        prompt = generate_initial_prompt(code, linter_diagnostics, context)
+        prompt = generate_initial_prompt(
+            code, linter_diagnostics, context, cfg.model_name
+        )
     else:
         prompt = build_prompt(cfg, code, linter_diagnostics, context)
 
@@ -156,7 +158,9 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
             context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
             context = [c.page_content for c in context]
             if cfg.generate_prompt:
-                prompt = generate_iterated_prompt(code, linter_diagnostics, context)
+                prompt = generate_iterated_prompt(
+                    code, linter_diagnostics, context, cfg.model_name
+                )
             else:
                 prompt = build_iterated_prompt(cfg, code, linter_diagnostics, context)
             print(f"Iterated Prompt: {prompt}")
