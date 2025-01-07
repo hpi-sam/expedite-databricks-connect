@@ -100,8 +100,18 @@ class PythonLinter:
               variant="contained" 
               onClick={handleButtonClick}
               disabled={loading}
-              style={{ backgroundColor: '#b20036'}}
-              startIcon={loading && <CircularProgress size={20} />}
+              sx={{
+                backgroundColor: '#b20036',
+                color: '#ffffff',
+                '&:hover': {
+                  backgroundColor: '#a30032',
+                },
+                '&.Mui-disabled': {
+                  backgroundColor: '#b20036',
+                  color: '#ffffff',
+                }
+              }}
+              startIcon={loading && <CircularProgress size={20} sx={{ color: '#ffffff' }} />}
             >
               {loading ? 'Migrating...' : 'Migrate'}
             </Button>
