@@ -9,14 +9,11 @@
 
 ## Topics
 - Martin will try to get more examples to do industrial follow-up
-
-Date for Tech-Talk: 19th February 12:00
-
-Any more requirements for project?
-- NO, for us its mostly validation
-- Would be awesome to have a more in depth view
-- If you are interested in publishing it, Martin would be interested in reviewing
-
+- Date for Tech-Talk: 19th February 12:00
+- Any more requirements for project?
+  - NO, for us its mostly validation
+  - Would be awesome to have a more in depth view
+  - If you are interested in publishing it, Martin would be interested in reviewing
 - Should we include documentation in the final submission?
   - NO, not in particular
   - I dont care about the code, but about the outcome
