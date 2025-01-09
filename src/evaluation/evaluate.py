@@ -117,21 +117,25 @@ def generate(
                 metrics["score"] += 1
                 metrics["individual_metrics"][file_name] = 1
                 metrics["iteration_solved"][file_name] = metadata["iteration"]
+                metrics["iteration_failed"][file_name] = 0
             else:
                 metrics["different_output"] += 1
                 metrics["individual_metrics"][file_name] = 0
                 metrics["iteration_solved"][file_name] = 0
+                metrics["iteration_failed"][file_name] = metadata["iteration"]
         else:
             print("Error:", example_result)
             metrics["code_error"] += 1
             metrics["individual_metrics"][file_name] = 0
             metrics["iteration_solved"][file_name] = 0
+            metrics["iteration_failed"][file_name] = metadata["iteration"]
 
     except Exception as e:
         print("Generated code produces error: ", e)
         metrics["invalid_output"] += 1
         metrics["individual_metrics"][file_name] = 0
         metrics["iteration_solved"][file_name] = 0
+        metrics["iteration_failed"][file_name] = metadata["iteration"]
     return metrics
 
 
@@ -142,6 +146,8 @@ def evaluate(model_generation_function: Callable, cfg: DictConfig):
         "code_error": 0,
         "different_output": 0,
         "individual_metrics": {},
+        "iteration_solved": {},
+        "iteration_failed": {},
     }
 
     for i, (file_name, example_function) in enumerate(examples):
