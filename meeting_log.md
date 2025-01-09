@@ -1,11 +1,11 @@
-# Meeting with Martin 09.01.2024  
+# Bi-weekly with Chris 09.01.2024  
 
-## Attendees
-- [x] @juliuspor
-- [x] @sm1lla
-- [x] @joh-dah  
-- [x] @elenagensch
-- [x] @cdfhalle
+## Topics
+- Report, what is important?
+  - State of the Art
+  - Evaluation
+
+# Meeting with Martin 09.01.2024  
 
 ## Topics
 - Martin will try to get more examples to do industrial follow-up
