@@ -2,7 +2,7 @@ from pyspark.sql import SparkSession
 
 
 def mixedRDDExample(spark: SparkSession):
-    # Beispieltext
+    # Example Text
     data = [
         "Spark is amazing",
         "RDD processing with Spark is powerful",
@@ -10,20 +10,23 @@ def mixedRDDExample(spark: SparkSession):
         "Spark is fast and scalable",
     ]
 
-    # RDD erstellen
+    # Create RDD
     rdd = spark.sparkContext.parallelize(data)
 
-    # FlatMap: Zeilen in Wörter aufteilen
+    # FlatMap: Split lines into words.
     words = rdd.flatMap(lambda line: line.split(" "))
 
-    # Map: Wörter in (Wort, 1) Paare umwandeln
+    # Map: Create (word, 1) pairs
     word_pairs = words.map(lambda word: (word.lower(), 1))
 
-    # ReduceByKey: Wortanzahl berechnen
+    # ReduceByKey: Compute word count
     word_counts = word_pairs.reduceByKey(lambda a, b: a + b)
 
-    # Filter: Nur Wörter mit mehr als einem Vorkommen behalten
+    # Filter: Only keep words that appear more than once
     frequent_words = word_counts.filter(lambda pair: pair[1] > 1)
 
-    result = frequent_words.collect()
+    # Sort: Sort the words by count in descending order
+    sorted_frequent_words = frequent_words.sortBy(lambda pair: pair[1], ascending=False)
+
+    result = sorted_frequent_words.collect()
     return result
