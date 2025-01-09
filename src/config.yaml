@@ -23,7 +23,10 @@ vectorstore_settings:
         type: connect
 
     api_ref:
-        vector_store_path: "/raid/shared/masterproject2024/vector_stores/api/"
+        vector_store_path: "/raid/shared/masterproject2024/vector_stores/api/nv_split512"
+        split_documents: False
+        chunk_size: 512
+        chunk_overlap: 50
     
 
 # Iteration Settings    
