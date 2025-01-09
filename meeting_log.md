@@ -1,3 +1,22 @@
+# Biweekly 09.01.2024  
+
+## Attendees
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle  
+
+## Topics
+- Video (bestes Video jemals)
+- Prüfen wie sinnvoll Iterations sind 
+- Conrad: Embedding Vector Database ist nicht so sinnvoll (evtl. nach einfachem Funktionsnamen suchen)
+
+## Actions
+- Julius: frontend
+- Johanna: Sinnhaftigkeit von Iterations prüfen
+- Elena, Smilla, Conrad: Fehlerhafte Outputs analysieren 
+
 # Biweekly 12.12.2024  
 
 ## Attendees  
