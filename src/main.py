@@ -1,3 +1,4 @@
+from datetime import datetime
 import pprint
 from typing import Dict, List
 
@@ -130,7 +131,11 @@ def run_experiment(cfg: DictConfig):
     individual_metrics = {}
 
     for iteration in range(cfg.eval_iterations):
-        metrics = evaluate(migrate_code, cfg)
+        metrics = evaluate(
+            migrate_code,
+            cfg,
+            f"iteration_{iteration}_started_at_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}",
+        )
         metrics["iteration"] = iteration
         avg_score += metrics["score"]
         for key, value in metrics["individual_metrics"].items():
