@@ -1,3 +1,23 @@
+# Biweekly 14.01.2024  
+
+## Attendees
+- [x] @juliuspor
+- [ ] @sm1lla
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [ ] @cdfhalle  
+
+## Topics
+- Presentation at Databricks
+- Meeting mit Felix Boelter
+
+## Actions
+- Julius: Draft Presentation Databricks
+- Johanna: Mehr Beispiele Ausdenken
+- Elena: dspy + chain of thought testen
+
+
+
 # Bi-weekly with Chris 09.01.2024  
 
 ## Topics
