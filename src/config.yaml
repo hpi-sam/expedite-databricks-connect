@@ -44,11 +44,12 @@ linter_config :
 
 
 # Models Settings
-model_name: "neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16"
+model_name: "Qwen/Qwen2.5-Coder-32B-Instruct-AWQ"
 # current model options:
 #  - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w8a16
-#  - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16
+#  - neuralmagic/Meta-Llama-3.1-405B-Instruct-quantized.w4a16 
 #  - meta-llama/CodeLlama-70b-Python-hf
+#  - Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
 model_temperature: 0.2
 embedding_model_name: "nvidia/NV-Embed-v2"
 max_model_length: 8192 # model length in token make sure the same value is used for serving the model
@@ -105,5 +106,5 @@ Return the updated PySpark code snippet as a plain text string, without any addi
 number_of_examples: 1
 eval_iterations: 15
 log_results: true
-run_name: test_examples
+run_name: test_experiment
 
