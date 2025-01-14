@@ -17,7 +17,7 @@ It will provide the original code snippet, linter feedback, and context to help 
 - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
 - Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.
 - Preserve Original Code: The input prompt will include the original code snippet. Preserve this code in the prompt. 
-- Context: Don't  include context in the prompt directly. If the context is helpful to solve the task point out the relevant parts in the prompt.
+- Context: You will receive some context in form of related code snippets. Analyze this context. If it is helpful, explain how it can be used to complete the task.
 - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
 - Output Format: Explicitly call out, that the output should only be the updated code snippet.
 

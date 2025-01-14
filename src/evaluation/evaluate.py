@@ -97,18 +97,18 @@ def generate(
     with open(f"evaluation/examples_pre_migration/{file_name}.py", "r") as file:
         code = file.read()
 
-    output = model_generate(code, cfg)
+    output_code, metadata = model_generate(code, cfg)
 
     print(f"----------------- Old code ------------------")
     print(f"{code}")
 
     print(f"----------------- New code ------------------")
-    print(f"{postprocess(output)}")
+    print(f"{postprocess(output_code)}")
 
     # Execute updated function
     scope = {}
     try:
-        exec(postprocess(output), scope)
+        exec(postprocess(output_code), scope)
 
         # Try if code is now compatible with Spark Connect and compare results
         successful, example_result = run_example_sc(scope[example_function.__name__])
@@ -116,18 +116,26 @@ def generate(
             if compare(file_name, example_result):
                 metrics["score"] += 1
                 metrics["individual_metrics"][file_name] = 1
+                metrics["iteration_solved"][file_name] = metadata["iteration"]
+                metrics["iteration_failed"][file_name] = 0
             else:
                 metrics["different_output"] += 1
                 metrics["individual_metrics"][file_name] = 0
+                metrics["iteration_solved"][file_name] = 0
+                metrics["iteration_failed"][file_name] = metadata["iteration"]
         else:
             print("Error:", example_result)
             metrics["code_error"] += 1
             metrics["individual_metrics"][file_name] = 0
+            metrics["iteration_solved"][file_name] = 0
+            metrics["iteration_failed"][file_name] = metadata["iteration"]
 
     except Exception as e:
         print("Generated code produces error: ", e)
         metrics["invalid_output"] += 1
         metrics["individual_metrics"][file_name] = 0
+        metrics["iteration_solved"][file_name] = 0
+        metrics["iteration_failed"][file_name] = metadata["iteration"]
     return metrics
 
 
@@ -138,6 +146,8 @@ def evaluate(model_generation_function: Callable, cfg: DictConfig):
         "code_error": 0,
         "different_output": 0,
         "individual_metrics": {},
+        "iteration_solved": {},
+        "iteration_failed": {},
     }
 
     for i, (file_name, example_function) in enumerate(examples):

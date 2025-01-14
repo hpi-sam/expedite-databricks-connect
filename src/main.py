@@ -107,7 +107,8 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
         code (str): The input Spark code to be migrated.
 
     Returns:
-        str: The migrated and potentially linted Spark Connect code.
+        code (str): The migrated and potentially linted Spark Connect code.
+        metadata (dict): Metadata about the migration process.
     """
     assistant = Assistant(cfg.model_temperature, cfg)
     vectorstore_settings = cfg.vectorstore_settings.get(cfg.vectorstore_type, {})
@@ -115,7 +116,7 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
     vectorstore = VectorStoreFactory.initialize(
         cfg.vectorstore_type, embedding_model_name, **vectorstore_settings
     )
-
+    metadata = {"iteration": 1}
     print(f"\nIteration 1")
     print("----------------------------------------------")
     linter_diagnostics = lint_codestring(code, cfg.linter_config)
@@ -150,6 +151,7 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
         for iteration in range(cfg.iteration_limit):
             print(f"\nIteration {iteration + 1} of {cfg.iteration_limit}")
             print("----------------------------------------------")
+            metadata["iteration"] = iteration + 1
             linter_diagnostics = lint_codestring(code, cfg.linter_config)
             if not linter_diagnostics:
                 print("DONE: No problems detected by the linter.\n")
@@ -165,7 +167,7 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
                 prompt = build_iterated_prompt(cfg, code, linter_diagnostics, context)
             print(f"Iterated Prompt: {prompt}")
             code = postprocess(assistant.generate_answer(prompt, cfg))
-    return code
+    return code, metadata
 
 
 def run_experiment(cfg: DictConfig):
