@@ -1,11 +1,31 @@
-# Meeting with Martin 09.01.2024  
+# Biweekly 14.01.2024  
 
 ## Attendees
 - [x] @juliuspor
-- [x] @sm1lla
+- [ ] @sm1lla
 - [x] @joh-dah  
-- [x] @elenagensch
-- [x] @cdfhalle
+- [x] @elenagensch  
+- [ ] @cdfhalle  
+
+## Topics
+- Presentation at Databricks
+- Meeting mit Felix Boelter
+
+## Actions
+- Julius: Draft Presentation Databricks
+- Johanna: Mehr Beispiele Ausdenken
+- Elena: dspy + chain of thought testen
+
+
+
+# Bi-weekly with Chris 09.01.2024  
+
+## Topics
+- Report, what is important?
+  - State of the Art
+  - Evaluation
+
+# Meeting with Martin 09.01.2024  
 
 ## Topics
 - Martin will try to get more examples to do industrial follow-up
