@@ -93,7 +93,7 @@ first_step_prompt: "I want to update the provided PySpark code to be compatible 
 "
 
 # Experiment Settings
-number_of_examples: 14
+number_of_examples: 1
 eval_iterations: 15
 log_results: false
 run_name: null
