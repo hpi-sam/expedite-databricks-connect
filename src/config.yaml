@@ -102,8 +102,8 @@ Return the updated PySpark code snippet as a plain text string, without any addi
 "
 
 # Experiment Settings
-number_of_examples: 14
+number_of_examples: 1
 eval_iterations: 15
 log_results: true
-run_name: null
+run_name: test_examples
 
