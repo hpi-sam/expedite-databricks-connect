@@ -1,3 +1,4 @@
+import traceback
 from .examples_pre_migration.map import mapExample
 from .examples_pre_migration.flatMap import flatMapExample
 from .examples_pre_migration.mapPartitions import mapPartitionsExample
@@ -18,6 +19,7 @@ from ast import literal_eval
 import pandas as pd
 from typing import Callable
 from omegaconf import DictConfig
+import wandb
 
 
 examples = [
@@ -46,12 +48,12 @@ def postprocess(result: str):
     return result
 
 
-def compare(file_name: str, result) -> bool:
+def compare(file_name: str, result, return_comparison=False) -> str | bool:
     result_df = result_to_df(file_name, result)
 
     output_file = f"evaluation/output/{file_name}.csv"
     if file_name in ["mapPartitions", "readJson"]:
-        true_df = pd.read_csv(output_file, index=False)
+        true_df = pd.read_csv(output_file, index_col=None)
     elif file_name in ["readJsonCsv", "mixedRDD", "sparkJvmOrigin"]:
         true_df = pd.read_pickle(f"evaluation/output/{file_name}.pkl")
     else:
@@ -63,6 +65,8 @@ def compare(file_name: str, result) -> bool:
         print("False result.")
         print(f"True:\n{true_df}")
         print(f"False:\n{result_df}")
+        if return_comparison:
+            return f"GT:\n{str(true_df)}\nPredicted:\n{str(result_df)}"
         return False
 
 
@@ -83,7 +87,6 @@ def result_to_df(file_name: str, result: pd.DataFrame):
         reformatted_result = reformatted_result.drop(index=0).reset_index(drop=True)
     else:
         reformatted_result = pd.DataFrame(result)
-
     return reformatted_result
 
 
@@ -93,11 +96,15 @@ def generate(
     model_generate: Callable,
     metrics: dict[str, int],
     cfg: DictConfig,
+    wandb_table: wandb.Table = None,
+    current_iteration: str = "NOT_SPECIFIED",
 ):
     with open(f"evaluation/examples_pre_migration/{file_name}.py", "r") as file:
         code = file.read()
 
     output_code, metadata = model_generate(code, cfg)
+    resulting_error_str = ""
+    resulting_error_type = "NO ERROR"
 
     print(f"----------------- Old code ------------------")
     print(f"{code}")
@@ -113,7 +120,8 @@ def generate(
         # Try if code is now compatible with Spark Connect and compare results
         successful, example_result = run_example_sc(scope[example_function.__name__])
         if successful:
-            if compare(file_name, example_result):
+            comparison = compare(file_name, example_result, return_comparison=True)
+            if comparison != False:
                 metrics["score"] += 1
                 metrics["individual_metrics"][file_name] = 1
                 metrics["iteration_solved"][file_name] = metadata["iteration"]
@@ -123,23 +131,43 @@ def generate(
                 metrics["individual_metrics"][file_name] = 0
                 metrics["iteration_solved"][file_name] = 0
                 metrics["iteration_failed"][file_name] = metadata["iteration"]
+                resulting_error_str = "Different output: \n" + comparison
+                resulting_error_type = "Different output"
         else:
             print("Error:", example_result)
+            resulting_error_type = "Code produces error"
+            resulting_error_str = example_result
             metrics["code_error"] += 1
             metrics["individual_metrics"][file_name] = 0
             metrics["iteration_solved"][file_name] = 0
             metrics["iteration_failed"][file_name] = metadata["iteration"]
 
     except Exception as e:
+        resulting_error_type = "Other error"
+        resulting_error_str = traceback.format_exc()
         print("Generated code produces error: ", e)
         metrics["invalid_output"] += 1
         metrics["individual_metrics"][file_name] = 0
         metrics["iteration_solved"][file_name] = 0
         metrics["iteration_failed"][file_name] = metadata["iteration"]
+
+    if wandb_table:
+        wandb_table.add_data(
+            current_iteration,
+            file_name,
+            code,
+            postprocess(output_code),
+            resulting_error_type,
+            resulting_error_str,
+        )
     return metrics
 
 
-def evaluate(model_generation_function: Callable, cfg: DictConfig):
+def evaluate(
+    model_generation_function: Callable,
+    cfg: DictConfig,
+    current_iteration: str = "NOT_SPECIFIED",
+):
     metrics = {
         "score": 0,
         "invalid_output": 0,
@@ -149,15 +177,30 @@ def evaluate(model_generation_function: Callable, cfg: DictConfig):
         "iteration_solved": {},
         "iteration_failed": {},
     }
-
+    wandb_table = wandb.Table(
+        columns=[
+            "iteration",
+            "example_name",
+            "old_code",
+            "new_code",
+            "error_type",
+            "error_message",
+        ]
+    )
     for i, (file_name, example_function) in enumerate(examples):
         print("\n")
         print(f"({i + 1}/{len(examples)}) Evaluating {file_name} example")
         print("==============================================")
         metrics = generate(
-            file_name, example_function, model_generation_function, metrics, cfg
+            file_name,
+            example_function,
+            model_generation_function,
+            metrics,
+            cfg,
+            wandb_table,
+            current_iteration,
         )
-
+    wandb.log({"evaluation_table": wandb_table})
     print("\nSucces Rate:", metrics["score"], "/", len(examples))
     print(
         "Model output cannot be executed:",
