@@ -156,7 +156,7 @@ def generate(
             current_iteration,
             file_name,
             code,
-            postprocess(output),
+            postprocess(output_code),
             resulting_error_type,
             resulting_error_str,
         )
