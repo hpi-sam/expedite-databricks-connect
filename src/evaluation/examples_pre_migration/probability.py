@@ -7,8 +7,6 @@ def probabilityExample(spark):
     Estimate the probability that two random points on a line are within a given distance, 
     with deterministic output by seeding the random number generator.
     """
-    results = []
-
     partitions = 2  # Set a default number of partitions
     n = 100000 * partitions  # Total number of simulations
 
@@ -27,6 +25,6 @@ def probabilityExample(spark):
         .map(within_threshold)
         .reduce(add)
     )
-    probability = round(count / n, 3)  # Estimate the probability to 3 decimal places
+    probability = round(count / n, 2)  # Estimate the probability to 2 decimal places
 
     return [probability]

@@ -5,16 +5,13 @@ def filterReduceExample(spark: SparkSession):
 
     rdd = spark.sparkContext.parallelize(data)
 
-    # Map: Annotate each number with its parity (even or odd)
-    annotated = rdd.map(lambda x: ("even" if x % 2 == 0 else "odd", x))
+    # Filter: Keep only even numbers
+    even_numbers = rdd.filter(lambda x: x % 2 == 0)
 
-    # GroupByKey: Group numbers by their parity
-    grouped = annotated.groupByKey()
+    # Map: Square each even number
+    squared_evens = even_numbers.map(lambda x: x ** 2)
 
-    # ReduceByKey: Sum the numbers in each group
-    summed = grouped.mapValues(lambda nums: sum(nums))
+    # Reduce: Calculate the sum of the squared even numbers
+    sum_of_squared_evens = squared_evens.reduce(lambda x, y: x + y)
 
-    # Convert the results into a dictionary
-    result = summed.collectAsMap()
-
-    return result
+    return sum_of_squared_evens

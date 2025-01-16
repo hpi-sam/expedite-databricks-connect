@@ -44,9 +44,9 @@ examples = [
     # ("readJsonCsv", test_sql_dataframe_reader_api),
     # ("pi", test_python_pi_issue),
     # ("prefixSpan", test_prefix_span_example),
-    # ("filterReduce", filterReduceExample),
-    # ("sumSquares", sumSquaresExample),
-#    ("frequentLetters", frequentLettersExample),
+    ("filterReduce", filterReduceExample),
+    ("sumSquares", sumSquaresExample),
+    ("frequentLetters", frequentLettersExample),
     ("probability", probabilityExample),
 ]
 
@@ -85,9 +85,9 @@ def result_to_df(file_name: str, result: pd.DataFrame):
     # This is necessary because the outputs of the example functions needed to be formatted differently before saving them to a csv
     reformatted_result = result
 
-    if file_name in ["map", "flatMap", "frequentWords", "reduce", "pi", "readJsonCsv", "frequentLetters", "probability", "filterReduce"]:
+    if file_name in ["map", "flatMap", "frequentWords", "reduce", "pi", "readJsonCsv", "frequentLetters", "probability"]:
         reformatted_result = pd.DataFrame(result)
-    elif file_name in ["mapReduce", "sumNumbers", "sumSquares"]:
+    elif file_name in ["mapReduce", "sumNumbers", "sumSquares", "filterReduce"]:
         reformatted_result = pd.DataFrame([result])
     elif file_name in ["mapPartitions", "readJson"]:
         reformatted_result = result.toPandas()
