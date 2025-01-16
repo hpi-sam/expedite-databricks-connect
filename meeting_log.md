@@ -1,4 +1,18 @@
-# Biweekly 14.01.2024  
+# Biweekly 16.01.2025
+## Attendees
+- [x] @juliuspor
+- [ ] @sm1lla
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [ ] @cdfhalle  
+
+## Topics
+- Presentation at Databricks
+- further examples genreated from other examples <- johanna added 4
+- run experiments with CoT module from Dspy
+- Conrad founf Qwn reasoning model
+
+# Biweekly 14.01.2025
 
 ## Attendees
 - [x] @juliuspor
@@ -16,7 +30,31 @@
 - Johanna: Mehr Beispiele Ausdenken
 - Elena: dspy + chain of thought testen
 
+# Meeting with Felix Boelter
+- Qwen-2.5 performs on par with GPT-4.
+- Tool Calling with DSPy possible
+- Leverage "Program of Thought" or "Chain of Thought" methods from DSPy to address iteration issues (currently no updates happening during iteration).
 
+- Dpsy Optimizers:
+- Few-shot learning makes optimizers less relevant for our use case.
+  
+- Fine-tuning:
+- Focus on fine-tuning using generated examples.
+  
+- Switch from LangChain to Llama-Index:
+
+RAG (Retrieval-Augmented Generation) Idea:
+
+RAG should focus on searching for relevant spark functions.
+Generate queries specifically for the vector store.
+Chain of Thought (CoT) Process:
+
+First CoT: Determine which functions to use and understand the model's intentions.
+Proposed Pipeline:
+Search for a list of functions (verify existence).
+Retrieve relevant context.
+Use this context to generate code.
+Model Performance:
 
 # Bi-weekly with Chris 09.01.2024  
 
