@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 
-def get_urls():
+def get_urls(use_filter: bool):
     links = []
     base_urls = [
         "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/",
@@ -13,6 +13,7 @@ def get_urls():
         "https://spark.apache.org/docs/latest/api/python/reference/pyspark.ss/",
         "https://spark.apache.org/docs/latest/api/python/reference/pyspark.html",
         "https://spark.apache.org/docs/latest/api/python/reference/pyspark.errors.html",
+        "https://spark.apache.org/docs/latest/api/python/reference/pyspark.ml.html",
     ]
 
     for index, base_url in enumerate(base_urls):
@@ -30,15 +31,25 @@ def get_urls():
         if not box:
             box = soup.find("main")
         links.extend([base_url + link["href"] for link in box.find_all("a", href=True)])
+    if use_filter:
+        return filter_for_usages_without_rdd(links)
+
     return links
 
 
+def filter_for_usages_without_rdd(urls: list[str]):
+    return [link for link in urls if link.count("api") >= 2 and link.count("RDD") < 1]
+
+
 def save_documents():
-    urls = get_urls()
+    urls = get_urls(True)
+    print(len(urls))
     bs4_strainer = SoupStrainer("main")
     loader = WebBaseLoader(urls, bs_kwargs={"parse_only": bs4_strainer})
     data = loader.lazy_load()
-    store_path = Path("/raid/shared/masterproject2024/rag/data/api_reference.json")
+    store_path = Path(
+        "/raid/shared/masterproject2024/rag/data/api_reference_usages.json"
+    )
 
     with open(store_path, "w") as f:
         serializable_data = [
