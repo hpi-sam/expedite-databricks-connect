@@ -31,7 +31,7 @@ vectorstore_settings:
 
 # Iteration Settings    
 iterate: true
-iteration_limit: 5
+iteration_limit: 3
 
 
 # Linter Settings
@@ -104,7 +104,6 @@ Return the updated PySpark code snippet as a plain text string, without any addi
 
 # Experiment Settings
 number_of_examples: 18
-eval_iterations: 15
+eval_iterations: 10
 log_results: true
-run_name: error_codeRag_noGenPrompt
-
+run_name: nan
