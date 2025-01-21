@@ -17,6 +17,10 @@ from .examples_pre_migration.sumNumbers import sumNumbers
 from .examples_pre_migration.readJsonCsv import test_sql_dataframe_reader_api
 from .examples_pre_migration.pi import test_python_pi_issue
 from .examples_pre_migration.prefixSpan import test_prefix_span_example
+from .examples_pre_migration.filterReduce import filterReduceExample
+from .examples_pre_migration.sumSquares import sumSquaresExample
+from .examples_pre_migration.frequentLetters import frequentLettersExample
+from .examples_pre_migration.probability import probabilityExample
 import pandas as pd
 from ast import literal_eval
 import pandas as pd
@@ -40,6 +44,10 @@ examples = [
     ("readJsonCsv", test_sql_dataframe_reader_api),
     ("pi", test_python_pi_issue),
     ("prefixSpan", test_prefix_span_example),
+    ("filterReduce", filterReduceExample),
+    ("sumSquares", sumSquaresExample),
+    ("frequentLetters", frequentLettersExample),
+    ("probability", probabilityExample),
 ]
 
 
@@ -77,9 +85,9 @@ def result_to_df(file_name: str, result: pd.DataFrame):
     # This is necessary because the outputs of the example functions needed to be formatted differently before saving them to a csv
     reformatted_result = result
 
-    if file_name in ["map", "flatMap", "frequentWords", "reduce", "pi", "readJsonCsv"]:
+    if file_name in ["map", "flatMap", "frequentWords", "reduce", "pi", "readJsonCsv", "frequentLetters", "probability"]:
         reformatted_result = pd.DataFrame(result)
-    elif file_name in ["mapReduce", "sumNumbers"]:
+    elif file_name in ["mapReduce", "sumNumbers", "sumSquares", "filterReduce"]:
         reformatted_result = pd.DataFrame([result])
     elif file_name in ["mapPartitions", "readJson"]:
         reformatted_result = result.toPandas()
