@@ -14,4 +14,7 @@ def filterReduceExample(spark: SparkSession):
     # Reduce: Calculate the sum of the squared even numbers
     sum_of_squared_evens = squared_evens.reduce(lambda x, y: x + y)
 
+    # make int
+    sum_of_squared_evens = int(sum_of_squared_evens)
+
     return sum_of_squared_evens
