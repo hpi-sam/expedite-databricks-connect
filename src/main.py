@@ -132,7 +132,7 @@ def migrate_code_steps(code: str, cfg: DictConfig) -> str:
     solution_explanation = assistant.generate_answer(prompt, cfg)
     print(solution_explanation)
 
-    second_prompt = "Could you now please only output the names of the functions you want to use insted as a enumerated list? The format should be '1. function1 2. function2 3. function3'."
+    second_prompt = "Could you now please only output the names of the functions you want to use and their imports as a enumerated list? The format should be '1. function1 2. function2 3. function3'."
     answer = assistant.generate_answer(second_prompt, cfg)
     print(answer)
     functions = postprocess_functions(answer)
@@ -141,26 +141,28 @@ def migrate_code_steps(code: str, cfg: DictConfig) -> str:
 
     context = []
     for function in functions:
+        print("Function: ", function)
         context_query = context_query_prefix + function
         function_ref = vectorstore.similarity_search(context_query, k=1)
+        print("Context: ", function_ref[0].page_content)
         context.extend([c.page_content for c in function_ref])
 
     # Filter duplicates from list
     context = list(set(context))
 
-    final_prompt = f"""Please generate the updated code. It should have the exact same functionality as the original code. Only output a code block and no additional information.
-                    This is the original code:
-                    {code}                
-    
-                    Here is an idea how you could make the code spark connect compatible:
-                    {solution_explanation} 
+    final_prompt = f"""Now please generate the updated code. It should have the exact same functionality as the original code. Only output a code block and no additional information.
+This is the original code:
+{code}                 
 
-                    In case you need it you can use these pages from the api reference:
-            """
+These are the errors:
+{str(linter_diagnostics)}
+In case you need it you can use these pages from the API reference:
+"""
+
     for c in context:
         final_prompt += f"\n{c}"
-    assistant.clear_messages()
     print(final_prompt)
+
     code = assistant.generate_answer(final_prompt, cfg)
     metadata = {"iteration": 1}
 
@@ -170,7 +172,9 @@ def migrate_code_steps(code: str, cfg: DictConfig) -> str:
 def postprocess_functions(llm_output: str) -> list[str]:
     llm_output = llm_output.split("\n")
     llm_output = [
-        line.split(".")[-1] for line in llm_output if bool(re.search(r"\d+\.", line))
+        line.split(r"\d+\.")[-1]
+        for line in llm_output
+        if bool(re.search(r"\d+\.", line))
     ]
     return llm_output
 

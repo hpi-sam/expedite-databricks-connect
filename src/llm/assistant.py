@@ -40,6 +40,7 @@ class Assistant:
             {"role": "user", "content": prompt},
         ]
         num_tokens = len(self._tokenized_messages())
+        print("Num tokens: ", num_tokens)
         while num_tokens > cfg.max_model_length - cfg.answer_token_length:
             self._messages.pop(0)
             num_tokens = len(self._tokenized_messages())
@@ -58,3 +59,6 @@ class Assistant:
             }
         ]
         return answer
+
+    def clear_messages(self):
+        self._messages = []
