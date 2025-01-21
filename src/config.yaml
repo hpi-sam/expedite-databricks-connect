@@ -95,7 +95,6 @@ first_step_prompt: "I want to update the provided PySpark code to be compatible 
 
 # Experiment Settings
 number_of_examples: 18
-eval_iterations: 15
+eval_iterations: 10
 log_results: true
-run_name: error_codeRag_noGenPrompt
-
+run_name: nan
