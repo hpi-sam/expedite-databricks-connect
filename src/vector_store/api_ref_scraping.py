@@ -33,12 +33,27 @@ def get_urls():
     return links
 
 
+def get_missing_urls():
+    base_url = "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/"
+    functions_url = "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions"
+    result = requests.get(functions_url)
+    content = result.text
+    soup = BeautifulSoup(content, "lxml")
+    boxes = soup.find_all("tbody")
+    links = []
+    for box in boxes:
+        links.extend([base_url + link["href"] for link in box.find_all("a", href=True)])
+    return links
+
+
 def save_documents():
     urls = get_urls()
+    urls.extend(get_missing_urls())
+    print(urls)
     bs4_strainer = SoupStrainer("main")
     loader = WebBaseLoader(urls, bs_kwargs={"parse_only": bs4_strainer})
     data = loader.lazy_load()
-    store_path = Path("/raid/shared/masterproject2024/rag/data/api_reference.json")
+    store_path = Path("/raid/shared/masterproject2024/rag/data/api_reference_new.json")
 
     with open(store_path, "w") as f:
         serializable_data = [

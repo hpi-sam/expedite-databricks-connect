@@ -15,10 +15,11 @@ import hydra
 import wandb
 from omegaconf import DictConfig, OmegaConf
 import os
+import re
 
 
 def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: str):
-    prompt = cfg.initial_prompt + code
+    prompt = cfg.first_step_prompt + code
     if cfg.use_error:
         prompt += cfg.linter_prompt + str(diagnostics)
     if cfg.use_rag:
@@ -118,6 +119,62 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
     return code, metadata
 
 
+def migrate_code_steps(code: str, cfg: DictConfig) -> str:
+    assistant = Assistant(cfg.model_temperature, cfg)
+    vectorstore_settings = cfg.vectorstore_settings.get(cfg.vectorstore_type, {})
+    embedding_model_name = cfg.get("embedding_model_name")
+    vectorstore = VectorStoreFactory.initialize(
+        cfg.vectorstore_type, embedding_model_name, **vectorstore_settings
+    )
+    linter_diagnostics = lint_codestring(code, cfg.linter_config)
+
+    prompt = build_prompt(cfg, code, linter_diagnostics, "")
+    solution_explanation = assistant.generate_answer(prompt, cfg)
+    print(solution_explanation)
+
+    second_prompt = "Could you now please only output the names of the functions you want to use insted as a enumerated list? The format should be '1. function1 2. function2 3. function3'."
+    answer = assistant.generate_answer(second_prompt, cfg)
+    print(answer)
+    functions = postprocess_functions(answer)
+
+    context_query_prefix = "Instruct: Given a function, retrieve the passage from the API reference that describe the function.\nQuery: "
+
+    context = []
+    for function in functions:
+        context_query = context_query_prefix + function
+        function_ref = vectorstore.similarity_search(context_query, k=1)
+        context.extend([c.page_content for c in function_ref])
+
+    # Filter duplicates from list
+    context = list(set(context))
+
+    final_prompt = f"""Please generate the updated code. It should have the exact same functionality as the original code. Only output a code block and no additional information.
+                    This is the original code:
+                    {code}                
+    
+                    Here is an idea how you could make the code spark connect compatible:
+                    {solution_explanation} 
+
+                    In case you need it you can use these pages from the api reference:
+            """
+    for c in context:
+        final_prompt += f"\n{c}"
+    assistant.clear_messages()
+    print(final_prompt)
+    code = assistant.generate_answer(final_prompt, cfg)
+    metadata = {"iteration": 1}
+
+    return code, metadata
+
+
+def postprocess_functions(llm_output: str) -> list[str]:
+    llm_output = llm_output.split("\n")
+    llm_output = [
+        line.split(".")[-1] for line in llm_output if bool(re.search(r"\d+\.", line))
+    ]
+    return llm_output
+
+
 def run_experiment(cfg: DictConfig):
     wandb.init(
         project="mp",
@@ -169,7 +226,7 @@ def main(cfg: DictConfig):
     if cfg.log_results:
         run_experiment(cfg)
     else:
-        evaluate(migrate_code, cfg)
+        evaluate(migrate_code_steps, cfg)
 
 
 if __name__ == "__main__":

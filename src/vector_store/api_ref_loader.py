@@ -7,7 +7,7 @@ import json
 
 
 def load_documents():
-    store_path = Path("/raid/shared/masterproject2024/rag/data/api_reference.json")
+    store_path = Path("/raid/shared/masterproject2024/rag/data/api_reference_new.json")
     with open(store_path, "r") as f:
         data = json.load(f)
 
