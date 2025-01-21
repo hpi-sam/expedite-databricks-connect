@@ -1,3 +1,19 @@
+# Biweekly 21.01.2025
+## Attendees
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle  
+
+## Topics
+- Smilla hat ein bisschen promt engineering gemacht
+- Und versucht Funktionen zu extrahieren und dann zum querien der API docs zu verwenden
+- Elena auch
+- Elena und Smilla haben beide den Api Doku vectorstore neu erstellt
+- Johanna hat neue evaluationsbeispiele generiert
+- Conrad hat huggingface logging erweitert und QwQ integriert (mit wenig erfolg leider)
+
 # Biweekly 16.01.2025
 ## Attendees
 - [x] @juliuspor
