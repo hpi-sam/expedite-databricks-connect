@@ -1,4 +1,7 @@
+from datetime import datetime
 import traceback
+
+import wandb.sdk
 from .examples_pre_migration.map import mapExample
 from .examples_pre_migration.flatMap import flatMapExample
 from .examples_pre_migration.mapPartitions import mapPartitionsExample
@@ -21,7 +24,7 @@ from .examples_pre_migration.probability import probabilityExample
 import pandas as pd
 from ast import literal_eval
 import pandas as pd
-from typing import Callable
+from typing import Callable, TypedDict
 from omegaconf import DictConfig
 import wandb
 
@@ -174,7 +177,8 @@ def generate(
 def evaluate(
     model_generation_function: Callable,
     cfg: DictConfig,
-    current_iteration: str = "NOT_SPECIFIED",
+    wandb_table: wandb.Table = None,
+    iteration=0,
 ):
     metrics = {
         "score": 0,
@@ -185,20 +189,12 @@ def evaluate(
         "iteration_solved": {},
         "iteration_failed": {},
     }
-    wandb_table = wandb.Table(
-        columns=[
-            "iteration",
-            "example_name",
-            "old_code",
-            "new_code",
-            "error_type",
-            "error_message",
-        ]
-    )
+
     for i, (file_name, example_function) in enumerate(examples):
         print("\n")
         print(f"({i + 1}/{len(examples)}) Evaluating {file_name} example")
         print("==============================================")
+        iteration_str = f"iteration_{iteration}_started_at_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
         metrics = generate(
             file_name,
             example_function,
@@ -206,9 +202,8 @@ def evaluate(
             metrics,
             cfg,
             wandb_table,
-            current_iteration,
+            iteration_str,
         )
-    wandb.log({"evaluation_table": wandb_table})
     print("\nSucces Rate:", metrics["score"], "/", len(examples))
     print(
         "Model output cannot be executed:",

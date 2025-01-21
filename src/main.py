@@ -126,16 +126,21 @@ def run_experiment(cfg: DictConfig):
         name=cfg.run_name,
         entity="conrad-halle-university-of-potsdam",
     )
-
+    wandb_table = wandb.Table(
+        columns=[
+            "iteration",
+            "example_name",
+            "old_code",
+            "new_code",
+            "error_type",
+            "error_message",
+        ]
+    )
     avg_score = 0
     individual_metrics = {}
 
     for iteration in range(cfg.eval_iterations):
-        metrics = evaluate(
-            migrate_code,
-            cfg,
-            f"iteration_{iteration}_started_at_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}",
-        )
+        metrics = evaluate(migrate_code, cfg, wandb_table, iteration)
         metrics["iteration"] = iteration
         avg_score += metrics["score"]
         for key, value in metrics["individual_metrics"].items():
@@ -150,6 +155,7 @@ def run_experiment(cfg: DictConfig):
     for key, value in individual_metrics.items():
         individual_metrics[key] = value / cfg.eval_iterations
 
+    wandb.log({"evaluation_table": wandb_table}, commit=False)
     wandb.log({"avg_individual_metrics": individual_metrics})
     wandb.log({"avg_score": avg_score})
 
