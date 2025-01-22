@@ -5,6 +5,19 @@ import json
 from pathlib import Path
 
 
+def get_missing_urls():
+    base_url = "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/"
+    functions_url = "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions"
+    result = requests.get(functions_url)
+    content = result.text
+    soup = BeautifulSoup(content, "lxml")
+    boxes = soup.find_all("tbody")
+    links = []
+    for box in boxes:
+        links.extend([base_url + link["href"] for link in box.find_all("a", href=True)])
+    return links
+
+
 def get_urls(use_filter: bool):
     links = []
     base_urls = [
@@ -43,6 +56,7 @@ def filter_for_usages_without_rdd(urls: list[str]):
 
 def save_documents():
     urls = get_urls(True)
+    urls.extend(get_missing_urls())
     print(len(urls))
     bs4_strainer = SoupStrainer("main")
     loader = WebBaseLoader(urls, bs_kwargs={"parse_only": bs4_strainer})
