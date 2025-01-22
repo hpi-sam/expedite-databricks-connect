@@ -81,6 +81,8 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
             filter = {"type": vectorstore_settings["type"]}
 
     context = vectorstore.similarity_search(code, k=cfg.num_rag_docs, filter=filter)
+    links = [c.metadata["source"] for c in context]
+
     context = [c.page_content for c in context]
     if cfg.generate_prompt:
         prompt = generate_initial_prompt(
@@ -91,6 +93,10 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
 
     print(f"Prompt: {prompt}")
 
+    metadata["prompt"] = prompt
+    metadata["context"] = context
+    metadata["source"] = links
+
     # Generate initial migration suggestion
     code = postprocess(assistant.generate_answer(prompt, cfg))
 
@@ -100,6 +106,9 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
             print(f"\nIteration {iteration + 1} of {cfg.iteration_limit}")
             print("----------------------------------------------")
             metadata["iteration"] = iteration + 1
+            metadata["prompt"] = prompt
+            metadata["context"] = context
+            metadata["source"] = links
             linter_diagnostics = lint_codestring(code, cfg.linter_config)
             if not linter_diagnostics:
                 print("DONE: No problems detected by the linter.\n")
@@ -134,6 +143,9 @@ def run_experiment(cfg: DictConfig):
             "new_code",
             "error_type",
             "error_message",
+            "source",
+            "context",
+            "prompt",
         ]
     )
     avg_score = 0

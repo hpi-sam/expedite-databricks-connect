@@ -170,6 +170,9 @@ def generate(
             postprocess(output_code),
             resulting_error_type,
             resulting_error_str,
+            metadata["source"],
+            metadata["context"],
+            metadata["prompt"],
         )
     return metrics
 
