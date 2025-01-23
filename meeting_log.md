@@ -1,3 +1,13 @@
+# Meeting with Chris 23.01.2025
+## Attendees
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle
+## Topics
+- In the report/presentation we could pick some approaches and for each mention the motivation for using the approach and tell why it didn't work
+- Idk but Chris mentioned something with a hypothesis and that this should be easily falsifiable. 
 # Biweekly 21.01.2025
 ## Attendees
 - [x] @juliuspor
