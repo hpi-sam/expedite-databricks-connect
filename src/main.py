@@ -19,7 +19,7 @@ import re
 
 
 def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: str):
-    prompt = cfg.first_step_prompt + code
+    prompt = cfg.initial_prompt + code
     if cfg.use_error:
         prompt += cfg.linter_prompt + str(diagnostics)
     if cfg.use_rag:
@@ -118,7 +118,7 @@ def migrate_code_steps(code: str, cfg: DictConfig) -> str:
     )
     linter_diagnostics = lint_codestring(code, cfg.linter_config)
 
-    prompt = build_prompt(cfg, code, linter_diagnostics, "")
+    prompt = cfg.first_step_prompt + code + cfg.linter_prompt + str(linter_diagnostics)
     solution_explanation = assistant.generate_answer(prompt, cfg)
     print(solution_explanation)
 
