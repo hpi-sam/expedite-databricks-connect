@@ -112,6 +112,6 @@ This is the original code that does not work with Spark Connect:
 
 # Experiment Settings
 number_of_examples: 18
-eval_iterations: 10
+eval_iterations: 20
 log_results: true
 run_name: null

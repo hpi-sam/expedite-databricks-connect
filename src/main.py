@@ -22,7 +22,7 @@ def build_prompt(cfg: DictConfig, code: str, diagnostics: list[dict], context: s
     prompt = cfg.initial_prompt + code
     if cfg.use_error:
         prompt += cfg.linter_prompt + str(diagnostics)
-    if cfg.use_rag:
+    if cfg.use_rag and context:
         prompt += cfg.context_prompt + str(context)
     return prompt
 
@@ -157,7 +157,7 @@ def postprocess_functions(llm_output: str) -> list[str]:
 
 def run_experiment(cfg: DictConfig):
     wandb.init(
-        project="mp",
+        project="final_experiments",
         config=OmegaConf.to_container(cfg, resolve=True),
         settings=wandb.Settings(start_method="thread"),
         name=cfg.run_name,
