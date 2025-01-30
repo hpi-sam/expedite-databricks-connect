@@ -20,6 +20,7 @@ vectorstore_settings:
             - { repo: "lvhuyen/SparkAid", branch: "master"}
         from_json: False
         from_store: True
+        chunk_size: 1000
         type: connect
 
     api_ref:
@@ -37,6 +38,7 @@ iteration_limit: 3
 # Linter Settings
 linter_config : 
     enabled_linters: # List of linters to use. Possible values: 'pylint', 'mypy', 'flake8', 'spark_connect'
+        - syntax
         - pylint
         - spark_connect
     feedback_types: # Return only these severities. Possible values: 'error', 'warning', 'convention' (maybe more) 

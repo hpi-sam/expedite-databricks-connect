@@ -2,7 +2,7 @@ import sys
 import json
 import subprocess
 import hydra
-from linter.python_linter.linter import PythonLinter
+from linter.python_linter.linter import PythonLinter, TreeSitterLinter
 from linter.python_linter.spark_connect_matcher import (
     RDDApiMatcher,
     MapPartitionsMatcher,
@@ -172,25 +172,26 @@ def run_flake8(code):
         return []
 
 
-def lint_codestring(code, lint_config):
+def lint_codestring(code, lint_config, with_compile: bool = True):
     """
     Lints the given code string and returns the diagnostics as a JSON object.
     """
     diagnostics = []
 
     # check if "code" does actually contain code and is parseable with ast
-    try:
-        compile(code, "temp_lint_code.py", "exec")
-    except Exception as e:
-        return [
-            {
-                "message": "Syntax error: " + str(e),
-                "line": 0,
-                "col": 0,
-                "type": "syntax_error",
-                "linter": "syntax",
-            }
-        ]
+    if "syntax" in lint_config.enabled_linters:
+        try:
+            compile(code, "temp_lint_code.py", "exec")
+        except Exception as e:
+            return [
+                {
+                    "message": "Syntax error: " + str(e),
+                    "line": 0,
+                    "col": 0,
+                    "type": "syntax_error",
+                    "linter": "syntax",
+                }
+            ]
 
     if "spark_connect" in lint_config.enabled_linters:
         diagnostics += format_diagnostics(
