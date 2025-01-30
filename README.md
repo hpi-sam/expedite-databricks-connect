@@ -20,5 +20,5 @@ Master Project "Quickly Adapting to Changes" in collaboration with Databricks.
 ## Migration Examples
 - [semyonsinchenko blog post](https://semyonsinchenko.github.io/ssinchenko/post/porting_deequ_to_sparkconnect/)
 
-  ## Links Experiments
+## Links Experiments
 [Final Experiments Table](https://docs.google.com/document/d/1HtkK84i_X0klmDPw2CeUUSga9PbHjCVUgenMRuFjx5Q/edit?usp=sharing)
