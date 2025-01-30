@@ -1,3 +1,44 @@
+# Meeting with Martin 30.01.2025
+## Attendees
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle
+
+## Topics
+- Outlook: Wenn man features hat die nicht repräsentierbar sind (z.B. aus SparkML), kann man LLM dazu bringen SparkConnect als Protokoll zu erweitern?
+  - Spark Connect hat Extension Points, die genutzt werden können um eine Extension zu bauen
+  - Was macht man, wenn man das nicht repräsentieren kann?
+  - Schaut euch den PR auf GitHub an
+
+
+# Biweekly 21.01.2025
+## Attendees
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle  
+
+## Topics
+- Smilla hat ein bisschen promt engineering gemacht
+- Und versucht Funktionen zu extrahieren und dann zum querien der API docs zu verwenden
+- Elena auch
+- Elena und Smilla haben beide den Api Doku vectorstore neu erstellt
+- Johanna hat neue evaluationsbeispiele generiert
+- Conrad hat huggingface logging erweitert und QwQ integriert (mit wenig erfolg leider)
+
+# Meeting with Chris 23.01.2025
+## Attendees
+- [x] @juliuspor
+- [x] @sm1lla
+- [x] @joh-dah  
+- [x] @elenagensch  
+- [x] @cdfhalle
+## Topics
+- In the report/presentation we could pick some approaches and for each mention the motivation for using the approach and tell why it didn't work
+- Idk but Chris mentioned something with a hypothesis and that this should be easily falsifiable. 
 # Biweekly 21.01.2025
 ## Attendees
 - [x] @juliuspor
