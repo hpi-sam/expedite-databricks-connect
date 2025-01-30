@@ -8,6 +8,8 @@
 
 ## Topics
 - Outlook: Wenn man features hat die nicht repräsentierbar sind (z.B. aus SparkML), kann man LLM dazu bringen SparkConnect als Protokoll zu erweitern?
+  - Spark Connect hat Extension Points, die genutzt werden können um eine Extension zu bauen
+  - Was macht man, wenn man das nicht repräsentieren kann?
   - Schaut euch den PR auf GitHub an
 
 
