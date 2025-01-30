@@ -58,9 +58,15 @@ class VectorStoreFactory:
             data_path = kwargs.get("data_path")
             from_json = kwargs.get("from_json")
             from_store = kwargs.get("from_vect")
+            chunk_size = kwargs.get("chunk_size")
 
             return vector_store_from_repos(
-                data_path, vector_store_path, embedding_function, from_json, from_store
+                data_path,
+                vector_store_path,
+                embedding_function,
+                from_json,
+                from_store,
+                chunk_size,
             )
 
         elif vectorstore_type == "api_ref":
