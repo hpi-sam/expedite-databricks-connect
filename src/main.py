@@ -69,11 +69,15 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
     print("----------------------------------------------")
     linter_diagnostics = lint_codestring(code, cfg.linter_config)
 
+    metadata["prompt"] = ""
+    metadata["context"] = ""
+    metadata["source"] = ""
+
     if linter_diagnostics:
         print_diagnostics(linter_diagnostics)
     else:
         print("DONE: No problems detected by the linter.\n")
-        return code
+        return code, metadata
 
     filter = None
     if "type" in vectorstore_settings:
@@ -114,7 +118,12 @@ def migrate_code(code: str, cfg: DictConfig) -> str:
                 print("DONE: No problems detected by the linter.\n")
                 break
             print_diagnostics(linter_diagnostics)
-            context = vectorstore.similarity_search(code, k=cfg.num_rag_docs)
+
+            if not cfg.filter_in_iteration:
+                filter = None
+            context = vectorstore.similarity_search(
+                code, k=cfg.num_rag_docs, filter=filter
+            )
             context = [c.page_content for c in context]
             if cfg.generate_prompt:
                 prompt = generate_iterated_prompt(
