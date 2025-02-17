@@ -16,14 +16,14 @@ import pandas as pd
 
 spark = SparkSession.builder.appName("Example").getOrCreate()
 
-mapPartitionsExample(spark).toPandas().to_csv("output/mapPartitions.csv")
+mapPartitionsExample(spark).toPandas().to_csv("output/mapPartitions.csv", index=False)
 pd.DataFrame(flatMapExample(spark)).to_csv(
     "output/flatMap.csv", index=False, header=False
 )
 pd.DataFrame([mapReduceExample(spark)]).to_csv(
     "output/mapReduce.csv", index=False, header=False
 )
-readJsonExample(spark).toPandas().to_csv("output/readJson.csv")
+readJsonExample(spark).toPandas().to_csv("output/readJson.csv", index=False)
 pd.DataFrame(sparkContextExample(spark).items()).to_csv(
     "output/sparkContext.csv", index=False, header=False
 )

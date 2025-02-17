@@ -28,7 +28,7 @@ def load_data_from_file():
         language=Language.PYTHON, chunk_size=1000
     )
 
-    splits = text_splitter.split_documents(code_docs)[:5000]
+    splits = text_splitter.split_documents(code_docs)
 
     return splits
 

@@ -85,7 +85,16 @@ def result_to_df(file_name: str, result: pd.DataFrame):
     # This is necessary because the outputs of the example functions needed to be formatted differently before saving them to a csv
     reformatted_result = result
 
-    if file_name in ["map", "flatMap", "frequentWords", "reduce", "pi", "readJsonCsv", "frequentLetters", "probability"]:
+    if file_name in [
+        "map",
+        "flatMap",
+        "frequentWords",
+        "reduce",
+        "pi",
+        "readJsonCsv",
+        "frequentLetters",
+        "probability",
+    ]:
         reformatted_result = pd.DataFrame(result)
     elif file_name in ["mapReduce", "sumNumbers", "sumSquares", "filterReduce"]:
         reformatted_result = pd.DataFrame([result])
@@ -132,7 +141,7 @@ def generate(
         successful, example_result = run_example_sc(scope[example_function.__name__])
         if successful:
             comparison = compare(file_name, example_result, return_comparison=True)
-            if comparison != False:
+            if comparison == True:
                 metrics["score"] += 1
                 metrics["individual_metrics"][file_name] = 1
                 metrics["iteration_solved"][file_name] = metadata["iteration"]
@@ -170,6 +179,9 @@ def generate(
             postprocess(output_code),
             resulting_error_type,
             resulting_error_str,
+            metadata["source"],
+            metadata["context"],
+            metadata["prompt"],
         )
     return metrics
 
